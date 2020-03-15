@@ -69,7 +69,7 @@ if (isAntDesignProPreview) {
 
 export default {
   plugins,
-  hash: true,
+  hash: false,
   targets: {
     ie: 11,
   },
@@ -172,6 +172,7 @@ export default {
               component: './tag/list/index',
               authority: ['admin'],
             },
+
             {
               path: '/tag/:tagId',
               name: 'tagDetail',
@@ -179,6 +180,44 @@ export default {
               component: './tag/detail/index',
               authority: ['admin'],
               hideInMenu:true,
+            },
+            {
+              path: '/users/:id',
+              name: 'userDetail',
+              component: './user/detail/index',
+              hideInMenu:true,
+              authority: ['admin'],
+            },
+            {
+              path: '/users',
+              name: 'users',
+              icon: 'user',
+              component: './user/list/index',
+              authority: ['admin'],
+            },
+
+            {
+              path: '/permissions',
+              name: 'permissions',
+              icon: 'key',
+              component: './permission/list/index',
+              authority: ['admin'],
+            },
+            {
+              path: '/usergroups',
+              name: 'usergroups',
+              icon: 'TeamOutlined',
+              component: './usergroup/list/index',
+              authority: ['admin'],
+            },
+            {
+              path: '/usergroup/:id',
+              name: 'usergroup',
+              icon: 'TeamOutlined',
+              component: './usergroup/detail/index',
+              authority: ['admin'],
+              hideInMenu:true,
+
             },
             {
               component: './404',

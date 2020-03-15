@@ -8,7 +8,8 @@ export interface UserAuth {
 
 export interface User {
   id: number
-  nickname: string,
+  username:string
+  nickname: string
   avatar: string
 }
 
@@ -35,4 +36,14 @@ export function getUserUserGroups({id}: { id: number }) {
   return apiRequest.get(
     ApplicationConfig.api.userUserGroups.replace(':id', String(id)),
   );
+}
+
+export function queryUserList({...params}) {
+  return apiRequest.get(
+    ApplicationConfig.api.users,
+    {
+      params
+    }
+  )
+
 }

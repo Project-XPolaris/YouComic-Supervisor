@@ -18,6 +18,11 @@ import {TagListModelStateType} from "@/pages/tag/list/model";
 import {SideCollectionModelStateType} from "@/models/side";
 import {TagDetailModelStateType} from "@/pages/tag/detail/model";
 import {CreateBookPageModelStateType} from "@/pages/book/create/model";
+import {UserListModelStateType} from "@/pages/user/list/model";
+import {PermissionListModelStateType} from "@/pages/permission/list/model";
+import {UserDetailStateType} from "@/pages/user/detail/model";
+import {UserGroupListStateType} from "@/pages/usergroup/list/model";
+import {UserGroupDetailStateType} from "@/pages/usergroup/detail/model";
 
 export {GlobalModelState, SettingModelState, UserModelState};
 
@@ -50,6 +55,11 @@ export interface ConnectState {
   sideCollection:SideCollectionModelStateType
   tagDetail:TagDetailModelStateType
   createBook:CreateBookPageModelStateType
+  userList:UserListModelStateType
+  permissionList:PermissionListModelStateType
+  userDetail:UserDetailStateType
+  userGroupList:UserGroupListStateType
+  userGroupDetail:UserGroupDetailStateType
 }
 
 export interface Route extends MenuDataItem {

@@ -1,5 +1,5 @@
 const ApplicationConfig = {
-  apiURL: 'http://localhost:8080',
+  apiURL: 'http://192.168.123.121:8080',
   api: {
     BooksURL: '/books',
     BookTagsURL: '/book/:id/tags',
@@ -10,6 +10,11 @@ const ApplicationConfig = {
     auth:'/user/auth',
     register:'/user/register',
     user:'/user/:id',
+    users:'/users',
+    userGroups:'/usergroups',
+    userGroupUsers:'/usergroup/:id/users',
+    userGroupPermissions:'/usergroup/:id/permissions',
+    permissions:'/permissions',
     userUserGroups:'/user/:id/groups',
     collections:'/collections',
     collection:'/collection/:id',
