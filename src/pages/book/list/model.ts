@@ -1,6 +1,6 @@
 import {Effect, Subscription} from 'dva';
 import {Reducer} from 'redux';
-import {Book, queryBooks} from "@/services/book";
+import {Book, DeleteBook, queryBooks} from "@/services/book";
 import {ListQueryContainer} from "@/services/base";
 import {ConnectState} from "@/models/connect";
 import {getCoverThumbnailURL} from "@/utils/image";
@@ -8,6 +8,7 @@ import {BookFilter} from "@/pages/book/list/components/BookFilterDrawer";
 import {queryTags, Tag} from "@/services/tag";
 import {getOrdersFromUrlQuery} from "@/utils/uri";
 import {differenceWith} from 'lodash'
+import {message} from "antd";
 
 export interface BookListModelStateType {
   books?: Book[]
@@ -41,6 +42,7 @@ export interface BookListModelType {
     queryBooks: Effect
     searchTags: Effect
     getFilterTag: Effect
+    deleteSelectedBooks: Effect
   }
   subscriptions: {
     setup: Subscription
@@ -85,9 +87,9 @@ const BookListModel: BookListModelType = {
               }
             }
           });
-          if (filterTags.length !== 0){
+          if (filterTags.length !== 0) {
             dispatch({
-              type:"getFilterTag"
+              type: "getFilterTag"
             });
           }
 
@@ -116,7 +118,9 @@ const BookListModel: BookListModelType = {
         endTime: filter.endTime,
         tag: filter.tagIds
       });
-      queryBookResponse.result.forEach((book: Book) => book.cover = getCoverThumbnailURL(book.cover));
+      queryBookResponse.result.forEach((book: Book) => {
+        book.cover = getCoverThumbnailURL(book.cover)
+      });
       yield put({
         type: 'onQueryBookSuccess',
         payload: {
@@ -150,26 +154,42 @@ const BookListModel: BookListModelType = {
         })
       }
     },
-    *getFilterTag(_, {call, put, select}) {
+    * getFilterTag(_, {call, put, select}) {
       const {filter}: BookListModelStateType = yield select((state: ConnectState) => (state.bookList));
       const {tags, tagIds} = filter;
       const tagIdsToQuery = differenceWith<number, { id: number, name: string }>(tagIds, tags, (a: number, b: { id: number, name: string }) => a === b.id);
-      if (tagIdsToQuery.length === 0){
+      if (tagIdsToQuery.length === 0) {
         return
       }
-      const queryTagsResponse : ListQueryContainer<Tag> = yield call(queryTags,{id:tagIdsToQuery});
+      const queryTagsResponse: ListQueryContainer<Tag> = yield call(queryTags, {id: tagIdsToQuery});
       yield put({
-        type:"updateFilter",
-        payload:{
-          filter:{
+        type: "updateFilter",
+        payload: {
+          filter: {
             ...filter,
-            tags:[
+            tags: [
               ...tags,
-              ...queryTagsResponse.result.map((tag:Tag) => ({id:tag.id,name:tag.name}))
+              ...queryTagsResponse.result.map((tag: Tag) => ({id: tag.id, name: tag.name}))
             ]
           }
         }
       })
+    },
+    * deleteSelectedBooks({payload: {permanently}}, {call, put, select}) {
+      const {selectedBooks}: BookListModelStateType = yield select((state: ConnectState) => (state.bookList));
+      for (const selectedBook of selectedBooks) {
+        yield call(DeleteBook, {id: selectedBook.id, permanently})
+      }
+      yield put({
+        type: "queryBooks"
+      })
+      yield put({
+        type: "setSelectedBookIds",
+        payload: {
+          books: []
+        }
+      })
+      message.success(`已删除${selectedBooks.length}个项目`)
     }
   },
   reducers: {

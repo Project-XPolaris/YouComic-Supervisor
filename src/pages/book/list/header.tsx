@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect, Dispatch} from 'dva';
-import {Button, Dropdown, Menu, message} from "antd";
+import {Button, Dropdown, Menu, message,Modal} from "antd";
 import style from "@/pages/book/list/style.less";
 import {ConnectState} from "@/models/connect";
 import {BookListModelStateType} from "@/pages/book/list/model";
@@ -9,8 +9,12 @@ import SelectAllIcon from '@ant-design/icons/CheckOutlined'
 import UnSelectAllIcon from '@ant-design/icons/MinusOutlined'
 import RevertSelectIcon from '@ant-design/icons/ReloadOutlined'
 import AddToCollectionIcon from '@ant-design/icons/FolderFilled'
+import RemoveBookIcon from '@ant-design/icons/DeleteFilled'
+import RemoveBookPermanentlyIcon from '@ant-design/icons/FileExcelFilled'
+
 import {Book} from "@/services/book";
 
+const {confirm} = Modal
 export const BooksFilterDrawerKey = "bookList/filterDrawer";
 export const AddToSnapshotDialogKey = "bookList/addToSnapshot"
 
@@ -75,6 +79,34 @@ function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType
       }
     })
   };
+  const onDeleteBook = () => {
+    confirm({
+      title:"删除确认",
+      content:`是否要删除所选的${selectedBooks.length}项`,
+      onOk:() => {
+        dispatch({
+          type:"bookList/deleteSelectedBooks",
+          payload:{
+
+          }
+        })
+      }
+    })
+  }
+  const onDeletePermanentlyBook = () => {
+    confirm({
+      title:"删除确认",
+      content:`是否要永久删除所选的${selectedBooks.length}项，永久删除不可恢复`,
+      onOk:() => {
+        dispatch({
+          type:"bookList/deleteSelectedBooks",
+          payload:{
+            permanently:"true"
+          }
+        })
+      }
+    })
+  }
   const menu = (
     <Menu >
       <Menu.Item key="1" onClick={onSelectAllBooks}>
@@ -93,6 +125,15 @@ function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType
         <AddToCollectionIcon />
         添加至集合
       </Menu.Item>
+      <Menu.Divider/>
+      <Menu.Item key="5" onClick={onDeleteBook}>
+        <RemoveBookIcon />
+        删除书籍
+      </Menu.Item>
+      <Menu.Item key="6" onClick={onDeletePermanentlyBook}>
+        <RemoveBookPermanentlyIcon />
+        永久删除书籍
+      </Menu.Item>
     </Menu>
   );
   return (
@@ -101,7 +142,7 @@ function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType
         bookList.selectedBooks.length > 0 &&
         <Dropdown overlay={menu}>
           <Button type="primary">
-            {`已选${bookList.selectedBooks.length}项`} <MenuIcon />
+            {`已选${bookList.selectedBooks.length}项`} <MenuIcon/>
           </Button>
         </Dropdown>
       }

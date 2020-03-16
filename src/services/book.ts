@@ -60,3 +60,15 @@ export function removeTagFromBook({id,tagId}:{id:number,tagId:number}) {
     }
   )
 }
+
+export function DeleteBook({id,permanently}:{id:number,permanently:string}) {
+  return apiRequest(
+    ApplicationConfig.api.Book.replace(":id",String(id)),
+    {
+      method:"delete",
+      params:{
+        permanently
+      }
+    }
+  )
+}
