@@ -15,8 +15,8 @@ import {Snapshot} from "@/services/snapshot";
 import SnapshotDialog from "@/components/SnapshotDialog";
 import {PageHeaderWrapper} from "@ant-design/pro-layout";
 import {generateSnapshotId} from "@/utils/utils";
+import BookListHeaderAction, {AddToSnapshotDialogKey, BooksFilterDrawerKey} from "@/pages/book/list/header";
 
-const AddToSnapshotDialogKey = "bookList/addToSnapshot"
 
 interface BookListPagePropsType {
   dispatch: Dispatch,
@@ -25,7 +25,6 @@ interface BookListPagePropsType {
 
 }
 
-const BooksFilterDrawerKey = "bookList/filterDrawer";
 
 function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
   const {page, pageSize, count, filter, searchTags, selectedBooks} = bookList;
@@ -33,15 +32,7 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
   const onPageChange = (toPage: number, toPageSize: number = 20) => {
     updateQueryParamAndReplaceURL({page: toPage, pageSize: toPageSize})
   };
-  const onOpenFilterDrawer = () => {
-    dispatch({
-      type: "dialog/setDialogActive",
-      payload: {
-        key: BooksFilterDrawerKey,
-        isActive: true
-      }
-    })
-  };
+
   const onCloseFilterDrawer = () => {
     dispatch({
       type: "dialog/setDialogActive",
@@ -111,42 +102,10 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
       }
     })
   };
-  const onAddMultipleBookToCollection = () => {
-    if (selectedBooks.length === 0) {
-      return
-    }
-    dispatch({
-      type: "sideCollection/addBookToCollection",
-      payload: {
-        books: selectedBooks
-      }
-    });
-    message.success(`添加${selectedBooks[0].name} 等${selectedBooks.length}添加至集合`)
-  };
-  const onSelectAllBooks = () => {
-    dispatch({
-      type: "bookList/setSelectedBookIds",
-      payload: {
-        books: bookList.books
-      }
-    })
-  };
-  const onInverseSelectBooks = () => {
-    dispatch({
-      type: "bookList/setSelectedBookIds",
-      payload: {
-        books: bookList.books?.filter((book: Book) => selectedBooks.find(selectedBook => selectedBook.id === book.id) === undefined)
-      }
-    })
-  };
-  const onUnSelectBooks = () => {
-    dispatch({
-      type: "bookList/setSelectedBookIds",
-      payload: {
-        books: []
-      }
-    })
-  };
+
+
+
+
   const onBookClick = (book: Book) => {
     if (selectedBooks.length > 0) {
       onBookSelect(book)
@@ -155,15 +114,7 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
     }
   };
 
-  const onAddToSnapshotButtonClick = () => {
-    dispatch({
-      type: "dialog/setDialogActive",
-      payload: {
-        key: AddToSnapshotDialogKey,
-        isActive: true
-      }
-    })
-  };
+
   const onAddToSnapshotDialogCancel = () => {
     dispatch({
       type: "dialog/setDialogActive",
@@ -190,28 +141,15 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
     });
     onAddToSnapshotDialogCancel()
   };
-  const renderHeaderAction = () => {
-    return [
-      <Button type="primary" onClick={onOpenFilterDrawer} key={1}>过滤器</Button>,
-      <Button className={style.actionButton} onClick={onAddToSnapshotButtonClick} key={2}>添加至快照</Button>
-    ]
-  };
   return (
     <PageHeaderWrapper
-      extra={renderHeaderAction()}
+      extra={<BookListHeaderAction />}
     >
       <div>
         <BackTop/>
         <div className={style.filterWrap}>
           <SnapshotDialog onOk={onAddToSnapshotClick} onClose={onAddToSnapshotDialogCancel}
                           isOpen={Boolean(dialogs[AddToSnapshotDialogKey])}/>
-          <BookListHeader
-            selectedBookIds={selectedBooks}
-            onAddToCollection={onAddMultipleBookToCollection}
-            onInverseSelect={onInverseSelectBooks}
-            onSelectAll={onSelectAllBooks}
-            onUnSelectAll={onUnSelectBooks}
-          />
         </div>
         <BookFilterDrawer
           onClose={onCloseFilterDrawer}
