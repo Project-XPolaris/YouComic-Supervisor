@@ -1,9 +1,6 @@
 import React from 'react';
 import {connect, Dispatch} from 'dva';
-import {Button, Dropdown, Menu, message,Modal} from "antd";
-import style from "@/pages/book/list/style.less";
-import {ConnectState} from "@/models/connect";
-import {BookListModelStateType} from "@/pages/book/list/model";
+import {Button, Dropdown, Menu, message, Modal} from "antd";
 import MenuIcon from "@ant-design/icons/MenuOutlined"
 import SelectAllIcon from '@ant-design/icons/CheckOutlined'
 import UnSelectAllIcon from '@ant-design/icons/MinusOutlined'
@@ -11,6 +8,9 @@ import RevertSelectIcon from '@ant-design/icons/ReloadOutlined'
 import AddToCollectionIcon from '@ant-design/icons/FolderFilled'
 import RemoveBookIcon from '@ant-design/icons/DeleteFilled'
 import RemoveBookPermanentlyIcon from '@ant-design/icons/FileExcelFilled'
+import {ConnectState} from "@/models/connect";
+import style from "@/pages/book/list/style.less";
+import {BookListModelStateType} from "@/pages/book/list/model";
 
 import {Book} from "@/services/book";
 

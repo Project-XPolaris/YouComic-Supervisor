@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Divider, message, Modal, Table, Tooltip} from "antd";
+import {Button, Card, Divider, Modal, Table} from "antd";
 import {Tag} from "@/services/tag";
 import {ColumnProps} from "antd/es/table/Column";
 import {connect, Dispatch} from 'dva'
@@ -17,19 +17,14 @@ import {updateQueryParamAndReplaceURL} from "@/utils/uri";
 import {PageHeaderWrapper} from "@ant-design/pro-layout";
 import {setDialogActive} from "@/utils/dialog";
 import TagFilterDrawer from "@/pages/tag/list/components/TagFilterDrawer";
-import FilterIcon from '@ant-design/icons/FilterFilled'
-import AddIcon from '@ant-design/icons/PlusOutlined'
-import CameraIcon from '@ant-design/icons/CameraFilled'
 import SnapshotDialog from "@/components/SnapshotDialog";
 import {Snapshot} from "@/services/snapshot";
 import {generateSnapshotId} from "@/utils/utils";
+import TagListHeader, {addTagDialogKey, createTagSnapshotKey, tagFilterDrawerKey} from "@/pages/tag/list/header";
 
 const {confirm} = Modal;
 
 const updateTagDialogKey = "tagList/updateTagDialog";
-const addTagDialogKey = "tagList/addTagDialog";
-const tagFilterDrawerKey = "tagList/tagFilterDrawer";
-const createTagSnapshotKey = "tagList/createTagSnapshotDialog";
 
 interface TagListPagePropsType {
   tagList: TagListModelStateType
@@ -82,15 +77,7 @@ const TagListPage = ({tagList, dialog, dispatch}: TagListPagePropsType) => {
       }
     })
   };
-  const onAddTagClick = () => {
-    dispatch({
-      type: "dialog/setDialogActive",
-      payload: {
-        key: addTagDialogKey,
-        isActive: true
-      }
-    })
-  };
+
   const tableItem: ColumnProps<Tag>[] = [
     {
       key: "id",
@@ -184,36 +171,7 @@ const TagListPage = ({tagList, dialog, dispatch}: TagListPagePropsType) => {
       })
     }
   };
-  const renderMultipleSelect = () => {
-    const onAddToCollection = () => {
-      if (tagList.selectedTags.length === 0) {
-        return
-      }
-      dispatch({
-        type: "sideCollection/addTagsToCollection",
-        payload: {
-          tags: tagList.selectedTags
-        }
-      });
-      message.info(`添加${tagList.selectedTags.length}至集合`)
-    };
-    return (
-      <div>
-        <Button type="primary" onClick={onAddToCollection}>添加至集合</Button>
-      </div>
-    )
-  };
-  const onOpenCreateSnapshotClick = () => setDialogActive({dispatch,dialogName:createTagSnapshotKey,isActive:true});
-  const renderHeaderAction = () => {
-    const onFilterActiveButtonClick = () => setDialogActive({dispatch, dialogName: tagFilterDrawerKey, isActive: true});
-    return [
-      <Button type="primary" onClick={onFilterActiveButtonClick} key={1} icon={<FilterIcon/>}>过滤器</Button>,
-      <Button onClick={onAddTagClick} key={2} icon={<AddIcon/>}>添加标签</Button>,
-      <Tooltip title="将当前的结果保存至快照" key={3}>
-        <Button onClick={onOpenCreateSnapshotClick} icon={<CameraIcon/>}>添加至快照</Button>
-      </Tooltip>
-    ]
-  };
+
   const renderTagFilterDrawer = () => {
     const onDrawerClose = () => {
       setDialogActive({dispatch, dialogName: tagFilterDrawerKey, isActive: false})
@@ -247,7 +205,7 @@ const TagListPage = ({tagList, dialog, dispatch}: TagListPagePropsType) => {
     )
   };
   return (
-    <PageHeaderWrapper extra={renderHeaderAction()}>
+    <PageHeaderWrapper extra={<TagListHeader />}>
       {renderSnapshotModal()}
       {renderTagFilterDrawer()}
       <UpdateTagDialog
@@ -258,7 +216,6 @@ const TagListPage = ({tagList, dialog, dispatch}: TagListPagePropsType) => {
       />
       <AddTagDialog onAdd={onAddTag} onCancel={onAddTagDialogCancel} isOpen={Boolean(dialogs[addTagDialogKey])}/>
       <Card>
-        {tagList.selectedTags.length > 0 && renderMultipleSelect()}
         <Table
           dataSource={tags}
           columns={tableItem}
