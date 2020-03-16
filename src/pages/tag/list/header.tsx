@@ -1,21 +1,22 @@
 import React from 'react';
 import {connect, Dispatch} from 'dva';
-import {Button, Dropdown, Menu, message, Tooltip} from "antd";
+import {Button, Dropdown, Menu, message, Tooltip,Modal} from "antd";
 import FilterIcon from "@ant-design/icons/FilterFilled";
 import AddIcon from "@ant-design/icons/PlusOutlined";
 import CameraIcon from "@ant-design/icons/CameraFilled";
-import MenuIcon from "@ant-design/icons/MenuOutlined";
-import RemoveTagIcon from "@ant-design/icons/DeleteFilled";
-import AddToCollectionIcon from '@ant-design/icons/FolderFilled'
 import {setDialogActive} from "@/utils/dialog";
+import MenuIcon from "@ant-design/icons/MenuOutlined";
 import {ConnectState} from "@/models/connect";
 import {TagListModelStateType} from "@/pages/tag/list/model";
+import RemoveTagIcon from "@ant-design/icons/DeleteFilled";
+import AddToCollectionIcon from '@ant-design/icons/FolderFilled'
 
 
 export const createTagSnapshotKey = "tagList/createTagSnapshotDialog";
 export const tagFilterDrawerKey = "tagList/tagFilterDrawer";
 export const addTagDialogKey = "tagList/addTagDialog";
 
+const {confirm} = Modal
 interface TagListHeaderPropsType {
     dispatch: Dispatch,
   tagList:TagListModelStateType
@@ -45,11 +46,29 @@ function TagListHeader({dispatch,tagList}: TagListHeaderPropsType) {
     });
     message.info(`添加${tagList.selectedTags.length}至集合`)
   };
+  const onDelete = () => {
+    confirm({
+      title:"删除确认",
+      content:`将删除${selectedTags.length}项`,
+      onOk:() => {
+        dispatch({
+          type:"tagList/deleteTags",
+          payload:{
+            tags:selectedTags
+          }
+        })
+      }
+    })
+  }
   const menu = (
     <Menu >
       <Menu.Item key="4" onClick={onAddToCollection}>
         <AddToCollectionIcon />
         添加至集合
+      </Menu.Item>
+      <Menu.Item key="5" onClick={onDelete}>
+        <RemoveTagIcon />
+        删除
       </Menu.Item>
     </Menu>
   );

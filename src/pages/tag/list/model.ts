@@ -153,6 +153,12 @@ const TagListModel: TagListModelType = {
       yield put({
         type: "queryTags"
       })
+      yield put({
+        type:"setSelectTags",
+        payload:{
+          tags:[]
+        }
+      })
     }
   },
   reducers: {
