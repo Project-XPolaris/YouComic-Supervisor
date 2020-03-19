@@ -118,8 +118,8 @@ export default {
               icon: 'crown',
               component: './book/detail/index',
               authority: ['admin'],
-              hideInMenu:true,
-              routes:[
+              hideInMenu: true,
+              routes: [
                 {
                   path: '/book/:id/info',
                   name: 'bookdetailinfo',
@@ -140,8 +140,8 @@ export default {
                   icon: 'crown',
                   component: './book/detail/page/index',
                   authority: ['admin'],
-                }
-              ]
+                },
+              ],
             },
             {
               path: '/books',
@@ -163,7 +163,7 @@ export default {
                 //   component: './book/create/index',
                 //   authority: ['admin'],
                 // },
-              ]
+              ],
             },
             {
               path: '/tags',
@@ -179,13 +179,13 @@ export default {
               icon: 'tag',
               component: './tag/detail/index',
               authority: ['admin'],
-              hideInMenu:true,
+              hideInMenu: true,
             },
             {
               path: '/users/:id',
               name: 'userDetail',
               component: './user/detail/index',
-              hideInMenu:true,
+              hideInMenu: true,
               authority: ['admin'],
             },
             {
@@ -216,8 +216,14 @@ export default {
               icon: 'TeamOutlined',
               component: './usergroup/detail/index',
               authority: ['admin'],
-              hideInMenu:true,
-
+              hideInMenu: true,
+            },
+            {
+              path: '/account/setting',
+              name: 'accountSetting',
+              component: './account/setting/index',
+              hideInMenu: true,
+              authority: ['admin'],
             },
             {
               component: './404',
@@ -254,7 +260,7 @@ export default {
         resourcePath: string;
       },
       _: string,
-      localName: string
+      localName: string,
     ) => {
       if (
         context.resourcePath.includes('node_modules') ||
@@ -281,9 +287,7 @@ export default {
   manifest: {
     basePath: '/',
   }, // chainWebpack: webpackPlugin,
-  externals:{
-
-  }
+  externals: {},
   // proxy: {
   //   '/server/api/': {
   //     target: 'https://preview.pro.ant.design/',
@@ -291,5 +295,4 @@ export default {
   //     pathRewrite: { '^/server': '' },
   //   },
   // },
-
 } as IConfig;
