@@ -1,35 +1,40 @@
 import React from 'react';
-import {Divider, Drawer} from "antd";
-
+import { Divider, Drawer } from 'antd';
+// @ts-ignore
+import { formatMessage } from 'umi/locale';
 
 interface FilterDrawerPropsType {
-  filterSections?:any[]
-  isOpen?:boolean
-  onClose:() => void
+  filterSections?: any[];
+  isOpen?: boolean;
+  onClose: () => void;
 }
 
-
-export default function FilterDrawer({filterSections = [],isOpen = false,onClose,...props}: FilterDrawerPropsType) {
+export default function FilterDrawer({
+  filterSections = [],
+  isOpen = false,
+  onClose,
+  ...props
+}: FilterDrawerPropsType) {
   const renderFilterSections = () => {
-    return filterSections.map((filter,index) => {
+    return filterSections.map((filter, index) => {
       return (
         <div>
           {filter}
-          {index !== filterSections.length - 1 && <Divider/>}
+          {index !== filterSections.length - 1 && <Divider />}
         </div>
-      )
-    })
+      );
+    });
   };
-    return (
-      <Drawer
-        title="Basic Drawer"
-        placement="right"
-        closable={false}
-        onClose={onClose}
-        visible={isOpen}
-        {...props}
-      >
-        {renderFilterSections()}
-      </Drawer>
-    );
+  return (
+    <Drawer
+      title={formatMessage({ id: 'global.filter.filter-drawer.title' })}
+      placement="right"
+      closable={false}
+      onClose={onClose}
+      visible={isOpen}
+      {...props}
+    >
+      {renderFilterSections()}
+    </Drawer>
+  );
 }

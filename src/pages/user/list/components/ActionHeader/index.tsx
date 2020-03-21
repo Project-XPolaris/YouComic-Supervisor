@@ -1,13 +1,18 @@
 import React from 'react';
 import { connect, Dispatch } from 'dva';
 import { Button, Tooltip } from 'antd';
+// @ts-ignore
+import { formatMessage } from 'umi/locale';
+import FilterIcon from '@ant-design/icons/FilterFilled';
+import CameraIcon from '@ant-design/icons/CameraFilled';
 import { Snapshot } from '@/services/snapshot';
 import { generateSnapshotId } from '@/utils/utils';
 import SnapshotDialog from '@/components/SnapshotDialog';
 import { ConnectState } from '@/models/connect';
 import { DialogStateType } from '@/models/dialog';
-import CameraIcon from '@ant-design/icons/CameraFilled';
-import { formatMessage } from 'umi/locale';
+import UserListFilterDrawer, {
+  UserListFilterDrawerKey,
+} from '@/pages/user/list/components/FilterDrawer';
 
 const AddToSnapshotDialogKey = 'userList/AddToSnapshotDialog';
 
@@ -52,6 +57,15 @@ function UserListActionHeader({ dispatch, dialog: { dialogs } }: UserListActionH
     });
     onAddToSnapshotDialogCancel();
   };
+  const onOpenFilterDrawer = () => {
+    dispatch({
+      type: 'dialog/setDialogActive',
+      payload: {
+        key: UserListFilterDrawerKey,
+        isActive: true,
+      },
+    });
+  };
   return (
     <>
       <SnapshotDialog
@@ -59,6 +73,12 @@ function UserListActionHeader({ dispatch, dialog: { dialogs } }: UserListActionH
         onClose={onAddToSnapshotDialogCancel}
         isOpen={Boolean(dialogs[AddToSnapshotDialogKey])}
       />
+      <UserListFilterDrawer />
+      <Tooltip title={formatMessage({ id: 'list.action.filter.tooltip' })}>
+        <Button type="primary" onClick={onOpenFilterDrawer} icon={<FilterIcon />}>
+          {formatMessage({ id: 'list.action.filter.button' })}
+        </Button>
+      </Tooltip>
       <Tooltip title={formatMessage({ id: 'list.action.add-to-snapshot.tooltip' })}>
         <Button onClick={onAddToSnapshotButtonClick} icon={<CameraIcon />}>
           {formatMessage({ id: 'list.action.add-to-snapshot.button' })}
