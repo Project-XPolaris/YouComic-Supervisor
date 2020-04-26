@@ -1,13 +1,11 @@
-import ApplicationConfig from '@/config';
-import Resizer from "react-image-file-resizer";
+import Resizer from 'react-image-file-resizer';
 
 export function getImageURL(path: string): string {
-  return `${ApplicationConfig.apiURL}${path}`;
+  return `${path}`;
 }
 
 export function getCoverThumbnailURL(path: string): string {
-  return `${ApplicationConfig.apiURL}${path}`.replace("cover", "cover_thumbnail")
-
+  return `${path}`.replace('cover', 'cover_thumbnail');
 }
 
 export const createImage = url =>
@@ -19,10 +17,9 @@ export const createImage = url =>
     image.src = url;
   });
 
-
-export async function getCroppedImg(imageURL:string, crop:any, fileName:string) {
-  const image  = await createImage(imageURL);
-  const canvas:HTMLCanvasElement = document.createElement('canvas');
+export async function getCroppedImg(imageURL: string, crop: any, fileName: string) {
+  const image = await createImage(imageURL);
+  const canvas: HTMLCanvasElement = document.createElement('canvas');
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
   canvas.width = crop.width;
@@ -46,25 +43,21 @@ export async function getCroppedImg(imageURL:string, crop:any, fileName:string) 
   // As a blob
 
   return new Promise((resolve, reject) => {
-    canvas.toBlob(blob => {
-      resolve(blob);
-    }, 'image/jpeg', 1);
+    canvas.toBlob(
+      blob => {
+        resolve(blob);
+      },
+      'image/jpeg',
+      1,
+    );
   });
 }
 
-export function getPageThumbnailImage({file}:{file:File}){
-  console.log(file)
+export function getPageThumbnailImage({ file }: { file: File }) {
+  console.log(file);
   return new Promise((resolve, reject) => {
-    Resizer.imageFileResizer(
-      file,
-      300,
-      300,
-      'JPEG',
-      100,
-      0,
-      (uri:string) => {
-        resolve(uri)
-      },
-    )
-  })
-};
+    Resizer.imageFileResizer(file, 300, 300, 'JPEG', 100, 0, (uri: string) => {
+      resolve(uri);
+    });
+  });
+}

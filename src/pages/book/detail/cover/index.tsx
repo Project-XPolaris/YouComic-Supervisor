@@ -1,17 +1,12 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {connect, Dispatch} from 'dva';
-import styles from './style.less'
+import { connect, Dispatch } from 'dva';
+
 interface BookDetailCoverPagePropsType {
-    dispatch: Dispatch,
+  dispatch: Dispatch;
 }
 
-function BookDetailCoverPage({dispatch}: BookDetailCoverPagePropsType) {
-    return (
-        <div >
-
-        </div>
-    );
+function BookDetailCoverPage({ dispatch }: BookDetailCoverPagePropsType) {
+  return <div></div>;
 }
 
 export default connect(({}) => ({}))(BookDetailCoverPage);

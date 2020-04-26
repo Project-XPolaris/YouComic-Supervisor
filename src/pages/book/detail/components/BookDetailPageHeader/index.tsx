@@ -1,12 +1,12 @@
-import {Button, Descriptions, PageHeader, Statistic, Tabs} from 'antd';
+import { Button, Descriptions, PageHeader, Statistic, Tabs } from 'antd';
 import React from 'react';
-import {Book} from "@/services/book";
-import {getBookTagInfo} from "@/utils/book";
-import styles from './style.less'
-import router from "umi/router";
-import {PageHeaderWrapper} from "@ant-design/pro-layout";
+import { Book } from '@/services/book';
+import { getBookTagInfo } from '@/utils/book';
+import styles from './style.less';
+import router from 'umi/router';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 const extraContent = (
   <div
@@ -23,11 +23,11 @@ const extraContent = (
         marginRight: 32,
       }}
     />
-    <Statistic title="Price" prefix="$" value={568.08}/>
+    <Statistic title="Price" prefix="$" value={568.08} />
   </div>
 );
 
-const Content = ({children, extra}) => {
+const Content = ({ children, extra }) => {
   return (
     <div className="content">
       <div className="main">{children}</div>
@@ -37,28 +37,33 @@ const Content = ({children, extra}) => {
 };
 
 interface BookDetailPageHeaderPropsType {
-  book?: Book
-  children:any
+  book?: Book;
+  children: any;
 }
 
-const BookDetailPageHeader = ({book,children}: BookDetailPageHeaderPropsType) => {
-  const {author, translator, theme, series} = getBookTagInfo(book);
+const BookDetailPageHeader = ({ book, children }: BookDetailPageHeaderPropsType) => {
+  const { author, translator, theme, series } = getBookTagInfo(book);
 
   const renderFooter = () => {
-    const value = window.location.pathname.split("/").pop();
-    const onChange = (activeKey:string) => {
-      const url = window.location.pathname.split("/");
+    const value = window.location.pathname.split('/').pop();
+    const onChange = (activeKey: string) => {
+      const url = window.location.pathname.split('/');
       url.pop();
       url.push(activeKey);
-      router.replace(url.join("/"))
+      router.replace(url.join('/'));
     };
     return (
-      <Tabs activeKey={value} onChange={onChange} className={styles.navTabs} tabBarStyle={{margin:0}}>
-        <TabPane tab="基本信息" key="info"/>
-        <TabPane tab="标签" key="tags"/>
-        <TabPane tab="页面" key="pages"/>
+      <Tabs
+        activeKey={value}
+        onChange={onChange}
+        className={styles.navTabs}
+        tabBarStyle={{ marginLeft: 12, marginBottom: 0 }}
+      >
+        <TabPane tab="基本信息" key="info" />
+        <TabPane tab="标签" key="tags" />
+        <TabPane tab="页面" key="pages" />
       </Tabs>
-    )
+    );
   };
   const renderContent = (column = 2) => (
     <div className={styles.headerContent}>
@@ -72,23 +77,15 @@ const BookDetailPageHeader = ({book,children}: BookDetailPageHeaderPropsType) =>
     </div>
   );
   return (
-      <PageHeaderWrapper
-        onBack={() => window.history.back()}
-        title={book?.name}
-        subTitle="This is a subtitle"
-        extra={[
-          <Button key="3">Operation</Button>,
-          <Button key="2">Operation</Button>,
-          <Button key="1" type="primary">
-            Primary
-          </Button>,
-        ]}
-        footer={renderFooter()}
-        content={renderContent()}
-      >
-        {renderFooter()}
-        {children}
-      </PageHeaderWrapper>
-  )
+    <PageHeaderWrapper
+      onBack={() => window.history.back()}
+      title={book?.name}
+      footer={renderFooter()}
+      content={renderContent()}
+    >
+      {renderFooter()}
+      {children}
+    </PageHeaderWrapper>
+  );
 };
-export default BookDetailPageHeader
+export default BookDetailPageHeader;

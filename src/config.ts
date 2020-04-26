@@ -1,5 +1,4 @@
 const ApplicationConfig = {
-  apiURL: 'http://192.168.123.121:8080',
   api: {
     BooksURL: '/books',
     BookTagsURL: '/book/:id/tags',
