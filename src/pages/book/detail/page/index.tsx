@@ -9,8 +9,7 @@ import {DialogStateType} from "@/models/dialog";
 import PageOrderDialog from "@/pages/book/detail/page/components/PageOrderDialog";
 import {Page} from "@/services/page";
 import CoverCropDialog from "@/pages/book/detail/page/components/CoverCropDialog";
-import {routes} from "@/pages/.umi/router";
-import {router} from "umi";
+import {history} from "umi";
 
 const setOrderDialogKey = "bookDetailPages/setOrder";
 const coverCropDialogKey = "bookDetailPages/coverCrop";
@@ -88,7 +87,7 @@ function BookDetailPagesPage({dispatch, bookDetailPages, dialog}: BookDetailPage
         url:targetPage.path
       }
     });
-    router.push("/editor")
+    history.push("/editor")
   };
   return (
     <div className={styles.main}>

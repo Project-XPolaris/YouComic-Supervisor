@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect, Dispatch } from 'dva';
+import { connect, Dispatch,formatMessage } from 'umi';
 import OrderFilterSection from '@/components/FilterSection/OrderFilterSection';
 import { ConnectState } from '@/models/connect';
 import { UserListModelStateType } from '@/pages/user/list/model';
 import { encodeOrderToUrl, updateQueryParamAndReplaceURL } from '@/utils/uri';
-// @ts-ignore
-import { formatMessage } from 'umi/locale';
 
 interface UserListOrderFilterSectionPropsType {
   dispatch: Dispatch;

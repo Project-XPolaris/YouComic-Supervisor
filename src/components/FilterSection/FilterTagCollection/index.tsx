@@ -2,7 +2,7 @@ import React from 'react';
 import SectionContainer from '@/pages/book/list/components/BookFilterDrawer/sections/SectionContainer';
 import { Tag } from 'antd';
 // @ts-ignore
-import { formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi';
 
 interface FilterTagCollectionPropsType {
   tags: FilterTag[];

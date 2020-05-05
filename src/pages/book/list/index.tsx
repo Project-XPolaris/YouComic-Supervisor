@@ -1,23 +1,19 @@
 import React from 'react';
-import { connect, Dispatch } from 'dva';
+import {connect, Dispatch, history} from 'umi';
 import BooksCollection from '@/pages/book/list/components/BookCollection';
-import { ConnectState } from '@/models/connect';
-import { BookListModelStateType } from '@/pages/book/list/model';
-import { BackTop, Pagination } from 'antd';
+import {ConnectState} from '@/models/connect';
+import {BookListModelStateType} from '@/pages/book/list/model';
+import {BackTop, Pagination} from 'antd';
 import style from './style.less';
-import { DialogStateType } from '@/models/dialog';
-import BookFilterDrawer, { BookFilter } from '@/pages/book/list/components/BookFilterDrawer';
-import { Book } from '@/services/book';
-import router from 'umi/router';
-import { encodeOrderToUrl, updateQueryParamAndReplaceURL } from '@/utils/uri';
-import { Snapshot } from '@/services/snapshot';
+import {DialogStateType} from '@/models/dialog';
+import BookFilterDrawer, {BookFilter} from '@/pages/book/list/components/BookFilterDrawer';
+import {Book} from '@/services/book';
+import {encodeOrderToUrl, updateQueryParamAndReplaceURL} from '@/utils/uri';
+import {Snapshot} from '@/services/snapshot';
 import SnapshotDialog from '@/components/SnapshotDialog';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { generateSnapshotId } from '@/utils/utils';
-import BookListHeaderAction, {
-  AddToSnapshotDialogKey,
-  BooksFilterDrawerKey,
-} from '@/pages/book/list/header';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
+import {generateSnapshotId} from '@/utils/utils';
+import BookListHeaderAction, {AddToSnapshotDialogKey, BooksFilterDrawerKey,} from '@/pages/book/list/header';
 
 interface BookListPagePropsType {
   dispatch: Dispatch;
@@ -101,7 +97,7 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
     if (selectedBooks.length > 0) {
       onBookSelect(book);
     } else {
-      router.push(`/book/${book.id}/info`);
+      history.push(`/book/${book.id}/info`);
     }
   };
 

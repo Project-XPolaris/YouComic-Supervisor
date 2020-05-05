@@ -7,7 +7,7 @@ import styles from './style.less'
 import {Button, Modal, Pagination} from "antd";
 import AddTagDialog from "@/pages/book/detail/tag/components/AddTagDialog";
 import {Tag} from "@/services/tag";
-import {router} from "umi";
+import {history} from "umi";
 
 const {confirm} = Modal;
 
@@ -73,7 +73,7 @@ function BookDetailTagsPage({dispatch, bookDetailTags}: BookDetailTagsPagePropsT
     });
   };
   const onTagTitleClick = (tag:Tag) => {
-    router.push(`/tag/${tag.id}`)
+    history.push(`/tag/${tag.id}`)
   };
   return (
     <div className={styles.main}>

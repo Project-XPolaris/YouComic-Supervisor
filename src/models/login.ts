@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { Effect } from 'dva';
 import { stringify } from 'querystring';
-import { router } from 'umi';
+import { history } from 'umi';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { getAuth, getUserUserGroups, UserAuth, UserGroup } from '@/services/user';
@@ -75,7 +75,7 @@ const Model: LoginModelType = {
           return;
         }
       }
-      router.replace(redirect || '/');
+      history.replace(redirect || '/');
     },
 
     logout() {
@@ -83,7 +83,7 @@ const Model: LoginModelType = {
       localStorage.removeItem(ApplicationConfig.storeKey.token);
       localStorage.removeItem(ApplicationConfig.storeKey.userId);
       if (window.location.pathname !== '/user/login' && !redirect) {
-        router.replace({
+        history.replace({
           pathname: '/user/login',
           search: stringify({
             redirect: window.location.href,

@@ -1,10 +1,10 @@
-import { Button, Descriptions, PageHeader, Statistic, Tabs } from 'antd';
+import {Descriptions, Statistic, Tabs} from 'antd';
 import React from 'react';
-import { Book } from '@/services/book';
-import { getBookTagInfo } from '@/utils/book';
+import {Book} from '@/services/book';
+import {getBookTagInfo} from '@/utils/book';
 import styles from './style.less';
-import router from 'umi/router';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import {history} from 'umi'
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
 
 const { TabPane } = Tabs;
 
@@ -50,7 +50,7 @@ const BookDetailPageHeader = ({ book, children }: BookDetailPageHeaderPropsType)
       const url = window.location.pathname.split('/');
       url.pop();
       url.push(activeKey);
-      router.replace(url.join('/'));
+      history.replace(url.join('/'));
     };
     return (
       <Tabs

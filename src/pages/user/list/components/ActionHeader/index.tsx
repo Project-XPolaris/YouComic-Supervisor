@@ -1,8 +1,7 @@
 import React from 'react';
-import { connect, Dispatch } from 'dva';
+import { connect, Dispatch,formatMessage } from 'umi';
 import { Button, Tooltip } from 'antd';
 // @ts-ignore
-import { formatMessage } from 'umi/locale';
 import FilterIcon from '@ant-design/icons/FilterFilled';
 import CameraIcon from '@ant-design/icons/CameraFilled';
 import { Snapshot } from '@/services/snapshot';

@@ -3,7 +3,7 @@ import SectionContainer from '@/pages/book/list/components/BookFilterDrawer/sect
 import { Button, Input } from 'antd';
 import styles from './style.less';
 // @ts-ignore
-import { formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi';
 
 interface SearchNameFilterSectionPropsType {
   onSetSearchName: (searchName: string) => void;

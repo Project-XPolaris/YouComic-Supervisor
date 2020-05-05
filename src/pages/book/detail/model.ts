@@ -5,7 +5,7 @@ import { ListQueryContainer } from '@/services/base';
 import { getCoverThumbnailURL } from '@/utils/image';
 import { Reducer } from 'redux';
 import { RequestExtendResponse } from '@/utils/request';
-import { router } from 'umi';
+import { history } from 'umi';
 
 const pathToRegexp = require('path-to-regexp');
 
@@ -59,7 +59,7 @@ const DetailModel: DetailModelType = {
       const queryBooksResponse: ListQueryContainer<Book> &
         RequestExtendResponse = yield call(queryBooks, { id });
       if (!queryBooksResponse.success || queryBooksResponse.count === 0) {
-        router.replace('/404');
+        history.replace('/404');
       }
       if (queryBooksResponse.count > 0) {
         const book = queryBooksResponse.result[0];

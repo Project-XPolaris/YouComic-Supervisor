@@ -3,7 +3,7 @@ import { Avatar, Menu, Spin } from 'antd';
 import { ClickParam } from 'antd/es/menu';
 import React from 'react';
 import { connect } from 'dva';
-import { router } from 'umi';
+import { history } from 'umi';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import { CurrentUser } from '@/models/user';
 import HeaderDropdown from '../HeaderDropdown';
@@ -28,7 +28,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       return;
     }
     if (key === 'setting') {
-      router.push('/account/setting');
+      history.push('/account/setting');
       return;
     }
 

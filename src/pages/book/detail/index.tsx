@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {connect, Dispatch} from 'dva';
+import {connect, Dispatch} from 'umi';
 import BookDetailPageHeader from "@/pages/book/detail/components/BookDetailPageHeader";
 import {ConnectState} from "@/models/connect";
 import {DetailModelStateType} from "@/pages/book/detail/model";

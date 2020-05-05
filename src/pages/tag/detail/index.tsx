@@ -1,12 +1,11 @@
 import React, {useEffect} from 'react';
-import {connect, Dispatch} from 'dva';
+import {connect, Dispatch,history} from 'umi';
 import {ConnectState} from "@/models/connect";
 import {TagDetailModelStateType} from "@/pages/tag/detail/model";
 import {Button, message, PageHeader, Pagination} from "antd";
 import styles from './style.less'
 import BooksCollection from "@/pages/book/list/components/BookCollection";
 import {Book} from "@/services/book";
-import router from "umi/router";
 import BookListHeader from "@/pages/book/list/components/BookListHeader";
 import {BookSideCollectionAction} from "@/models/side";
 import DeleteIcon from '@ant-design/icons/DeleteFilled'
@@ -87,7 +86,7 @@ function TagDetailPage({dispatch, tagDetail}: TagDetailPagePropsType) {
     if (selectedBooks.length > 0) {
       onBookSelect(book)
     } else {
-      router.push(`/book/${book.id}/info`)
+      history.push(`/book/${book.id}/info`)
     }
   };
   const onAddBookToSideCollection = (book: Book) => {

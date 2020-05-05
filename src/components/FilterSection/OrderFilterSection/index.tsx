@@ -4,7 +4,7 @@ import styles from './style.less';
 import { useForm } from 'antd/es/form/util';
 import SectionContainer from '@/pages/book/list/components/BookFilterDrawer/sections/SectionContainer';
 // @ts-ignore
-import { formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi';
 const { Option } = Select;
 export interface OrderFilterItem {
   title: string;

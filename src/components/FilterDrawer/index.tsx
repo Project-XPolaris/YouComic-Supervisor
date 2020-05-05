@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, Drawer } from 'antd';
 // @ts-ignore
-import { formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi';
 
 interface FilterDrawerPropsType {
   filterSections?: any[];

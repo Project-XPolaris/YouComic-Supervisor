@@ -9,9 +9,8 @@ import ProLayout, {
   MenuDataItem,
   Settings,
 } from '@ant-design/pro-layout';
-import {formatMessage} from 'umi-plugin-react/locale';
 import React, {useEffect} from 'react';
-import {Link} from 'umi';
+import {Link,formatMessage} from 'umi';
 import {Dispatch} from 'redux';
 import {connect} from 'dva';
 import {Button, Result} from 'antd';

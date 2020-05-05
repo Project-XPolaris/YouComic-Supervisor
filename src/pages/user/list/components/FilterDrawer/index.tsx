@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, Dispatch } from 'dva';
+import { connect, Dispatch,formatMessage } from 'umi';
 import FilterDrawer from '@/components/FilterDrawer';
 import { ConnectState } from '@/models/connect';
 import { DialogStateType } from '@/models/dialog';
@@ -8,7 +8,6 @@ import FilterTagCollection, { FilterTag } from '@/components/FilterSection/Filte
 import { UserFilter, UserListModelStateType } from '@/pages/user/list/model';
 import { encodeOrderToUrl, updateQueryParamAndReplaceURL } from '@/utils/uri';
 // @ts-ignore
-import { formatMessage } from 'umi/locale';
 import UserListNameSearchSectionFilter from '@/pages/user/list/components/FilterDrawer/sections/namesearch';
 
 export const UserListFilterDrawerKey = 'userList/filterDrawer';

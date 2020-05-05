@@ -1,5 +1,5 @@
 import URI from "urijs";
-import router from "umi/router";
+import {history} from "umi";
 
 export function updateQueryParamAndReplaceURL(queryParameters: any, pathName?: string) {
   let basePath = pathName;
@@ -7,7 +7,7 @@ export function updateQueryParamAndReplaceURL(queryParameters: any, pathName?: s
     basePath = window.location.pathname
   }
   const searchQuery = URI(window.location.search).setSearch(queryParameters).toString();
-  router.replace(`${basePath}${searchQuery}`)
+  history.replace(`${basePath}${searchQuery}`)
 }
 
 export function getPaginationFromURL(query: { [key: string]: string }, defaultPage: number, defaultPageSize: number) : {page:number,pageSize:number}{
