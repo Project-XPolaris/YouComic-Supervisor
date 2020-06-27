@@ -1,17 +1,19 @@
 import React from 'react';
-import { connect, Dispatch,formatMessage } from 'umi';
-import { Button, Tooltip } from 'antd';
+import {Button, Dropdown, Menu, Tooltip} from 'antd';
 // @ts-ignore
 import FilterIcon from '@ant-design/icons/FilterFilled';
 import CameraIcon from '@ant-design/icons/CameraFilled';
-import { Snapshot } from '@/services/snapshot';
-import { generateSnapshotId } from '@/utils/utils';
+import {Snapshot} from '@/services/snapshot';
+import {generateSnapshotId} from '@/utils/utils';
 import SnapshotDialog from '@/components/SnapshotDialog';
-import { ConnectState } from '@/models/connect';
-import { DialogStateType } from '@/models/dialog';
-import UserListFilterDrawer, {
-  UserListFilterDrawerKey,
-} from '@/pages/user/list/components/FilterDrawer';
+import {ConnectState} from '@/models/connect';
+import {DialogStateType} from '@/models/dialog';
+import UserListFilterDrawer, {UserListFilterDrawerKey,} from '@/pages/user/list/components/FilterDrawer';
+import {connect} from "@@/plugin-dva/exports";
+import {formatMessage} from "@@/plugin-locale/localeExports";
+import {Dispatch} from "@@/plugin-dva/connect";
+import {MenuOutlined, PlusOutlined} from "@ant-design/icons/lib";
+import {RegisterUserModalKey} from "@/pages/user/list/components/RegisterDialog";
 
 const AddToSnapshotDialogKey = 'userList/AddToSnapshotDialog';
 
@@ -20,7 +22,7 @@ interface UserListActionHeaderPropsType {
   dialog: DialogStateType;
 }
 
-function UserListActionHeader({ dispatch, dialog: { dialogs } }: UserListActionHeaderPropsType) {
+function UserListActionHeader({dispatch, dialog: {dialogs}}: UserListActionHeaderPropsType) {
   const onAddToSnapshotButtonClick = () => {
     dispatch({
       type: 'dialog/setDialogActive',
@@ -65,6 +67,23 @@ function UserListActionHeader({ dispatch, dialog: { dialogs } }: UserListActionH
       },
     });
   };
+  const menu = (
+    <Menu>
+      <Menu.Item
+        key="1"
+        onClick={
+          () => dispatch({
+            type: "dialog/setDialogActive",
+            payload: {
+              key: RegisterUserModalKey,
+              isActive: true
+            }
+          })
+        }>
+        <PlusOutlined/> 注册用户
+      </Menu.Item>
+    </Menu>
+  );
   return (
     <>
       <SnapshotDialog
@@ -72,19 +91,24 @@ function UserListActionHeader({ dispatch, dialog: { dialogs } }: UserListActionH
         onClose={onAddToSnapshotDialogCancel}
         isOpen={Boolean(dialogs[AddToSnapshotDialogKey])}
       />
-      <UserListFilterDrawer />
-      <Tooltip title={formatMessage({ id: 'list.action.filter.tooltip' })}>
-        <Button type="primary" onClick={onOpenFilterDrawer} icon={<FilterIcon />}>
-          {formatMessage({ id: 'list.action.filter.button' })}
+      <UserListFilterDrawer/>
+      <Tooltip title={formatMessage({id: 'list.action.filter.tooltip'})}>
+        <Button onClick={onOpenFilterDrawer} icon={<FilterIcon/>}>
+          {formatMessage({id: 'list.action.filter.button'})}
         </Button>
       </Tooltip>
-      <Tooltip title={formatMessage({ id: 'list.action.add-to-snapshot.tooltip' })}>
-        <Button onClick={onAddToSnapshotButtonClick} icon={<CameraIcon />}>
-          {formatMessage({ id: 'list.action.add-to-snapshot.button' })}
+      <Tooltip title={formatMessage({id: 'list.action.add-to-snapshot.tooltip'})}>
+        <Button onClick={onAddToSnapshotButtonClick} icon={<CameraIcon/>}>
+          {formatMessage({id: 'list.action.add-to-snapshot.button'})}
         </Button>
       </Tooltip>
+      <Dropdown overlay={menu}>
+        <Button type="primary">
+          菜单<MenuOutlined/>
+        </Button>
+      </Dropdown>
     </>
   );
 }
 
-export default connect(({ dialog }: ConnectState) => ({ dialog }))(UserListActionHeader);
+export default connect(({dialog}: ConnectState) => ({dialog}))(UserListActionHeader);

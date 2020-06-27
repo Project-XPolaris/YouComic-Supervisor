@@ -24,6 +24,9 @@ const ApplicationConfig = {
     pageBatch: '/pages/batch',
     userNickname: '/user/nickname',
     userPassword: '/user/password',
+    libraries: '/libraries',
+    library: '/library/:id',
+    libraryImport: '/library/import',
   },
   storeKey: {
     token: 'youcomic-admin-token',

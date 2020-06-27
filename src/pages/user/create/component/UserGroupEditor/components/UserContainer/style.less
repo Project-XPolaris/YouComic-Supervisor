@@ -1,0 +1,46 @@
+.main {
+  background-color: #eee;
+
+}
+
+.content {
+  height: 800px;
+  padding-top: 16px;
+  padding-right: 16px;
+  padding-left: 16px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background-color: #FFF;
+  border-top: #EEE solid 1px;
+  border-right: #EEE solid 1px;
+  border-left: #EEE solid 1px;
+  min-width: 200px;
+}
+.title{
+  font-weight: 600;
+  font-size: 18px;
+}

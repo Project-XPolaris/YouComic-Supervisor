@@ -1,11 +1,15 @@
 import Resizer from 'react-image-file-resizer';
-
+import URI from 'urijs'
 export function getImageURL(path: string): string {
   return `${path}`;
 }
 
 export function getCoverThumbnailURL(path: string): string {
-  return `${path}`.replace('cover', 'cover_thumbnail');
+  const uri = new URI(path)
+  const imageFileName = uri.filename()
+  const ext = imageFileName.split(".").pop()
+  uri.filename(`cover_thumbnail.${ext}`)
+  return uri.toString();
 }
 
 export const createImage = url =>
@@ -53,7 +57,7 @@ export async function getCroppedImg(imageURL: string, crop: any, fileName: strin
   });
 }
 
-export function getPageThumbnailImage({ file }: { file: File }) {
+export function getPageThumbnailImage({file}: { file: File }) {
   console.log(file);
   return new Promise((resolve, reject) => {
     Resizer.imageFileResizer(file, 300, 300, 'JPEG', 100, 0, (uri: string) => {

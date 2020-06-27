@@ -1,9 +1,9 @@
-import { Effect, Subscription } from 'dva';
-import { Reducer } from 'redux';
-import { ListQueryContainer } from '@/services/base';
-import { queryUserList, User } from '@/services/user';
-import { getOrdersFromUrlQuery, getPaginationFromURL } from '@/utils/uri';
-import { ConnectState } from '@/models/connect';
+import {Effect, Subscription} from 'dva';
+import {Reducer} from 'redux';
+import {ListQueryContainer} from '@/services/base';
+import {queryUserList, User} from '@/services/user';
+import {getOrdersFromUrlQuery, getPaginationFromURL} from '@/utils/uri';
+import {ConnectState} from '@/models/connect';
 
 export interface UserFilter {
   orders: { orderKey: string; order: 'asc' | 'desc' }[];
@@ -46,10 +46,10 @@ const UserListModel: UserListModelType = {
     },
   },
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup({dispatch, history}) {
       history.listen((location: any) => {
         if (location.pathname === '/users') {
-          const { page, pageSize } = getPaginationFromURL(location.query, 1, 20);
+          const {page, pageSize} = getPaginationFromURL(location.query, 1, 20);
           dispatch({
             type: 'setPage',
             payload: {
@@ -74,12 +74,12 @@ const UserListModel: UserListModelType = {
     },
   },
   effects: {
-    *getUserList(_, { call, put, select }) {
+    * getUserList(_, {call, put, select}) {
       const userListState: UserListModelStateType = yield select(
         (state: ConnectState) => state.userList,
       );
       const {
-        filter: { orders, nameSearch },
+        filter: {orders, nameSearch},
       } = userListState;
       const users: ListQueryContainer<User> = yield call(queryUserList, {
         page: userListState.page,
@@ -87,8 +87,8 @@ const UserListModel: UserListModelType = {
         order:
           orders !== undefined
             ? orders
-                .map((item: any) => `${item.order === 'asc' ? '' : '-'}${item.orderKey}`)
-                .join(',')
+              .map((item: any) => `${item.order === 'asc' ? '' : '-'}${item.orderKey}`)
+              .join(',')
             : '-id',
         nameSearch,
       });
@@ -104,20 +104,20 @@ const UserListModel: UserListModelType = {
     },
   },
   reducers: {
-    onQueryUsersSuccess(state, { payload }) {
+    onQueryUsersSuccess(state, {payload}) {
       return {
         ...state,
         ...payload,
       };
     },
-    setPage(state, { payload: { page, pageSize } }) {
+    setPage(state, {payload: {page, pageSize}}) {
       return {
         ...state,
         page,
         pageSize,
       };
     },
-    updateFilter(state, { payload: { filter } }) {
+    updateFilter(state, {payload: {filter}}) {
       return {
         ...state,
         filter,

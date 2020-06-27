@@ -10,6 +10,7 @@ import { PaginationConfig } from 'antd/es/pagination';
 import { updateQueryParamAndReplaceURL } from '@/utils/uri';
 import { Link } from 'umi';
 import UserListActionHeader from '@/pages/user/list/components/ActionHeader';
+import RegisterUserDialog from "@/pages/user/list/components/RegisterDialog";
 
 interface UserListPagePropsType {
   dispatch: Dispatch;
@@ -47,6 +48,7 @@ function UserListPage({ userList }: UserListPagePropsType) {
   };
   return (
     <PageHeaderWrapper extra={<UserListActionHeader />}>
+      <RegisterUserDialog/>
       <Card>
         <Table columns={userTableColumn} dataSource={userList.users} pagination={paginationProps} />
       </Card>

@@ -47,3 +47,7 @@ export function queryUserList({...params}) {
   )
 
 }
+
+export function registerUser() {
+
+}

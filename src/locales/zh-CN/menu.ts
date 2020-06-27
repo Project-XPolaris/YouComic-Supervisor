@@ -48,9 +48,24 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
-  'menu.usergroups':"用户组",
-  'menu.permissions':"权限",
-  'menu.users':"用户",
-  'menu.tags':"标签"
+  'menu.usergroups': "用户组",
+  'menu.permissions': "权限",
+  'menu.users': "用户",
+  'menu.tags': "标签",
+  'menu.bookdetail': '书籍详细信息',
+  'menu.bookdetail.bookdetailinfo': '书籍信息',
+  'menu.bookdetail.bookdetailtags': "书籍标签列表",
+  'menu.bookdetail.bookdetailpages': "书籍页面",
+  'menu.books': "书籍",
+  'menu.books.bookList': "书籍列表",
+  'menu.tagDetail':"标签详细信息",
+  'menu.createUser':'创建用户',
+  'menu.userDetail':"用户详细信息",
+  'menu.usergroup':"用户组",
+  'menu.accountSetting':"账户设置",
+  'menu.library.libraryList':"书库列表",
+  'menu.library':"书库",
+
+
 
 };

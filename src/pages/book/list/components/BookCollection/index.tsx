@@ -6,24 +6,24 @@ import styles from './style.less'
 
 interface BooksCollectionPropsType {
   books?: Book[]
-  onSelectAction:(book:Book) => void
-  onAddToCollectionAction:(book:Book) => void
-  selectedBooks?:Book[]
-  onBookClick?:(book:Book) => void
+  onSelectAction: (book: Book) => void
+  onAddToCollectionAction: (book: Book) => void
+  selectedBooks?: Book[]
+  onBookClick?: (book: Book) => void
 }
 
 
-export default function BooksCollection({books = [],selectedBooks=[],onSelectAction,onAddToCollectionAction,onBookClick}: BooksCollectionPropsType) {
-  const items = books?.map((book:Book) => {
+export default function BooksCollection({books = [], selectedBooks = [], onSelectAction, onAddToCollectionAction, onBookClick}: BooksCollectionPropsType) {
+  const items = books?.map((book: Book) => {
     return (
       <Col key={book.id}>
-      <BookCard
-        book={book}
-        onSelectAction={onSelectAction}
-        onAddToCollectionAction={onAddToCollectionAction}
-        isSelected={Boolean(selectedBooks?.find(selectedBook => selectedBook.id === book.id))}
-        onBookClick={onBookClick}
-      />
+        <BookCard
+          book={book}
+          onSelectAction={onSelectAction}
+          onAddToCollectionAction={onAddToCollectionAction}
+          isSelected={Boolean(selectedBooks?.find(selectedBook => selectedBook.id === book.id))}
+          onBookClick={onBookClick}
+        />
       </Col>
     )
   });

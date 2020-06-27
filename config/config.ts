@@ -1,9 +1,7 @@
-import {defineConfig} from 'umi'
-import { TagOutlined } from '@ant-design/icons';
-// preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
+import { defineConfig } from 'umi';
+import { TagOutlined } from '@ant-design/icons'; // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
-const {ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION} = process.env;
-
+const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
 export default defineConfig({
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
@@ -70,13 +68,13 @@ export default defineConfig({
             },
             {
               path: '/books',
-              name: '书籍',
+              name: 'books',
               icon: 'read',
               authority: ['admin'],
               routes: [
                 {
                   path: '/books/list',
-                  name: '书籍列表',
+                  name: 'bookList',
                   icon: 'book',
                   component: './book/list/index',
                   authority: ['admin'],
@@ -84,13 +82,26 @@ export default defineConfig({
               ],
             },
             {
+              name: 'library',
+              path: '/libraries',
+              icon: 'read',
+              authority: ['admin'],
+              routes: [
+                {
+                  name: 'libraryList',
+                  icon: 'smile',
+                  path: '/libraries/list',
+                  component: './library/LibraryListPage',
+                },
+              ],
+            },
+            {
               path: '/tags',
               name: 'tags',
-              icon: "TagOutlined",
+              icon: 'TagOutlined',
               component: './tag/list/index',
               authority: ['admin'],
             },
-
             {
               path: '/tag/:tagId',
               name: 'tagDetail',
@@ -98,6 +109,13 @@ export default defineConfig({
               component: './tag/detail/index',
               authority: ['admin'],
               hideInMenu: true,
+            },
+            {
+              path: '/users/create',
+              name: 'createUser',
+              hideInMenu: true,
+              component: './user/create/index',
+              authority: ['admin'],
             },
             {
               path: '/users/:id',
@@ -113,7 +131,6 @@ export default defineConfig({
               component: './user/list/index',
               authority: ['admin'],
             },
-
             {
               path: '/permissions',
               name: 'permissions',
@@ -143,12 +160,13 @@ export default defineConfig({
               hideInMenu: true,
               authority: ['admin'],
             },
+
+
             {
               component: './404',
             },
           ],
         },
-
         {
           component: './404',
         },
@@ -173,8 +191,8 @@ export default defineConfig({
   dynamicImport: {
     loading: '@/components/PageLoading/index',
   },
-  dva:{},
-  antd:{},
+  dva: {},
+  antd: {},
   locale: {
     // default zh-CN
     default: 'zh-CN',
@@ -184,9 +202,9 @@ export default defineConfig({
   },
   manifest: {
     basePath: '/',
-  }, // chainWebpack: webpackPlugin,
-  externals: {},
-  // proxy: {
+  },
+  // chainWebpack: webpackPlugin,
+  externals: {}, // proxy: {
   //   '/server/api/': {
   //     target: 'https://preview.pro.ant.design/',
   //     changeOrigin: true,
