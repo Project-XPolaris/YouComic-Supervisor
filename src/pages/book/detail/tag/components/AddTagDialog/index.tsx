@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './style.less'
 import {Form, Input, Modal} from "antd";
-import {useForm} from "antd/es/form/util";
+import {useForm} from "antd/es/form/Form";
 
 interface AddTagDialogPropsType {
   isOpen: boolean

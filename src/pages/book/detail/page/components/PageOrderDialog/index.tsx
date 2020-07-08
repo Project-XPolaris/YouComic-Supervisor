@@ -1,6 +1,6 @@
 import React from 'react';
 import {Form, Input, Modal} from "antd";
-import {useForm} from "antd/es/form/util";
+import {useForm} from "antd/es/form/Form";
 
 interface PageOrderDialogPropsType {
   isOpen: boolean

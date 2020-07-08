@@ -1,5 +1,5 @@
 import { defineConfig } from 'umi';
-import { TagOutlined } from '@ant-design/icons'; // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
+ // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
 export default defineConfig({
@@ -33,7 +33,7 @@ export default defineConfig({
               path: '/welcome',
               name: 'welcome',
               icon: 'smile',
-              component: './Welcome',
+              component: './welcome/index',
             },
             {
               path: '/book/:id',
@@ -192,7 +192,9 @@ export default defineConfig({
     loading: '@/components/PageLoading/index',
   },
   dva: {},
-  antd: {},
+  antd: {
+
+  },
   locale: {
     // default zh-CN
     default: 'zh-CN',

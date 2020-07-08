@@ -27,6 +27,9 @@ const ApplicationConfig = {
     libraries: '/libraries',
     library: '/library/:id',
     libraryImport: '/library/import',
+    bookDailyCount: '/dashboard/book/daily',
+    tagBooksCount: '/dashboard/tag/books',
+    tagTypeCount: '/dashboard/tag/types',
   },
   storeKey: {
     token: 'youcomic-admin-token',

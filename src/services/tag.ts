@@ -1,5 +1,6 @@
 import apiRequest from '@/utils/request';
 import ApplicationConfig from '@/config';
+import {ListQueryContainer} from "@/services/base";
 
 export interface Tag {
   id: number;
@@ -8,6 +9,10 @@ export interface Tag {
   type: string;
 }
 
+export interface TagCount {
+  name : string
+  total : number
+}
 
 export function queryTagBooks({page, pageSize, id}: { page?: number, pageSize?: number, id: number }) {
   return apiRequest(
@@ -40,7 +45,7 @@ export function createTag(data: { name: string, type: string }) {
   )
 }
 
-export function tagBatch(data) {
+export function tagBatch(data:any) {
   return apiRequest(
     ApplicationConfig.api.tagBatch, {
       method: "post",
@@ -49,7 +54,7 @@ export function tagBatch(data) {
   )
 }
 
-export function addBooksToTag({tagId, bookIds}) {
+export function addBooksToTag({tagId, bookIds}:{tagId:number,bookIds:number}) {
   return apiRequest(
     ApplicationConfig.api.TagBooksURL.replace(':id', String(tagId)),
     {
@@ -61,7 +66,7 @@ export function addBooksToTag({tagId, bookIds}) {
   )
 }
 
-export function removeBooksFromTag({tagId,bookIds}) {
+export function removeBooksFromTag({tagId, bookIds}:{tagId:number,bookIds:number}) {
   return apiRequest(
     ApplicationConfig.api.TagBooksURL.replace(':id', String(tagId)),
     {
@@ -69,6 +74,16 @@ export function removeBooksFromTag({tagId,bookIds}) {
       data: {
         books: bookIds
       }
+    }
+  )
+}
+
+export async function getTagCount(queryParam:any) : Promise<ListQueryContainer<TagCount>>  {
+  return apiRequest(
+    ApplicationConfig.api.tagBooksCount,
+    {
+      method:"get",
+      params:queryParam
     }
   )
 }

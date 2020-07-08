@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Card, Descriptions, Form, Input} from "antd";
 import styles from './style.less'
-import {useForm} from "antd/es/form/util";
 import {connect, Dispatch} from 'dva'
 import {ConnectState} from "@/models/connect";
 import {DetailModelStateType} from "@/pages/book/detail/model";
@@ -10,6 +9,7 @@ import moment from "moment";
 import {BookDetailInfoStateType} from "@/pages/book/detail/info/model";
 import UploadCoverButton from "@/pages/book/detail/info/components/UploadCoverButton";
 import ApplicationConfig from "@/config";
+import {useForm} from "antd/es/form/Form";
 
 interface BookDetailInfoPropsType {
   bookDetail: DetailModelStateType,

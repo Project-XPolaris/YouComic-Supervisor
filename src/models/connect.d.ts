@@ -24,6 +24,7 @@ import { UserDetailStateType } from '@/pages/user/detail/model';
 import { UserGroupListStateType } from '@/pages/usergroup/list/model';
 import { UserGroupDetailStateType } from '@/pages/usergroup/detail/model';
 import { AccountSettingStateType } from '@/pages/account/setting/model';
+import {HomeModelStateType} from "@/pages/welcome/model";
 
 export { GlobalModelState, SettingModelState, UserModelState };
 
@@ -62,6 +63,7 @@ export interface ConnectState {
   userGroupList: UserGroupListStateType;
   userGroupDetail: UserGroupDetailStateType;
   accountSetting: AccountSettingStateType;
+  home:HomeModelStateType
 }
 
 export interface Route extends MenuDataItem {

@@ -1,7 +1,6 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
 import {Form, Input, Modal} from "antd";
-import {useForm} from "antd/es/form/util";
+import {useForm} from "antd/es/form/Form";
 
 const {Item} = Form
 

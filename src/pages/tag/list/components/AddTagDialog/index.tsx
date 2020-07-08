@@ -1,7 +1,7 @@
 import React from 'react';
 import {Form, Input, Modal} from "antd";
-import {useForm} from "antd/es/form/util";
 import styles from "@/pages/book/detail/tag/components/AddTagDialog/style.less";
+import {useForm} from "antd/es/form/Form";
 
 
 interface AddTagDialogPropsType {
