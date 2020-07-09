@@ -7,6 +7,7 @@
       "esnext",
       "dom"
     ],
+    "noEmitOnError": true,
     "sourceMap": true,
     "baseUrl": ".",
     "jsx": "react",
@@ -37,5 +38,8 @@
     "src/.umi/*",
     "webpack",
     "jest"
-  ]
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "errorsAsWarnings": true
+  }
 }

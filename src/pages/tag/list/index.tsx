@@ -21,6 +21,7 @@ import SnapshotDialog from "@/components/SnapshotDialog";
 import {Snapshot} from "@/services/snapshot";
 import {generateSnapshotId} from "@/utils/utils";
 import TagListHeader, {addTagDialogKey, createTagSnapshotKey, tagFilterDrawerKey} from "@/pages/tag/list/header";
+import {history} from "@@/core/history";
 
 const {confirm} = Modal;
 
@@ -187,7 +188,7 @@ const TagListPage = ({tagList, dialog, dispatch}: TagListPagePropsType) => {
         id:generateSnapshotId(),
         icon: "list",
         name,
-        url: window.location.pathname + window.location.search,
+        url: history.location.pathname + history.location.search,
         extra: {},
         type:"tagList"
       };

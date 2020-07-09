@@ -18,7 +18,8 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import {ConnectState} from '@/models/connect';
 import {getAuthorityFromRouter, isAntDesignPro} from '@/utils/utils';
-
+import style from './style.less';
+import  logo from '../assets/lab.svg'
 const noMatch = (
   <Result
     status="403"
@@ -134,13 +135,14 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   };
   return (
     <ProLayout
-      logo={null}
+      logo={logo}
       formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
-        <Link to="/">
-          {logoDom}
-          {titleDom}
-        </Link>
+        <div className={style.logo}>
+            {logoDom}
+            {titleDom}
+        </div>
+
       )}
       onCollapse={handleMenuCollapse}
       menuItemRender={(menuItemProps, defaultDom) => {

@@ -25,8 +25,8 @@ const TagCard = ({home}: TagCardPropsType) => {
           <Row gutter={16}>
             {
               home.tagCount && home.totalBookCount &&
-              home.tagCount.map((count: TagCount) => (
-                <Col span={4}>
+              home.tagCount.map((count: TagCount,idx:number) => (
+                <Col span={4} key={idx}>
                   <Pie percent={getTotalPercent(count)} subTitle={count.name} total={`${getTotalPercent(count)}%`} key={count.name} height={140}/>
                 </Col>
               ))

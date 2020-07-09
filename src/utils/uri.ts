@@ -4,9 +4,9 @@ import {history} from "umi";
 export function updateQueryParamAndReplaceURL(queryParameters: any, pathName?: string) {
   let basePath = pathName;
   if (pathName === undefined) {
-    basePath = window.location.pathname
+    basePath = history.location.pathname
   }
-  const searchQuery = URI(window.location.search).setSearch(queryParameters).toString();
+  const searchQuery = URI(history.location.search).setSearch(queryParameters).toString();
   history.replace(`${basePath}${searchQuery}`)
 }
 

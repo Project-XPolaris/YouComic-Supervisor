@@ -14,6 +14,7 @@ const RecentlyAddTagCard = ({home}: RecentlyAddTagCardPropsType) => {
       <Table
         dataSource={home.recentlyAddTag || []}
         pagination={false}
+        rowKey="id"
         columns={[
           {
             key: "id",

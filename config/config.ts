@@ -27,7 +27,7 @@ export default defineConfig({
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: './welcome',
             },
             {
               path: '/welcome',
@@ -176,6 +176,7 @@ export default defineConfig({
       component: './404',
     },
   ],
+  publicPath: './',
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
@@ -188,13 +189,14 @@ export default defineConfig({
   lessLoader: {
     javascriptEnabled: true,
   },
-  dynamicImport: {
-    loading: '@/components/PageLoading/index',
-  },
+  // dynamicImport: {
+  //   loading: '@/components/PageLoading/index',
+  // },
   dva: {},
   antd: {
 
   },
+  history: { type: 'hash' },
   locale: {
     // default zh-CN
     default: 'zh-CN',

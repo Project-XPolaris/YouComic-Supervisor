@@ -114,8 +114,11 @@ const bookPageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
 };
 apiRequest.use(async (ctx, next) => {
   if (window.apiurl === undefined) {
-    const json = await request.get('/config.json');
-    window.apiurl = json.apiurl;
+    const json = await request.get('./config.json');
+    if (json !== undefined){
+      window.apiurl = json.apiurl;
+    }
+    window.apiurl = "http://localhost:8880"
   }
   ctx.req.url = window.apiurl + ctx.req.url;
   await next();

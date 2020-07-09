@@ -21,11 +21,11 @@ interface BookListPagePropsType {
   dialog: DialogStateType;
 }
 
-function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
-  const { page, pageSize, count, filter, searchTags, selectedBooks } = bookList;
-  const { dialogs } = dialog;
+function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
+  const {page, pageSize, count, filter, searchTags, selectedBooks} = bookList;
+  const {dialogs} = dialog;
   const onPageChange = (toPage: number, toPageSize: number = 20) => {
-    updateQueryParamAndReplaceURL({ page: toPage, pageSize: toPageSize });
+    updateQueryParamAndReplaceURL({page: toPage, pageSize: toPageSize});
   };
 
   const onCloseFilterDrawer = () => {
@@ -110,12 +110,13 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
       },
     });
   };
+
   const onAddToSnapshotClick = (name: string) => {
     const snapshot: Snapshot = {
       id: generateSnapshotId(),
       icon: 'bookList',
       name,
-      url: window.location.pathname + window.location.search,
+      url: history.location.pathname + history.location.search,
       extra: {},
       type: 'bookList',
     };
@@ -128,9 +129,9 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
     onAddToSnapshotDialogCancel();
   };
   return (
-    <PageHeaderWrapper extra={<BookListHeaderAction />}>
+    <PageHeaderWrapper extra={<BookListHeaderAction/>}>
       <div>
-        <BackTop />
+        <BackTop/>
         <div className={style.filterWrap}>
           <SnapshotDialog
             onOk={onAddToSnapshotClick}
@@ -167,7 +168,7 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
   );
 }
 
-export default connect(({ bookList, dialog, loading }: ConnectState) => ({
+export default connect(({bookList, dialog, loading}: ConnectState) => ({
   bookList,
   dialog,
   loading,

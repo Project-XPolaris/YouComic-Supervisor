@@ -9,8 +9,8 @@ import styles from './index.less';
 import FolderIcon from '@ant-design/icons/FolderFilled'
 import ClockIcon from '@ant-design/icons/ClockCircleFilled'
 import SideCollection, {sideCollectionKey} from "@/components/SideCollection";
-import {DialogStateType} from "@/models/dialog";
 import SnapshotList from "@/components/SnapshotList";
+import style from './style.less';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -37,7 +37,10 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
     })
   };
   return (
-    <div className={className}>
+    <div className={className} style={{width:"100%"}}>
+      <div className={style.dragZone}>
+
+      </div>
       <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder="站内搜索"

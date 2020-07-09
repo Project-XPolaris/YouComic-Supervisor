@@ -14,6 +14,7 @@ import {formatMessage} from "@@/plugin-locale/localeExports";
 import {Dispatch} from "@@/plugin-dva/connect";
 import {MenuOutlined, PlusOutlined} from "@ant-design/icons/lib";
 import {RegisterUserModalKey} from "@/pages/user/list/components/RegisterDialog";
+import {history} from "@@/core/history";
 
 const AddToSnapshotDialogKey = 'userList/AddToSnapshotDialog';
 
@@ -46,7 +47,7 @@ function UserListActionHeader({dispatch, dialog: {dialogs}}: UserListActionHeade
       id: generateSnapshotId(),
       icon: 'userList',
       name,
-      url: window.location.pathname + window.location.search,
+      url: history.location.pathname + history.location.search,
       extra: {},
       type: 'userList',
     };

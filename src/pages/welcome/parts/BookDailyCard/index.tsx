@@ -46,6 +46,7 @@ const BookDailyCard = ({home}: BookDailyCardPropsType) => {
           <Table
             className={style.table}
             pagination={false}
+            rowKey="id"
             columns={[
               {
                 key: "id",

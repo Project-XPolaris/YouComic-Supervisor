@@ -13,6 +13,7 @@ import style from "@/pages/book/list/style.less";
 import {BookListModelStateType} from "@/pages/book/list/model";
 
 import {Book} from "@/services/book";
+import {history} from "@@/core/history";
 
 const {confirm} = Modal
 export const BooksFilterDrawerKey = "bookList/filterDrawer";
