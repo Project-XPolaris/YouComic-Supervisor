@@ -2,13 +2,13 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
-import request, { Context, extend } from 'umi-request';
-import { notification } from 'antd';
-import { pickBy } from 'lodash';
+import request, {Context, extend} from 'umi-request';
+import {notification} from 'antd';
+import {pickBy} from 'lodash';
 import ApplicationConfig from '@/config';
-import { ListQueryContainer } from '@/services/base';
-import { Book } from '@/services/book';
-import { Page } from '@/services/page';
+import {ListQueryContainer} from '@/services/base';
+import {Book} from '@/services/book';
+import {Page} from '@/services/page';
 import URI from 'urijs';
 
 const pathToRegexp = require('path-to-regexp');
@@ -33,15 +33,17 @@ const codeMessage = {
 const apiErrorCode = {
   '1006': '用户不存在或密码错误',
 };
+
 export interface RequestExtendResponse {
   success: string;
 }
+
 /**
  * 异常处理程序
  */
 const errorHandler = (error: { response: Response }): Response => {
-  const { response, data } = error;
-  const { success, code, reason } = data;
+  const {response, data} = error;
+  const {success, code, reason} = data;
   console.log(data);
   if (code) {
     notification.error({
@@ -52,7 +54,7 @@ const errorHandler = (error: { response: Response }): Response => {
   }
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+    const {status, url} = response;
 
     notification.error({
       message: `请求错误 ${status}: ${url}`,
@@ -87,6 +89,9 @@ const bookListPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
 const tagBooksPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
   regex: '/tag/:tagId(\\d+)/books',
   onProcess: (context, response) => {
+    if (context.req.options.method !== "get") {
+      return
+    }
     const host = 'http://' + URI(context.req.url).host();
     response.result.forEach(book => {
       book.cover = host + book.cover;
@@ -115,7 +120,7 @@ const bookPageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
 apiRequest.use(async (ctx, next) => {
   if (window.apiurl === undefined) {
     const json = await request.get('./config.json');
-    if (json !== undefined){
+    if (json !== undefined) {
       window.apiurl = json.apiurl;
     }
     window.apiurl = "http://localhost:8880"
@@ -132,25 +137,21 @@ apiRequest.use(async (ctx, next) => {
       }
     },
   );
-  ctx.res = {
-    ...ctx.res,
-    success: true,
-  };
 });
 apiRequest.interceptors.request.use(
   (url, options) => {
     options.params = pickBy(options.params, value => typeof value !== 'undefined');
     return {
       url,
-      options: { ...options, credentials: 'same-origin' },
+      options: {...options, credentials: 'same-origin'},
     };
   },
-  { global: true },
+  {global: true},
 );
 apiRequest.interceptors.request.use(
   (url, options) => {
     const token = localStorage.getItem(ApplicationConfig.storeKey.token);
-    let { headers } = options;
+    let {headers} = options;
     if (token != null) {
       headers = {
         ...options.headers,
@@ -165,7 +166,7 @@ apiRequest.interceptors.request.use(
       },
     };
   },
-  { global: true },
+  {global: true},
 );
 
 apiRequest.interceptors.request.use(
@@ -185,7 +186,7 @@ apiRequest.interceptors.request.use(
       },
     };
   },
-  { global: true },
+  {global: true},
 );
 
 export default apiRequest;

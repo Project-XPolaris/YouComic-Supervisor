@@ -14,7 +14,7 @@ function createWindow() {
     darkTheme:true,
     title:"YouComic Supervisor",
     width: 1700,
-    frame:false
+    frame:true
   });
   if (process.env.NODE_ENV === 'development') {
     if (process.env.DEV_TOOLS) {

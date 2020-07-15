@@ -8,12 +8,11 @@ import {ConnectState} from "@/models/connect";
 import {UserDetailStateType} from "@/pages/user/detail/model";
 
 
-
-
 interface UserPermissionSectionPropsType {
-    dispatch: Dispatch,
-  userDetail:UserDetailStateType
+  dispatch: Dispatch,
+  userDetail: UserDetailStateType
 }
+
 const permissionTableColumn: ColumnProps<Permission>[] = [
   {
     key: "id",
@@ -26,13 +25,29 @@ const permissionTableColumn: ColumnProps<Permission>[] = [
     dataIndex: "name"
   },
 ]
-function UserPermissionSection({dispatch}: UserPermissionSectionPropsType) {
 
-    return (
-        <Card>
-          <Table />
-        </Card>
-    );
+function UserPermissionSection({dispatch,userDetail}: UserPermissionSectionPropsType) {
+
+  return (
+    <Card title="权限">
+      <Table
+        rowKey={(r) => r.id}
+        columns={[
+          {
+            key: "id",
+            dataIndex: "id",
+            title: "ID"
+          },
+          {
+            key: "name",
+            dataIndex: "name",
+            title: "Name"
+          },
+        ]}
+        dataSource={userDetail.permissions.data || []}
+      />
+    </Card>
+  );
 }
 
-export default connect(({userDetail}:ConnectState) => ({userDetail}))(UserPermissionSection);
+export default connect(({userDetail}: ConnectState) => ({userDetail}))(UserPermissionSection);

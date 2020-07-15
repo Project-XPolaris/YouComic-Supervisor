@@ -1,9 +1,10 @@
-import { Effect, Subscription } from 'dva';
-import { Reducer } from 'redux';
-import { getUser, User } from '@/services/user';
-import { ConnectState } from '@/models/connect';
-import { Permission, queryPermissionList } from '@/services/permission';
-import { ListQueryContainer } from '@/services/base';
+import {Effect, Subscription} from 'dva';
+import {Reducer} from 'redux';
+import {getUser, getUserUserGroups, User} from '@/services/user';
+import {ConnectState} from '@/models/connect';
+import {Permission, queryPermissionList} from '@/services/permission';
+import {ListQueryContainer} from '@/services/base';
+import {UserGroup} from "@/services/usergroup";
 
 const pathToRegexp = require('path-to-regexp');
 
@@ -16,6 +17,12 @@ export interface UserDetailStateType {
     pageSize: number;
     count: number;
   };
+  groups: {
+    data?: UserGroup[]
+    page: number
+    pageSize: number
+    count: number
+  }
 }
 
 export interface UserDetailType {
@@ -24,11 +31,13 @@ export interface UserDetailType {
     setUserId: Reducer<UserDetailStateType>;
     onQueryUserSuccess: Reducer<UserDetailStateType>;
     onQueryPermissionSuccess: Reducer<UserDetailStateType>;
+    onQueryUserGroupSuccess: Reducer
   };
   state: UserDetailStateType;
   effects: {
     queryUser: Effect;
     queryPermission: Effect;
+    queryUserGroup: Effect
   };
   subscriptions: {
     setup: Subscription;
@@ -45,9 +54,14 @@ const UserDetail: UserDetailType = {
       page: 1,
       pageSize: 20,
     },
+    groups: {
+      count: 0,
+      page: 1,
+      pageSize: 20
+    }
   },
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup({dispatch, history}) {
       history.listen(location => {
         const regexp = pathToRegexp('/users/:userId(\\d+)');
         const match = regexp.exec(location.pathname);
@@ -61,16 +75,22 @@ const UserDetail: UserDetailType = {
           dispatch({
             type: 'queryUser',
           });
+          dispatch({
+            type: 'queryPermission',
+          });
+          dispatch({
+            type: 'queryUserGroup',
+          });
         }
       });
     },
   },
   effects: {
-    *queryUser(_, { call, put, select }) {
+    * queryUser(_, {call, put, select}) {
       const userDetailState: UserDetailStateType = yield select(
         (state: ConnectState) => state.userDetail,
       );
-      const user: User = yield call(getUser, { id: userDetailState.id });
+      const user: User = yield call(getUser, {id: userDetailState.id});
       yield put({
         type: 'onQueryUserSuccess',
         payload: {
@@ -78,26 +98,65 @@ const UserDetail: UserDetailType = {
         },
       });
     },
-    *queryPermission(state, { call, put, select }) {
-      const userDetailState: UserDetailStateType = yield select(
-        (state: ConnectState) => state.userDetail,
+    * queryPermission(_, {call, put, select}) {
+      const userDetailState: UserDetailStateType = yield select((state: ConnectState) => state.userDetail,
       );
-      const permissions: ListQueryContainer<Permission> = yield call(queryPermissionList, {});
+      const permissions: ListQueryContainer<Permission> = yield call(queryPermissionList, {user: userDetailState.id});
+      yield put({
+        type: "onQueryPermissionSuccess",
+        payload: {
+          permissions: permissions.result,
+          page: permissions.page,
+          pageSize: permissions.pageSize,
+          count: permissions.count
+        }
+      })
     },
+    * queryUserGroup(_, {call, put, select}) {
+      const userDetailState: UserDetailStateType = yield select((state: ConnectState) => state.userDetail);
+      const response: ListQueryContainer<UserGroup> = yield call(getUserUserGroups, {id: userDetailState.id});
+      yield put({
+        type: "onQueryUserGroupSuccess",
+        payload: response
+      })
+    }
   },
   reducers: {
-    setUserId(state: UserDetailStateType, { payload: { id } }): UserDetailStateType {
+    setUserId(state: UserDetailStateType, {payload: {id}}): UserDetailStateType {
       return {
         ...state,
         id,
       };
     },
-    onQueryUserSuccess(state, { payload: { user } }) {
+    onQueryUserSuccess(state, {payload: {user}}) {
       return {
         ...state,
         user,
       };
     },
+    onQueryPermissionSuccess(state, {payload: {permissions, page, pageSize, count}}) {
+      return {
+        ...state,
+        permissions: {
+          data: permissions,
+          page,
+          pageSize,
+          count
+        }
+      }
+    },
+    onQueryUserGroupSuccess(state, {payload}) {
+      const {result, page, pageSize, count} = payload
+      return {
+        ...state,
+        groups: {
+          data: result,
+          page,
+          pageSize,
+          count
+        }
+      }
+    }
   },
 };
 export default UserDetail;
