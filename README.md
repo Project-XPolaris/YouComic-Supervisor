@@ -1,18 +1,10 @@
-<p align="center" style="font-size:20px">
-    Project Polaris | You Comic
-</p>
-<p align="center">
-    Project Polaris 是针对NAS内容管理的开发项目，YouComic是其中的关于漫画内容管理的套件
-</p>
-<br>
-<hr>
-<br>
+![](./other/youcomic-supervisor-banner.png)
 
 ## YouComic Supervisor
 
 ![](https://img.shields.io/badge/Project-Project%20Polaris-green) ![](https://img.shields.io/badge/Project-YouComic-green) ![](https://img.shields.io/badge/Version-1.0.0-yellow) ![](https://img.shields.io/badge/Plantform-web-red)
 
-YouComic Supervisor 是 YouComic 的后台管理工具，提供管理书籍与标签功能。以内容整理为主要内容.
+YouComic Supervisor 是 YouComic 的后台管理工具，提供管理书籍与标签功能。以内容整理为主要内容。提供基于网页的 Web 版本，同时也提供基于 Electron 的桌面版本
 
 ### ⚡Feature
 
@@ -24,7 +16,7 @@ YouComic Supervisor 是 YouComic 的后台管理工具，提供管理书籍与�
 
 ![](./other/pv_2.png)
 
-### 开发
+### 🔨 开发
 
 此项目由 Umijs 和 Typescript 完成，支持 electron
 
@@ -56,7 +48,7 @@ YouComic Supervisor 是 YouComic 的后台管理工具，提供管理书籍与�
 
 更多用法请参见[electron-builder 文档](https://www.electron.build/)
 
-#### TODO
+### 🏁TODO
 
 - [x] electron 支持
 - [x] 升级到 Umi3
@@ -66,6 +58,9 @@ YouComic Supervisor 是 YouComic 的后台管理工具，提供管理书籍与�
 
 ### 🔗 链接
 
-- [☁️YouComic 服务端](https://github.com/Project-XPolaris/YouComic-Server)
+- [🏕️YouComic Blog](https://project-xpolaris.github.io/)
 - [💻YouComic Studio](https://github.com/Project-XPolaris/YouComic-Studio)
+- [💻YouComic Webr](https://github.com/Project-XPolaris/YouComic-Web)
+- [🌐YouComic Server](https://github.com/Project-XPolaris/YouComic-Server)
+- [📱YouComic Mobile Suit](https://github.com/Project-XPolaris/YouComic-Mobile-Suit)
 - [⭐️Project Polaris](https://github.com/Project-XPolaris)
