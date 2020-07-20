@@ -8,3 +8,8 @@ export interface ListQueryContainer<T> {
 }
 
 
+export interface ApiErrorResponse {
+  code:string,
+  reason:string
+  success:boolean
+}

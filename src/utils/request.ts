@@ -41,10 +41,9 @@ export interface RequestExtendResponse {
 /**
  * 异常处理程序
  */
-const errorHandler = (error: { response: Response }): Response => {
+const errorHandler = (error: { response: any, data: any }): Response => {
   const {response, data} = error;
-  const {success, code, reason} = data;
-  console.log(data);
+  const {code} = data;
   if (code) {
     notification.error({
       message: `请求错误 ${code}`,
@@ -66,7 +65,7 @@ const errorHandler = (error: { response: Response }): Response => {
       message: '网络异常',
     });
   }
-  return response;
+  return data
 };
 const apiRequest = extend({
   errorHandler,
@@ -80,9 +79,12 @@ interface PathNamePostProcess<T> {
 const bookListPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
   regex: '/books',
   onProcess: (context, response) => {
-    const host = 'http://' + URI(context.req.url).host();
-    response.result.forEach(book => {
-      book.cover = host + book.cover;
+    const host = `http://${URI(context.req.url).host()}`;
+    response.result = response.result.map((book: Book) => {
+      return {
+        ...book,
+        cover: host + book.cover
+      }
     });
   },
 };
@@ -92,9 +94,12 @@ const tagBooksPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
     if (context.req.options.method !== "get") {
       return
     }
-    const host = 'http://' + URI(context.req.url).host();
-    response.result.forEach(book => {
-      book.cover = host + book.cover;
+    const host = `http://${URI(context.req.url).host()}`;
+    response.result = response.result.map((book: Book) => {
+      return {
+        ...book,
+        cover: host + book.cover
+      }
     });
   },
 };
@@ -102,30 +107,40 @@ const tagBooksPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
 const pageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
   regex: '/pages',
   onProcess: (context, response) => {
-    const host = 'http://' + URI(context.req.url).host();
-    response.result.forEach(page => {
-      page.path = host + page.path;
+    const host = `http://${URI(context.req.url).host()}`
+    response.result = response.result.map((page: Page) => {
+      return {
+        ...page,
+        path: host + page.path
+      }
     });
   },
 };
 const bookPageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
   regex: '/book/:bookId(\\d+)/pages',
   onProcess: (context, response) => {
-    const host = 'http://' + URI(context.req.url).host();
-    response.result.forEach(page => {
-      page.path = host + page.path;
+    const host = `http://${URI(context.req.url).host()}`
+    response.result = response.result.map((page: Page) => {
+      return {
+        ...page,
+        path: host + page.path
+      }
     });
   },
 };
+type AppWindow = Window & {
+  apiurl?: string
+}
 apiRequest.use(async (ctx, next) => {
-  if (window.apiurl === undefined) {
+  const appWindow: AppWindow = window
+  if (appWindow.apiurl === undefined) {
     const json = await request.get('./config.json');
     if (json !== undefined) {
-      window.apiurl = json.apiurl;
+      appWindow.apiurl = json.apiurl;
     }
-    window.apiurl = "http://localhost:8880"
+    appWindow.apiurl = "http://localhost:8880"
   }
-  ctx.req.url = window.apiurl + ctx.req.url;
+  ctx.req.url = appWindow.apiurl + ctx.req.url;
   await next();
   [bookListPostProcess, pageListPostProcess, tagBooksPostProcess, bookPageListPostProcess].forEach(
     process => {
@@ -140,10 +155,13 @@ apiRequest.use(async (ctx, next) => {
 });
 apiRequest.interceptors.request.use(
   (url, options) => {
-    options.params = pickBy(options.params, value => typeof value !== 'undefined');
     return {
       url,
-      options: {...options, credentials: 'same-origin'},
+      options: {
+        ...options,
+        credentials: 'same-origin',
+        params: pickBy(options.params, value => typeof value !== 'undefined')
+      },
     };
   },
   {global: true},
@@ -194,11 +212,10 @@ export default apiRequest;
 export const imageRequest = extend({});
 
 imageRequest.use(async (ctx, next) => {
-  let token = '';
-  token = localStorage.getItem(ApplicationConfig.storeKey.token);
+  const token = localStorage.getItem(ApplicationConfig.storeKey.token);
   ctx.req.options.headers = {
     ...ctx.req.options.headers,
-    Authorization: token,
+    Authorization: token || "",
   };
   ctx.req.options.responseType = 'blob';
   await next();

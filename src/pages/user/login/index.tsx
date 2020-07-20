@@ -1,81 +1,66 @@
-import {Alert} from 'antd';
 import React, {useState} from 'react';
-import {AnyAction, Dispatch} from 'redux';
-import {connect} from 'dva';
 import {StateType} from '@/models/login';
-import styles from './style.less';
 import {LoginParamsType} from '@/services/login';
 import {ConnectState} from '@/models/connect';
+import {connect} from "@@/plugin-dva/exports";
+import {Dispatch} from "@@/plugin-dva/connect";
 import LoginFrom from './components/Login';
+import styles from './style.less';
+import {useIntl} from '@@/plugin-locale/localeExports'
 
-const { Tab, UserName, Password,Submit } = LoginFrom;
+const {Tab, UserName, Password, Submit} = LoginFrom;
+
 interface LoginProps {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: Dispatch;
   userLogin: StateType;
   submitting?: boolean;
 }
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
+
 
 const Login: React.FC<LoginProps> = props => {
-  const { userLogin = {}, submitting } = props;
-  const { status, type: loginType } = userLogin;
+  const { submitting} = props;
   const [type, setType] = useState<string>('account');
-
+  const {formatMessage} = useIntl()
   const handleSubmit = (values: LoginParamsType) => {
-    const { dispatch } = props;
+    const {dispatch} = props;
     dispatch({
       type: 'login/login',
-      payload: { ...values},
+      payload: {...values},
     });
   };
   return (
     <div className={styles.main}>
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-        <Tab key="account" tab="账户密码登录">
-          {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="账户或密码错误（admin/ant.design）" />
-          )}
-
+        <Tab key="account" tab={formatMessage({id:'login.form.login.account'})}>
           <UserName
             name="username"
-            placeholder="用户名: admin or user"
+            placeholder={formatMessage({id:'login.form.username.hint'})}
             rules={[
               {
                 required: true,
-                message: '请输入用户名!',
+                message: formatMessage({id:'login.form.username.validate.required'}),
               },
             ]}
           />
           <Password
             name="password"
-            placeholder="密码: ant.design"
+            placeholder={formatMessage({id:'login.form.password.hint'})}
             rules={[
               {
                 required: true,
-                message: '请输入密码！',
+                message: formatMessage({id:'login.form.password.validate.required'}),
               },
             ]}
           />
         </Tab>
-        <Submit loading={submitting}>登录</Submit>
+        <Submit loading={submitting}>{formatMessage({id:'login.form.login.btn'})}</Submit>
       </LoginFrom>
     </div>
   );
 };
 
-export default connect(({ login, loading }: ConnectState) => ({
+export default connect(({login, loading}: ConnectState) => ({
   userLogin: login,
   submitting: loading.effects['login/login'],
 }))(Login);

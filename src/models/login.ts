@@ -1,13 +1,11 @@
-import { Reducer } from 'redux';
-import { Effect } from 'dva';
-import { stringify } from 'querystring';
-import { history } from 'umi';
-import { setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
-import { getAuth, getUserUserGroups, UserAuth, UserGroup } from '@/services/user';
-import { ListQueryContainer } from '@/services/base';
+import {stringify} from 'querystring';
+import {history} from 'umi';
+import {setAuthority} from '@/utils/authority';
+import {getPageQuery} from '@/utils/utils';
+import {getAuth, getUserUserGroups, UserAuth, UserGroup} from '@/services/user';
+import {ApiErrorResponse, ListQueryContainer} from '@/services/base';
 import ApplicationConfig from '@/config';
-import { RequestExtendResponse } from '@/utils/request';
+import {Effect, Reducer} from "@@/plugin-dva/connect";
 
 export interface StateType {
   status?: 'ok' | 'error';
@@ -37,9 +35,15 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response: UserAuth & RequestExtendResponse = yield call(getAuth, payload);
-      if (!response.success) {
+      const response: UserAuth | ApiErrorResponse = yield call(getAuth, payload);
+      // login error
+      if ("success" in response && !response.success) {
         return;
+      }
+
+      // login success
+      if (!("sign" in response)){
+        return
       }
       yield put({
         type: 'setUserAuthority',
@@ -48,16 +52,21 @@ const Model: LoginModelType = {
           id: response.id,
         },
       });
-      const userGroups: ListQueryContainer<UserGroup> &
-        RequestExtendResponse = yield call(getUserUserGroups, { id: response.id });
-      if (!response.success) {
+
+      // query user's groups
+      const userGroups: ListQueryContainer<UserGroup> | ApiErrorResponse = yield call(getUserUserGroups, { id: response.id });
+      // query user's group failed
+      if ("success" in userGroups && !userGroups.success) {
         return;
+      }
+      if (!("result" in userGroups)){
+        return
       }
       yield put({
         type: 'changeLoginStatus',
         payload: {
           ...response,
-          groups: userGroups.result.map(group => group.name),
+          groups: userGroups.result.map((group:UserGroup) => group.name),
         },
       });
       const urlParams = new URL(window.location.href);
