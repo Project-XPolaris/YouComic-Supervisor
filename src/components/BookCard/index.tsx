@@ -65,7 +65,7 @@ export default function BookCard({
             {book.name}
           </div>
           <div id="author" className={isSelected ? styles.authorSelected : styles.author}>
-            {author?.name}
+            {author?.name || ""}
           </div>
         </div>
       </Card>

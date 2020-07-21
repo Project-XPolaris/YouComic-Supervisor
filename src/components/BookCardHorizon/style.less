@@ -1,17 +1,20 @@
+@imageWidth: 150px;
+@cardWidth:520px;
 .main {
-  max-width: 150px;
-  min-height: 320px;
+  width: @cardWidth;
   margin-bottom: 16px;
 }
 
 .cover {
-  max-width: 150px;
+  width: @imageWidth;
+  height: 233px;
+  object-fit: cover;
 }
 .title {
-  max-width: 150px;
+  width: 100%;
   overflow: hidden;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 20px;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -46,4 +49,24 @@
 
 .cardContentSelected{
   background-color: #1890ff;
+}
+.content{
+  display: flex;
+  flex-direction: row;
+}
+
+.info{
+  width: @cardWidth - @imageWidth;
+  padding: 16px;
+}
+
+.meta{
+  display: flex;
+  flex-direction: row;
+  margin-top: 4px;
+
+}
+
+.icon{
+  margin-right: 8px;
 }

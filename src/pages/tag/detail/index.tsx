@@ -4,7 +4,7 @@ import {ConnectState} from "@/models/connect";
 import {TagDetailModelStateType} from "@/pages/tag/detail/model";
 import {Button, message, PageHeader, Pagination} from "antd";
 import styles from './style.less'
-import BooksCollection from "@/pages/book/list/components/BookCollection";
+import BooksCollection from "@/components/BookCollection";
 import {Book} from "@/services/book";
 import BookListHeader from "@/pages/book/list/components/BookListHeader";
 import {BookSideCollectionAction} from "@/models/side";
