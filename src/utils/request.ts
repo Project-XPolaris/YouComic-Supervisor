@@ -2,13 +2,13 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
-import request, {Context, extend} from 'umi-request';
-import {notification} from 'antd';
-import {pickBy} from 'lodash';
+import { Context, extend } from 'umi-request';
+import { notification } from 'antd';
+import { pickBy } from 'lodash';
 import ApplicationConfig from '@/config';
-import {ListQueryContainer} from '@/services/base';
-import {Book} from '@/services/book';
-import {Page} from '@/services/page';
+import { ListQueryContainer } from '@/services/base';
+import { Book } from '@/services/book';
+import { Page } from '@/services/page';
 import URI from 'urijs';
 
 const pathToRegexp = require('path-to-regexp');
@@ -41,9 +41,9 @@ export interface RequestExtendResponse {
 /**
  * 异常处理程序
  */
-const errorHandler = (error: { response: any, data: any }): Response => {
-  const {response, data} = error;
-  const {code} = data;
+const errorHandler = (error: { response: any; data: any }): Response => {
+  const { response, data } = error;
+  const { code } = data;
   if (code) {
     notification.error({
       message: `请求错误 ${code}`,
@@ -53,7 +53,7 @@ const errorHandler = (error: { response: any, data: any }): Response => {
   }
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
-    const {status, url} = response;
+    const { status, url } = response;
 
     notification.error({
       message: `请求错误 ${status}: ${url}`,
@@ -65,7 +65,7 @@ const errorHandler = (error: { response: any, data: any }): Response => {
       message: '网络异常',
     });
   }
-  return data
+  return data;
 };
 const apiRequest = extend({
   errorHandler,
@@ -83,23 +83,23 @@ const bookListPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
     response.result = response.result.map((book: Book) => {
       return {
         ...book,
-        cover: host + book.cover
-      }
+        cover: host + book.cover,
+      };
     });
   },
 };
 const tagBooksPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
   regex: '/tag/:tagId(\\d+)/books',
   onProcess: (context, response) => {
-    if (context.req.options.method !== "get") {
-      return
+    if (context.req.options.method !== 'get') {
+      return;
     }
     const host = `http://${URI(context.req.url).host()}`;
     response.result = response.result.map((book: Book) => {
       return {
         ...book,
-        cover: host + book.cover
-      }
+        cover: host + book.cover,
+      };
     });
   },
 };
@@ -107,40 +107,30 @@ const tagBooksPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
 const pageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
   regex: '/pages',
   onProcess: (context, response) => {
-    const host = `http://${URI(context.req.url).host()}`
+    const host = `http://${URI(context.req.url).host()}`;
     response.result = response.result.map((page: Page) => {
       return {
         ...page,
-        path: host + page.path
-      }
+        path: host + page.path,
+      };
     });
   },
 };
 const bookPageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
   regex: '/book/:bookId(\\d+)/pages',
   onProcess: (context, response) => {
-    const host = `http://${URI(context.req.url).host()}`
+    const host = `http://${URI(context.req.url).host()}`;
     response.result = response.result.map((page: Page) => {
       return {
         ...page,
-        path: host + page.path
-      }
+        path: host + page.path,
+      };
     });
   },
 };
-type AppWindow = Window & {
-  apiurl?: string
-}
+
 apiRequest.use(async (ctx, next) => {
-  const appWindow: AppWindow = window
-  if (appWindow.apiurl === undefined) {
-    const json = await request.get('./config.json');
-    if (json !== undefined) {
-      appWindow.apiurl = json.apiurl;
-    }
-    appWindow.apiurl = "http://localhost:8880"
-  }
-  ctx.req.url = appWindow.apiurl + ctx.req.url;
+  ctx.req.url = localStorage.getItem(ApplicationConfig.storeKey.apiurl) + ctx.req.url;
   await next();
   [bookListPostProcess, pageListPostProcess, tagBooksPostProcess, bookPageListPostProcess].forEach(
     process => {
@@ -160,16 +150,16 @@ apiRequest.interceptors.request.use(
       options: {
         ...options,
         credentials: 'same-origin',
-        params: pickBy(options.params, value => typeof value !== 'undefined')
+        params: pickBy(options.params, value => typeof value !== 'undefined'),
       },
     };
   },
-  {global: true},
+  { global: true },
 );
 apiRequest.interceptors.request.use(
   (url, options) => {
     const token = localStorage.getItem(ApplicationConfig.storeKey.token);
-    let {headers} = options;
+    let { headers } = options;
     if (token != null) {
       headers = {
         ...options.headers,
@@ -184,7 +174,7 @@ apiRequest.interceptors.request.use(
       },
     };
   },
-  {global: true},
+  { global: true },
 );
 
 apiRequest.interceptors.request.use(
@@ -204,7 +194,7 @@ apiRequest.interceptors.request.use(
       },
     };
   },
-  {global: true},
+  { global: true },
 );
 
 export default apiRequest;
@@ -215,7 +205,7 @@ imageRequest.use(async (ctx, next) => {
   const token = localStorage.getItem(ApplicationConfig.storeKey.token);
   ctx.req.options.headers = {
     ...ctx.req.options.headers,
-    Authorization: token || "",
+    Authorization: token || '',
   };
   ctx.req.options.responseType = 'blob';
   await next();

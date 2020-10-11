@@ -34,6 +34,7 @@ const ApplicationConfig = {
   storeKey: {
     token: 'youcomic-admin-token',
     userId: 'youcomic-admin-id',
+    apiurl: 'youcomic-admin-apiurl',
   },
 };
 export default ApplicationConfig;

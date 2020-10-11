@@ -11,6 +11,7 @@ import { getFakeCaptcha } from '@/services/login';
 export type WrappedLoginItemProps = LoginItemProps;
 export type LoginItemKeyType = keyof typeof ItemMap;
 export interface LoginItemType {
+  Address: React.FC<WrappedLoginItemProps>;
   UserName: React.FC<WrappedLoginItemProps>;
   Password: React.FC<WrappedLoginItemProps>;
   Mobile: React.FC<WrappedLoginItemProps>;
