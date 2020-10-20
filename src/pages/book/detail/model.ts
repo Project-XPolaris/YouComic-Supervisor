@@ -58,9 +58,9 @@ const DetailModel: DetailModelType = {
       const { id } = yield select((state: ConnectState) => state.bookDetail);
       const queryBooksResponse: ListQueryContainer<Book> &
         RequestExtendResponse = yield call(queryBooks, { id });
-      if (!queryBooksResponse.success || queryBooksResponse.count === 0) {
-        history.replace('/404');
-      }
+      // if (!queryBooksResponse.success || queryBooksResponse.count === 0) {
+      //   history.replace('/404');
+      // }
       if (queryBooksResponse.count > 0) {
         const book = queryBooksResponse.result[0];
         book.cover = getCoverThumbnailURL(book.cover);

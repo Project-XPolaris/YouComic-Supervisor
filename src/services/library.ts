@@ -20,3 +20,7 @@ export const removeLibrary = async (id: number) => {
 export const importExternalLibrary = async (path: string) => {
   return apiRequest.post(ApplicationConfig.api.libraryImport, {data: {"library_path": path}})
 }
+
+export const importDirectoryAsLibrary = async ({path}:{path:string}) => {
+  return apiRequest.post(ApplicationConfig.api.scanTask, {data: {"dir_path": path}})
+}

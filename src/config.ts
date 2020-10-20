@@ -27,6 +27,7 @@ const ApplicationConfig = {
     libraries: '/libraries',
     library: '/library/:id',
     libraryImport: '/library/import',
+    scanTask: '/scan/tasks',
     bookDailyCount: '/dashboard/book/daily',
     tagBooksCount: '/dashboard/tag/books',
     tagTypeCount: '/dashboard/tag/types',

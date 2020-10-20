@@ -1,12 +1,15 @@
-import { Effect } from 'umi';
+import {Effect} from 'umi';
 
-import { LibraryItemViewModel } from './data.d';
-import { queryBookLibrary, removeBookLibrary, importExternalBookLibrary } from './service';
-import { ListQueryContainer } from '@/services/base';
-import { Library } from '@/services/library';
-import { Reducer } from '@@/plugin-dva/connect';
-import { notification } from 'antd';
-import { LibraryListImportExternalLibraryDialogKey } from '@/pages/library/LibraryListPage/index';
+import {ListQueryContainer} from '@/services/base';
+import {importDirectoryAsLibrary, Library} from '@/services/library';
+import {Reducer} from '@@/plugin-dva/connect';
+import {notification} from 'antd';
+import {
+  LibraryListImportDirectoryDialogKey,
+  LibraryListImportExternalLibraryDialogKey
+} from '@/pages/library/LibraryListPage/index';
+import {queryBookLibrary, removeBookLibrary, importExternalBookLibrary} from './service';
+import {LibraryItemViewModel} from './data.d';
 
 export interface LibraryListStateType {
   libraryList: LibraryItemViewModel[];
@@ -19,9 +22,9 @@ export interface LibraryListModelType {
     queryLibrary: Effect;
     removeLibrary: Effect;
     importExternalLibrary: Effect;
+    importDirectory: Effect
   };
   reducers: {
-    queryList: Reducer<LibraryListStateType>;
     queryLibraryListSuccess: Reducer<LibraryListStateType>;
   };
 }
@@ -29,12 +32,11 @@ export interface LibraryListModelType {
 const Model: LibraryListModelType = {
   namespace: 'libraryList',
   state: {
-    list: [],
     libraryList: [],
   },
 
   effects: {
-    *queryLibrary(_, { call, put, select }) {
+    * queryLibrary(_, {call, put }) {
       const response: ListQueryContainer<Library> = yield call(queryBookLibrary, {});
       yield put({
         type: 'queryLibraryListSuccess',
@@ -43,12 +45,26 @@ const Model: LibraryListModelType = {
         },
       });
     },
-    *removeLibrary({ payload: { id } }, { call, put, select }) {
-      yield call(removeBookLibrary, { id });
-      yield put({ type: 'queryLibrary' });
+    * removeLibrary({payload: {id}}, {call, put }) {
+      yield call(removeBookLibrary, {id});
+      yield put({type: 'queryLibrary'});
     },
-    *importExternalLibrary({ payload: { path } }, { call, put }) {
-      notification['info']({
+    * importDirectory({payload: {path}}, {call, put }) {
+      yield put({
+        type: 'dialog/setDialogActive',
+        payload: {
+          key: LibraryListImportDirectoryDialogKey,
+          isActive: false,
+        },
+      });
+      notification.info({
+        message: '导入文件夹',
+        description: '添加成功，正在扫描',
+      });
+      yield call(importDirectoryAsLibrary,{path})
+    },
+    * importExternalLibrary({payload: {path}}, {call, put}) {
+      notification.info({
         message: '导入外部库',
         description: '此操作会花费一定时间，完成后会通知您',
       });
@@ -59,9 +75,9 @@ const Model: LibraryListModelType = {
           isActive: false,
         },
       });
-      yield call(importExternalBookLibrary, { path });
-      yield put({ type: 'queryLibrary' });
-      notification['success']({
+      yield call(importExternalBookLibrary, {path});
+      yield put({type: 'queryLibrary'});
+      notification.success({
         message: '导入外部库',
         description: '外部库导入成功',
       });
@@ -69,8 +85,7 @@ const Model: LibraryListModelType = {
   },
 
   reducers: {
-    queryLibraryListSuccess(state, { payload: { list } }) {
-      console.log(list);
+    queryLibraryListSuccess(state, {payload: {list}}) {
       return {
         ...state,
         libraryList: list,
