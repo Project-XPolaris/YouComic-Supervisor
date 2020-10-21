@@ -3,15 +3,15 @@ import { Reducer } from 'redux';
 import { Effect, Subscription } from 'dva';
 import { ConnectState } from '@/models/connect';
 import { ListQueryContainer } from '@/services/base';
-import ApplicationConfig from '@/config';
 import { sortBy } from 'lodash';
+import { createPaginationModule } from '@/modules/pagination';
 
 const pathToRegexp = require('path-to-regexp');
 
 export interface BookDetailPageModelStateType {
   pages?: Page[];
-  page: number;
-  pageSize: number;
+  pagePage: number;
+  pagePageSize: number;
   count: number;
   id?: number;
 }
@@ -21,7 +21,6 @@ export interface BookDetailPageModelType {
   reducers: {
     onQueryPageSuccess: Reducer;
     setBookId: Reducer;
-    setPage: Reducer;
     setPageOrder: Reducer;
   };
   state: BookDetailPageModelStateType;
@@ -33,12 +32,14 @@ export interface BookDetailPageModelType {
     setup: Subscription;
   };
 }
-
+export const pagePaginationModule = createPaginationModule({
+  dataName: 'page',
+  defaultPageSize: 3,
+});
 const BookDetailPageModel: BookDetailPageModelType = {
   namespace: 'bookDetailPages',
   state: {
-    page: 1,
-    pageSize: 30,
+    ...pagePaginationModule.data,
     count: 0,
   },
   subscriptions: {
@@ -53,6 +54,7 @@ const BookDetailPageModel: BookDetailPageModelType = {
               id: Number(match[1]),
             },
           });
+          pagePaginationModule.setPageFromUrl(location, dispatch);
           dispatch({
             type: 'queryPages',
           });
@@ -62,11 +64,13 @@ const BookDetailPageModel: BookDetailPageModelType = {
   },
   effects: {
     *queryPages(_, { call, put, select }) {
-      const { id, page, pageSize } = yield select((state: ConnectState) => state.bookDetailPages);
+      const { id, pagePage, pagePageSize } = yield select(
+        (state: ConnectState) => state.bookDetailPages,
+      );
       const queryTagsResponse: ListQueryContainer<Page> = yield call(queryPages, {
         book: id,
-        page,
-        pageSize,
+        page: pagePage,
+        pageSize: pagePageSize,
         order: 'order',
       });
       queryTagsResponse.result.forEach((pageItem: Page) => (pageItem.path = `${pageItem.path}`));
@@ -74,8 +78,8 @@ const BookDetailPageModel: BookDetailPageModelType = {
         type: 'onQueryPageSuccess',
         payload: {
           pages: queryTagsResponse.result,
-          page: queryTagsResponse.page,
-          pageSize: queryTagsResponse.pageSize,
+          pagePage: queryTagsResponse.page,
+          pagePageSize: queryTagsResponse.pageSize,
           count: queryTagsResponse.count,
         },
       });
@@ -90,6 +94,7 @@ const BookDetailPageModel: BookDetailPageModelType = {
     },
   },
   reducers: {
+    ...pagePaginationModule.reducers,
     onQueryPageSuccess(state, { payload }) {
       return {
         ...state,
@@ -100,13 +105,6 @@ const BookDetailPageModel: BookDetailPageModelType = {
       return {
         ...state,
         id,
-      };
-    },
-    setPage(state, { payload }) {
-      return {
-        ...state,
-        page: payload.page,
-        pageSize: payload.pageSize,
       };
     },
     setPageOrder(state, { payload: { id, order } }) {
