@@ -13,7 +13,7 @@ import style from "@/pages/book/list/style.less";
 import {BookListModelStateType} from "@/pages/book/list/model";
 
 import {Book} from "@/services/book";
-import {history} from "@@/core/history";
+import {FilterOutlined, HistoryOutlined, UnorderedListOutlined} from "@ant-design/icons";
 
 const {confirm} = Modal
 export const BooksFilterDrawerKey = "bookList/filterDrawer";
@@ -25,7 +25,7 @@ interface BookListHeaderActionPropsType {
 }
 
 function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType) {
-  const {selectedBooks} = bookList
+  const {selectedBooks,showViewOption} = bookList
   const onOpenFilterDrawer = () => {
     dispatch({
       type: "dialog/setDialogActive",
@@ -137,6 +137,14 @@ function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType
       </Menu.Item>
     </Menu>
   );
+  const onSwitchViewOption = () => {
+    dispatch({
+      type:"bookList/setShowViewOption",
+      payload:{
+        isShow:!showViewOption
+      }
+    })
+  }
   return (
     <>
       {
@@ -148,8 +156,9 @@ function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType
         </Dropdown>
       }
 
-      <Button type="primary" onClick={onOpenFilterDrawer} key={1}>过滤器</Button>
-      <Button className={style.actionButton} onClick={onAddToSnapshotButtonClick} key={2}>添加至快照</Button>
+      <Button type="primary" onClick={onOpenFilterDrawer} key={1} icon={<FilterOutlined />}>过滤器</Button>
+      <Button className={style.actionButton} onClick={onAddToSnapshotButtonClick} key={2} icon={<HistoryOutlined />}>添加至快照</Button>
+      <Button className={style.actionButton} onClick={onSwitchViewOption} key={3} icon={<UnorderedListOutlined />}>列表选项</Button>
     </>
   );
 }

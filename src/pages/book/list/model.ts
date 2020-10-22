@@ -21,7 +21,8 @@ export interface BookListModelStateType {
   filter: BookFilter
   searchTags: Tag[]
   tagsFetchId: number
-  selectedBooks: Book[]
+  selectedBooks: Book[],
+  showViewOption: boolean
 }
 
 export interface BookListModelType {
@@ -36,6 +37,7 @@ export interface BookListModelType {
     onSearchTagsSuccess: Reducer
     setSelectedBookIds: Reducer
     updateFilter: Reducer
+    setShowViewOption:Reducer
   }
   state: BookListModelStateType
   effects: {
@@ -63,7 +65,8 @@ const BookListModel: BookListModelType = {
     },
     searchTags: [],
     tagsFetchId: 0,
-    selectedBooks: []
+    selectedBooks: [],
+    showViewOption:false
   },
   subscriptions: {
     setup({dispatch, history}) {
@@ -118,9 +121,10 @@ const BookListModel: BookListModelType = {
         endTime: filter.endTime,
         tag: filter.tagIds
       });
-      queryBookResponse.result.forEach((book: Book) => {
-        book.cover = getCoverThumbnailURL(book.cover)
-      });
+      queryBookResponse.result = queryBookResponse.result.map((book: Book) => ({
+        ...book,
+        cover: getCoverThumbnailURL(book.cover)
+      }))
       yield put({
         type: 'onQueryBookSuccess',
         payload: {
@@ -251,6 +255,12 @@ const BookListModel: BookListModelType = {
           ...state.filter,
           ...filter
         }
+      }
+    },
+    setShowViewOption(state: BookListModelStateType, {payload: {isShow}}) {
+      return {
+        ...state,
+        showViewOption:isShow
       }
     }
   },

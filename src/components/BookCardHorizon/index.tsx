@@ -61,22 +61,22 @@ const BookCardHorizon =
           <div className={styles.content} style={{backgroundColor: isSelected ? '#1890ff' : undefined}}>
             <ImageLoader className={styles.cover} url={book?.cover}/>
             <div className={styles.info}>
-              <div className={styles.title} style={{color: isSelected ? '#1890ff' : undefined}}>
+              <div className={styles.title} style={{color: isSelected ? '#FFFFFF' : undefined}}>
                 {book?.name || "未知"}
               </div>
-              <div className={styles.meta}>
+              <div className={styles.meta} style={{color: isSelected ? '#FFFFFF' : undefined}}>
                 <div className={styles.icon}>
                   <UserOutlined/>
                 </div>
                 {author?.name || "未知作者"}
               </div>
-              <div className={styles.meta}>
+              <div className={styles.meta} style={{color: isSelected ? '#FFFFFF' : undefined}}>
                 <div className={styles.icon}>
                   <BookOutlined/>
                 </div>
                 {series?.name || "未知系列"}
               </div>
-              <div className={styles.meta}>
+              <div className={styles.meta} style={{color: isSelected ? '#FFFFFF' : undefined}}>
                 <div className={styles.icon}>
                   <GlobalOutlined/>
                 </div>

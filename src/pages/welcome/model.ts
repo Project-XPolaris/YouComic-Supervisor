@@ -52,30 +52,30 @@ const HomeModel: HomeModelType = {
     setup({dispatch, history}) {
       history.listen(location => {
         if (location.pathname === "/welcome") {
-          dispatch({
-            type: 'queryTotalBookCount',
-          });
-          dispatch({
-            type: 'queryTotalTagCount',
-          });
-          dispatch({
-            type: "queryBookDailyCount"
-          })
-          dispatch({
-            type: "queryRecentlyBook"
-          })
-          dispatch({
-            type: "queryTagCount"
-          })
-          dispatch({
-            type: "queryRecentlyAddTag"
-          })
-          dispatch({
-            type: "queryTagTypeCount"
-          })
-          dispatch({
-            type: "queryLibraryCount"
-          })
+          // dispatch({
+          //   type: 'queryTotalBookCount',
+          // });
+          // dispatch({
+          //   type: 'queryTotalTagCount',
+          // });
+          // dispatch({
+          //   type: "queryBookDailyCount"
+          // })
+          // dispatch({
+          //   type: "queryRecentlyBook"
+          // })
+          // dispatch({
+          //   type: "queryTagCount"
+          // })
+          // dispatch({
+          //   type: "queryRecentlyAddTag"
+          // })
+          // dispatch({
+          //   type: "queryTagTypeCount"
+          // })
+          // dispatch({
+          //   type: "queryLibraryCount"
+          // })
         }
       });
     },

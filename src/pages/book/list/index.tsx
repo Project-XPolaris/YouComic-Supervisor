@@ -3,7 +3,6 @@ import BooksCollection from '@/components/BookCollection';
 import {ConnectState} from '@/models/connect';
 import {BookListModelStateType} from '@/pages/book/list/model';
 import {BackTop, Pagination, Radio, Card} from 'antd';
-import style from './style.less';
 import {DialogStateType} from '@/models/dialog';
 import BookFilterDrawer, {BookFilter} from '@/pages/book/list/components/BookFilterDrawer';
 import {Book} from '@/services/book';
@@ -16,6 +15,7 @@ import BookListHeaderAction, {AddToSnapshotDialogKey, BooksFilterDrawerKey,} fro
 import {Dispatch} from '@@/plugin-dva/connect';
 import {connect} from '@@/plugin-dva/exports';
 import {history} from '@@/core/history';
+import style from './style.less';
 
 interface BookListPagePropsType {
   dispatch: Dispatch;
@@ -24,8 +24,8 @@ interface BookListPagePropsType {
 }
 
 function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
-  const {page, pageSize, count, filter, searchTags, selectedBooks} = bookList;
-  const [collectionType,setCollectionType] = useState<"vertical" | "horizon">("vertical")
+  const {page, pageSize, count, filter, searchTags, selectedBooks, showViewOption} = bookList;
+  const [collectionType,setCollectionType] = useState<"vertical" | "horizon">("horizon")
   const {dialogs} = dialog;
   const onPageChange = (toPage: number, toPageSize: number = 20) => {
     updateQueryParamAndReplaceURL({page: toPage, pageSize: toPageSize});
@@ -151,17 +151,18 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
           searchTags={searchTags}
           onTagSearch={onTagSearch}
         />
-        <div>
-          <Card>
-            <div className={style.toolHeader}>卡片样式</div>
-            <Radio.Group value={collectionType} onChange={(e) => setCollectionType(e.target.value)}>
-              <Radio.Button value="vertical">纵向</Radio.Button>
-              <Radio.Button value="horizon">横向</Radio.Button>
-            </Radio.Group>
-          </Card>
-        </div>
-
-
+        {
+          showViewOption &&
+          <div>
+            <Card>
+              <div className={style.toolHeader}>卡片样式</div>
+              <Radio.Group value={collectionType} onChange={(e) => setCollectionType(e.target.value)}>
+                <Radio.Button value="vertical">纵向</Radio.Button>
+                <Radio.Button value="horizon">横向</Radio.Button>
+              </Radio.Group>
+            </Card>
+          </div>
+        }
         <BooksCollection
           books={bookList.books}
           onSelectAction={onBookSelect}
