@@ -7,15 +7,19 @@ import styles from './style.less';
 interface PageCollectionPropsType {
   pages?: Page[];
   onDelete: (page: Page) => void;
-  onSetCover: (page: Page) => void;
   onSetOrderActionClick: (page: Page) => void;
+  selectedItems: any[];
+  onSelect: (id: any) => void;
+  onUnselect: (id: any) => void;
 }
 
 export default function PageCollection({
   pages = [],
   onDelete,
-  onSetCover,
   onSetOrderActionClick,
+  selectedItems = [],
+  onSelect,
+  onUnselect,
 }: PageCollectionPropsType) {
   const items = pages?.map((page: Page) => {
     return (
@@ -23,8 +27,10 @@ export default function PageCollection({
         <PageCard
           page={page}
           onDelete={onDelete}
-          onSetCover={onSetCover}
           onSetOrderActionClick={onSetOrderActionClick}
+          onSelect={() => onSelect(page.id)}
+          onUnSelect={() => onUnselect(page.id)}
+          isSelected={selectedItems.find(it => it === page.id) !== undefined}
         />
       </Col>
     );

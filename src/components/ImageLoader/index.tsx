@@ -11,8 +11,8 @@ export default function ImageLoader({ url, className, alt, ...props }: ImageLoad
   const [image, setImage] = useState<Blob>();
   useEffect(() => {
     if (url) {
-      imageRequest.get(url).then(image => {
-        setImage(image);
+      imageRequest.get(url).then(payloadImage => {
+        setImage(payloadImage);
       });
     }
   }, []);

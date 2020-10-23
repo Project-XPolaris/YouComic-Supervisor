@@ -1,10 +1,10 @@
 import { Page, pagesBatch, queryPages } from '@/services/page';
-import { Reducer } from 'redux';
-import { Effect, Subscription } from 'dva';
 import { ConnectState } from '@/models/connect';
 import { ListQueryContainer } from '@/services/base';
 import { sortBy } from 'lodash';
 import { createPaginationModule } from '@/modules/pagination';
+import { Effect, Reducer, Subscription } from '@@/plugin-dva/connect';
+import { createSelectItem } from '@/modules/select';
 
 const pathToRegexp = require('path-to-regexp');
 
@@ -34,12 +34,17 @@ export interface BookDetailPageModelType {
 }
 export const pagePaginationModule = createPaginationModule({
   dataName: 'page',
-  defaultPageSize: 3,
+  defaultPageSize: 10,
+});
+export const pageSelectModule = createSelectItem<string>({
+  dataName: 'page',
+  namespace: 'bookDetailPages',
 });
 const BookDetailPageModel: BookDetailPageModelType = {
   namespace: 'bookDetailPages',
   state: {
     ...pagePaginationModule.data,
+    ...pageSelectModule.state,
     count: 0,
   },
   subscriptions: {
@@ -73,7 +78,10 @@ const BookDetailPageModel: BookDetailPageModelType = {
         pageSize: pagePageSize,
         order: 'order',
       });
-      queryTagsResponse.result.forEach((pageItem: Page) => (pageItem.path = `${pageItem.path}`));
+      queryTagsResponse.result = queryTagsResponse.result.map((pageItem: Page) => ({
+        ...pageItem,
+        path: `${pageItem.path}`,
+      }));
       yield put({
         type: 'onQueryPageSuccess',
         payload: {
@@ -95,6 +103,7 @@ const BookDetailPageModel: BookDetailPageModelType = {
   },
   reducers: {
     ...pagePaginationModule.reducers,
+    ...pageSelectModule.reducers,
     onQueryPageSuccess(state, { payload }) {
       return {
         ...state,
@@ -108,7 +117,7 @@ const BookDetailPageModel: BookDetailPageModelType = {
       };
     },
     setPageOrder(state, { payload: { id, order } }) {
-      let pages: Page[] = state.pages;
+      const { pages } = state;
       const targetPage: Page = pages.find((page: Page) => page.id === id);
       targetPage.order = order;
       let newPages = [targetPage];
@@ -118,8 +127,10 @@ const BookDetailPageModel: BookDetailPageModelType = {
           if (newPages.find((inPage: Page) => inPage.order === page.order) === undefined) {
             newPages.push(page);
           } else {
-            page.order += 1;
-            newPages.push(page);
+            newPages.push({
+              ...page,
+              order: page.order + 1,
+            });
           }
         });
       newPages = sortBy(newPages, ['order']);

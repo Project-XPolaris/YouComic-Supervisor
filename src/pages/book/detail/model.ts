@@ -1,17 +1,16 @@
 import { Book, queryBooks } from '@/services/book';
-import { Effect, Subscription } from 'dva';
 import { ConnectState } from '@/models/connect';
 import { ListQueryContainer } from '@/services/base';
 import { getCoverThumbnailURL } from '@/utils/image';
-import { Reducer } from 'redux';
 import { RequestExtendResponse } from '@/utils/request';
-import { history } from 'umi';
+import { Effect, Reducer, Subscription } from '@@/plugin-dva/connect';
 
 const pathToRegexp = require('path-to-regexp');
 
 export interface DetailModelStateType {
   id: number;
   book?: Book;
+  showDescription: boolean;
 }
 
 export interface DetailModelType {
@@ -19,6 +18,7 @@ export interface DetailModelType {
   reducers: {
     setBookId: Reducer;
     onQueryBookSuccess: Reducer;
+    setShowDescription: Reducer;
   };
   state: DetailModelStateType;
   effects: {
@@ -33,6 +33,7 @@ const DetailModel: DetailModelType = {
   namespace: 'bookDetail',
   state: {
     id: 0,
+    showDescription: false,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -84,6 +85,12 @@ const DetailModel: DetailModelType = {
       return {
         ...state,
         book: payload.book,
+      };
+    },
+    setShowDescription(state, { payload: { isShow } }) {
+      return {
+        ...state,
+        showDescription: isShow,
       };
     },
   },

@@ -4,9 +4,8 @@ export const dva = {
       err.preventDefault();
       console.error(err.message);
     },
-
   },
-  plugins:[
-    require('dva-logger')(),
+  plugins: [
+    // require('dva-logger')(),
   ],
 };
