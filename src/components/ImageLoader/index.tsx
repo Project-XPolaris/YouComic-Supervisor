@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { imageRequest } from '@/utils/request';
-
+import React from 'react';
+import * as urijs from 'urijs';
+import ApplicationConfig from '@/config';
 interface ImageLoaderPropsType {
   url?: string;
   className: any;
@@ -8,20 +8,12 @@ interface ImageLoaderPropsType {
 }
 
 export default function ImageLoader({ url, className, alt, ...props }: ImageLoaderPropsType) {
-  const [image, setImage] = useState<Blob>();
-  useEffect(() => {
-    if (url) {
-      imageRequest.get(url).then(payloadImage => {
-        setImage(payloadImage);
-      });
-    }
-  }, []);
-  return (
-    <img
-      src={image !== undefined ? URL.createObjectURL(image) : ''}
-      className={className}
-      alt={alt}
-      {...props}
-    />
-  );
+  if (!url) {
+    return <div className={className} />;
+  }
+  const token = localStorage.getItem(ApplicationConfig.storeKey.token);
+  const link = urijs(url)
+    .addQuery('a', token)
+    .readable();
+  return <img src={link} className={className} alt={alt} {...props} />;
 }

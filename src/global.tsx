@@ -1,8 +1,8 @@
-import {Button, message, notification} from 'antd';
+import { Button, message, notification } from 'antd';
 
 import React from 'react';
 import defaultSettings from '../config/defaultSettings';
-import {formatMessage} from "umi";
+import { formatMessage } from 'umi';
 
 const { pwa } = defaultSettings;
 // if pwa is true
@@ -73,7 +73,7 @@ if (pwa) {
   });
 
   // remove all caches
-  if (window.caches && window.caches.keys) {
+  if (window.caches && window.caches.keys()) {
     caches.keys().then(keys => {
       keys.forEach(key => {
         caches.delete(key);

@@ -1,17 +1,17 @@
-import React from "react";
-import {connect} from "@@/plugin-dva/exports";
-import {Bar} from 'ant-design-pro/lib/Charts';
-import moment from "moment";
-import {ConnectState} from "@/models/connect";
-import {HomeModelStateType} from "@/pages/welcome/model";
-import {Card, Table} from "antd";
+import React from 'react';
+import { connect } from '@@/plugin-dva/exports';
+import moment from 'moment';
+import { ConnectState } from '@/models/connect';
+import { HomeModelStateType } from '@/pages/welcome/model';
+import { Card, Table } from 'antd';
 import style from './style.less';
+import { Bar } from 'ant-design-pro/lib/Charts';
 
 export interface BookDailyCardPropsType {
-  home: HomeModelStateType
+  home: HomeModelStateType;
 }
 
-const BookDailyCard = ({home}: BookDailyCardPropsType) => {
+const BookDailyCard = ({ home }: BookDailyCardPropsType) => {
   const salesData = [];
   for (let i = 0; i < 12; i += 1) {
     salesData.push({
@@ -20,55 +20,57 @@ const BookDailyCard = ({home}: BookDailyCardPropsType) => {
     });
   }
   const getData = () => {
-    const rawData = home.bookDailyCountList || []
-    const dataIndex = [...Array(7).keys()]
+    const rawData = home.bookDailyCountList || [];
+    const dataIndex = [...Array(7).keys()];
     return dataIndex.map(idx => {
-      const dateLabel = moment().subtract(idx, "days").format("YYYY-MM-DD")
-      const targetData = rawData.find(item => item.date === dateLabel)
+      const dateLabel = moment()
+        .subtract(idx, 'days')
+        .format('YYYY-MM-DD');
+      const targetData = rawData.find(item => item.date === dateLabel);
 
       if (targetData === undefined) {
         return {
           x: dateLabel,
-          y: 0
-        }
+          y: 0,
+        };
       }
       return {
         x: dateLabel,
-        y: targetData.total
-      }
-    })
-  }
+        y: targetData.total,
+      };
+    });
+  };
   return (
-    <Card style={{width:"100%"}} title="书籍">
+    <Card style={{ width: '100%' }} title="书籍">
       <div className={style.root}>
-        <Bar height={320} title="" data={getData()} autoLabel/>
-        <div style={{flexGrow: 1, width: "100%"}}>
+        <Bar height={320} title="" data={getData()} autoLabel />
+        <div style={{ flexGrow: 1, width: '100%' }}>
           <Table
             className={style.table}
             pagination={false}
             rowKey="id"
             columns={[
               {
-                key: "id",
-                title: "ID",
-                dataIndex: "id"
+                key: 'id',
+                title: 'ID',
+                dataIndex: 'id',
               },
               {
-                key: "name",
-                title: "标题",
-                dataIndex: "name"
+                key: 'name',
+                title: '标题',
+                dataIndex: 'name',
               },
               {
-                key: "library",
-                title: "Library",
-                dataIndex: "library_id"
+                key: 'library',
+                title: 'Library',
+                dataIndex: 'library_id',
               },
               {
-                key: "created_at",
-                title: "创建时间",
-                dataIndex: "created_at",
-                render:(value:Date) => moment(value).format("YYYY-MM-DD hh:mm:ss")
-              }
+                key: 'created_at',
+                title: '创建时间',
+                dataIndex: 'created_at',
+                render: (value: Date) => moment(value).format('YYYY-MM-DD hh:mm:ss'),
+              },
             ]}
             dataSource={home.recentlyBook || []}
           />
@@ -78,4 +80,4 @@ const BookDailyCard = ({home}: BookDailyCardPropsType) => {
   );
 };
 
-export default connect(({home}: ConnectState) => ({home}))(BookDailyCard);
+export default connect(({ home }: ConnectState) => ({ home }))(BookDailyCard);

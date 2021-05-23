@@ -1,7 +1,7 @@
 import { Reducer } from '@@/plugin-dva/connect';
 import { updateQueryParamAndReplaceURL } from '@/utils/uri';
 
-export interface PaginationModule<> {
+export interface PaginationModule {
   data: any;
   reducers: { [key: string]: Reducer };
   getData: (state: any) => any;

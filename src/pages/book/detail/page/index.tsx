@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import styles from './style.less';
 import PageCollection from '@/pages/book/detail/page/components/PageCollection';
 import { ConnectState } from '@/models/connect';
-import {
-  BookDetailPageModelStateType,
-  pagePaginationModule,
-  pageSelectModule,
-} from '@/pages/book/detail/page/model';
+import { BookDetailPageModelStateType, pagePaginationModule } from '@/pages/book/detail/page/model';
 import { Button, Pagination } from 'antd';
 import { DialogStateType } from '@/models/dialog';
 import PageOrderDialog from '@/pages/book/detail/page/components/PageOrderDialog';
@@ -67,14 +63,7 @@ function BookDetailPagesPage({ dispatch, bookDetailPages, dialog }: BookDetailPa
   return (
     <div className={styles.main}>
       <Button onClick={onApply}>应用当前顺序</Button>
-      <PageCollection
-        pages={pages}
-        onSetOrderActionClick={onSetOrderClick}
-        onDelete={() => {}}
-        selectedItems={pageSelectModule.getSelectedItems(bookDetailPages)}
-        onSelect={id => pageSelectModule.select(dispatch, id)}
-        onUnselect={id => pageSelectModule.unSelect(dispatch, id)}
-      />
+      <PageCollection pages={pages} onSetOrderActionClick={onSetOrderClick} onDelete={() => {}} />
 
       <PageOrderDialog
         isOpen={Boolean(dialogs[setOrderDialogKey])}

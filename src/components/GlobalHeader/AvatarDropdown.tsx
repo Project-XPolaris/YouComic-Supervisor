@@ -1,6 +1,5 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
-import { ClickParam } from 'antd/es/menu';
 import React from 'react';
 import { connect } from 'dva';
 import { history } from 'umi';
@@ -15,7 +14,7 @@ export interface GlobalHeaderRightProps extends ConnectProps {
 }
 
 class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
-  onMenuClick = (event: ClickParam) => {
+  onMenuClick = (event: any) => {
     const { key } = event;
 
     if (key === 'logout') {

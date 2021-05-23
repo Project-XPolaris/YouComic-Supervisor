@@ -4,7 +4,6 @@ import { ListQueryContainer } from '@/services/base';
 import { sortBy } from 'lodash';
 import { createPaginationModule } from '@/modules/pagination';
 import { Effect, Reducer, Subscription } from '@@/plugin-dva/connect';
-import { createSelectItem } from '@/modules/select';
 
 const pathToRegexp = require('path-to-regexp');
 
@@ -36,15 +35,15 @@ export const pagePaginationModule = createPaginationModule({
   dataName: 'page',
   defaultPageSize: 10,
 });
-export const pageSelectModule = createSelectItem<string>({
-  dataName: 'page',
-  namespace: 'bookDetailPages',
-});
+// export const pageSelectModule = createSelectItem<string>({
+//   dataName: 'page',
+//   namespace: 'bookDetailPages',
+// });
 const BookDetailPageModel: BookDetailPageModelType = {
   namespace: 'bookDetailPages',
   state: {
     ...pagePaginationModule.data,
-    ...pageSelectModule.state,
+    // ...pageSelectModule.state,
     count: 0,
   },
   subscriptions: {
@@ -103,7 +102,7 @@ const BookDetailPageModel: BookDetailPageModelType = {
   },
   reducers: {
     ...pagePaginationModule.reducers,
-    ...pageSelectModule.reducers,
+    // ...pageSelectModule.reducers,
     onQueryPageSuccess(state, { payload }) {
       return {
         ...state,

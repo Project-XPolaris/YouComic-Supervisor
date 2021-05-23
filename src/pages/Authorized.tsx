@@ -5,11 +5,11 @@ import Authorized from '@/utils/Authorized';
 import { getRouteAuthority } from '@/utils/utils';
 import { ConnectProps, ConnectState, UserModelState } from '@/models/connect';
 
-interface AuthComponentProps extends ConnectProps {
+interface AuthComponentProps {
   user: UserModelState;
 }
 
-const AuthComponent: React.FC<AuthComponentProps> = ({
+const AuthComponent: React.FC<AuthComponentProps & ConnectProps & any> = ({
   children,
   route = {
     routes: [],

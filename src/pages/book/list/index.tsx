@@ -1,20 +1,23 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import BooksCollection from '@/components/BookCollection';
-import {ConnectState} from '@/models/connect';
-import {BookListModelStateType} from '@/pages/book/list/model';
-import {BackTop, Pagination, Radio, Card} from 'antd';
-import {DialogStateType} from '@/models/dialog';
-import BookFilterDrawer, {BookFilter} from '@/pages/book/list/components/BookFilterDrawer';
-import {Book} from '@/services/book';
-import {encodeOrderToUrl, updateQueryParamAndReplaceURL} from '@/utils/uri';
-import {Snapshot} from '@/services/snapshot';
+import { ConnectState } from '@/models/connect';
+import { BookListModelStateType } from '@/pages/book/list/model';
+import { BackTop, Pagination, Radio, Card } from 'antd';
+import { DialogStateType } from '@/models/dialog';
+import BookFilterDrawer, { BookFilter } from '@/pages/book/list/components/BookFilterDrawer';
+import { Book } from '@/services/book';
+import { encodeOrderToUrl, updateQueryParamAndReplaceURL } from '@/utils/uri';
+import { Snapshot } from '@/services/snapshot';
 import SnapshotDialog from '@/components/SnapshotDialog';
-import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import {generateSnapshotId} from '@/utils/utils';
-import BookListHeaderAction, {AddToSnapshotDialogKey, BooksFilterDrawerKey,} from '@/pages/book/list/header';
-import {Dispatch} from '@@/plugin-dva/connect';
-import {connect} from '@@/plugin-dva/exports';
-import {history} from '@@/core/history';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { generateSnapshotId } from '@/utils/utils';
+import BookListHeaderAction, {
+  AddToSnapshotDialogKey,
+  BooksFilterDrawerKey,
+} from '@/pages/book/list/header';
+import { Dispatch } from '@@/plugin-dva/connect';
+import { connect } from '@@/plugin-dva/exports';
+import { history } from '@@/core/history';
 import style from './style.less';
 
 interface BookListPagePropsType {
@@ -23,12 +26,12 @@ interface BookListPagePropsType {
   dialog: DialogStateType;
 }
 
-function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
-  const {page, pageSize, count, filter, searchTags, selectedBooks, showViewOption} = bookList;
-  const [collectionType,setCollectionType] = useState<"vertical" | "horizon">("horizon")
-  const {dialogs} = dialog;
+function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
+  const { page, pageSize, count, filter, searchTags, selectedBooks, showViewOption } = bookList;
+  const [collectionType, setCollectionType] = useState<'vertical' | 'horizon'>('vertical');
+  const { dialogs } = dialog;
   const onPageChange = (toPage: number, toPageSize: number = 20) => {
-    updateQueryParamAndReplaceURL({page: toPage, pageSize: toPageSize});
+    updateQueryParamAndReplaceURL({ page: toPage, pageSize: toPageSize });
   };
 
   const onCloseFilterDrawer = () => {
@@ -133,9 +136,9 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
   };
 
   return (
-    <PageHeaderWrapper extra={<BookListHeaderAction/>}>
+    <PageHeaderWrapper extra={<BookListHeaderAction />}>
       <div>
-        <BackTop/>
+        <BackTop />
         <div className={style.filterWrap}>
           <SnapshotDialog
             onOk={onAddToSnapshotClick}
@@ -151,18 +154,17 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
           searchTags={searchTags}
           onTagSearch={onTagSearch}
         />
-        {
-          showViewOption &&
+        {showViewOption && (
           <div>
             <Card>
               <div className={style.toolHeader}>卡片样式</div>
-              <Radio.Group value={collectionType} onChange={(e) => setCollectionType(e.target.value)}>
+              <Radio.Group value={collectionType} onChange={e => setCollectionType(e.target.value)}>
                 <Radio.Button value="vertical">纵向</Radio.Button>
                 <Radio.Button value="horizon">横向</Radio.Button>
               </Radio.Group>
             </Card>
           </div>
-        }
+        )}
         <BooksCollection
           books={bookList.books}
           onSelectAction={onBookSelect}
@@ -185,7 +187,7 @@ function BookListPage({dispatch, bookList, dialog}: BookListPagePropsType) {
   );
 }
 
-export default connect(({bookList, dialog, loading}: ConnectState) => ({
+export default connect(({ bookList, dialog, loading }: ConnectState) => ({
   bookList,
   dialog,
   loading,

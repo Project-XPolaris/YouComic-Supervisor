@@ -1,5 +1,5 @@
 import { defineConfig } from 'umi';
- // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
+// preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
 export default defineConfig({
@@ -27,13 +27,7 @@ export default defineConfig({
           routes: [
             {
               path: '/',
-              redirect: './welcome',
-            },
-            {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './welcome/index',
+              redirect: './books/list',
             },
             {
               path: '/book/:id',
@@ -161,7 +155,6 @@ export default defineConfig({
               authority: ['admin'],
             },
 
-
             {
               component: './404',
             },
@@ -193,9 +186,7 @@ export default defineConfig({
   //   loading: '@/components/PageLoading/index',
   // },
   dva: {},
-  antd: {
-
-  },
+  antd: {},
   history: { type: 'hash' },
   locale: {
     // default zh-CN

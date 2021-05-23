@@ -1,8 +1,8 @@
-import {Effect} from 'dva';
-import {Reducer} from 'redux';
-import simpleJWT from 'jwt-simple'
-import ApplicationConfig from "@/config";
-import {getUser, User} from "@/services/user";
+import { Effect } from 'dva';
+import { Reducer } from 'redux';
+import ApplicationConfig from '@/config';
+import { getUser, User } from '@/services/user';
+
 export interface CurrentUser {
   avatar?: string;
   name?: string;
@@ -68,8 +68,8 @@ const UserModel: UserModelType = {
       });
     },
     *fetchCurrent(_, { call, put }) {
-      const userId = Number(localStorage.getItem(ApplicationConfig.storeKey.userId))
-      const currentUser : User = yield call(getUser,{id:userId})
+      const userId = Number(localStorage.getItem(ApplicationConfig.storeKey.userId));
+      const currentUser: User = yield call(getUser, { id: userId });
 
       yield put({
         type: 'saveCurrentUser',

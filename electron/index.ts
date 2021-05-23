@@ -1,5 +1,5 @@
-import { app, BrowserWindow } from "electron";
-import * as path from "path";
+import { app, BrowserWindow } from 'electron';
+import * as path from 'path';
 import * as url from 'url';
 
 function createWindow() {
@@ -7,14 +7,14 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     height: 900,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      webSecurity:false
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false,
     },
     backgroundColor: '#2e2c29',
-    darkTheme:true,
-    title:"YouComic Supervisor",
+    darkTheme: true,
+    title: 'YouComic Supervisor',
     width: 1700,
-    frame:true
+    frame: true,
   });
   if (process.env.NODE_ENV === 'development') {
     if (process.env.DEV_TOOLS) {
@@ -28,20 +28,20 @@ function createWindow() {
         pathname: path.join(__dirname, './dist/index.html'),
         protocol: 'file:',
         slashes: true,
-      })
+      }),
     );
   }
 
-  mainWindow.setMenu(null)
+  mainWindow.setMenu(null);
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", () => {
+app.on('ready', () => {
   createWindow();
 
-  app.on("activate", function () {
+  app.on('activate', function() {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -51,8 +51,8 @@ app.on("ready", () => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
