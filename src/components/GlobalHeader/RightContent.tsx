@@ -1,7 +1,7 @@
-import { Dropdown, Tooltip } from 'antd';
+import { Badge, Dropdown, Tooltip } from 'antd';
 import React from 'react';
 import { connect, Dispatch } from 'dva';
-import { ConnectProps, ConnectState } from '@/models/connect';
+import { ConnectProps, ConnectState, GlobalModelState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
@@ -10,6 +10,8 @@ import ClockIcon from '@ant-design/icons/ClockCircleFilled';
 import SideCollection, { sideCollectionKey } from '@/components/SideCollection';
 import SnapshotList from '@/components/SnapshotList';
 import style from './style.less';
+import { ContainerOutlined } from '@ant-design/icons';
+import TaskList from '@/components/GlobalHeader/TaskList';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -17,6 +19,7 @@ export interface GlobalHeaderRightProps {
   theme?: SiderTheme;
   layout: 'sidemenu' | 'topmenu';
   dispatch: Dispatch;
+  global: GlobalModelState;
 }
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = props => {
@@ -35,10 +38,20 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = prop
       },
     });
   };
+  const renderContent = () => {
+    return <TaskList />;
+  };
   return (
     <div className={className} style={{ width: '100%' }}>
-      <div className={style.dragZone}></div>
+      <div className={style.dragZone} />
       <SideCollection />
+      <Dropdown overlay={renderContent()} trigger={['click']}>
+        <a className={styles.action}>
+          <Badge count={props.global.tasks.length}>
+            <ContainerOutlined />
+          </Badge>
+        </a>
+      </Dropdown>
       <Dropdown overlay={<SnapshotList />}>
         <a className={styles.action}>
           <ClockIcon />
@@ -55,8 +68,9 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = prop
   );
 };
 
-export default connect(({ settings, dialog }: ConnectState) => ({
+export default connect(({ settings, dialog, global }: ConnectState) => ({
   theme: settings.navTheme,
   layout: settings.layout,
   dialog,
+  global,
 }))(GlobalHeaderRight);
