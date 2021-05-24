@@ -1,17 +1,19 @@
-import {Reducer} from 'redux';
-import {Effect, Subscription} from 'dva';
-import {differenceWith} from 'lodash'
-import {NoticeIconData} from '@/components/NoticeIcon';
-import {ConnectState} from './connect.d';
-import {addSnapshots, getSnapshot, removeSnapshotById, Snapshot} from "@/services/snapshot";
-import {message} from "antd";
+import { Reducer } from 'redux';
+import { Effect, Subscription } from 'dva';
+import { differenceWith } from 'lodash';
+import { NoticeIconData } from '@/components/NoticeIcon';
+import { ConnectState } from './connect.d';
+import { addSnapshots, getSnapshot, removeSnapshotById, Snapshot } from '@/services/snapshot';
+import { message } from 'antd';
+import ApplicationConfig from '@/config';
+import { Task } from '@/services/task';
 
 export interface RecentlyViewListItem {
-  id:string
-  icon: any
-  link: string
-  title: string
-  linkType:string
+  id: string;
+  icon: any;
+  link: string;
+  title: string;
+  linkType: string;
 }
 
 export interface NoticeItem extends NoticeIconData {
@@ -20,12 +22,12 @@ export interface NoticeItem extends NoticeIconData {
   status: string;
 }
 
-
 export interface GlobalModelState {
   collapsed: boolean;
   notices: NoticeItem[];
-  historyItem: RecentlyViewListItem[]
-  snapshots: Snapshot[]
+  historyItem: RecentlyViewListItem[];
+  snapshots: Snapshot[];
+  tasks: Task[];
 }
 
 export interface GlobalModelType {
@@ -35,39 +37,40 @@ export interface GlobalModelType {
     fetchNotices: Effect;
     clearNotices: Effect;
     changeNoticeReadState: Effect;
-    addSnapshots: Effect
-    refreshSnapshot:Effect
-    removeSnapshot:Effect
+    addSnapshots: Effect;
+    refreshSnapshot: Effect;
+    removeSnapshot: Effect;
   };
   reducers: {
     changeLayoutCollapsed: Reducer;
-    addToHistory: Reducer
-    setSnapshots: Reducer
+    addToHistory: Reducer;
+    setSnapshots: Reducer;
+    setTasks: Reducer;
   };
   subscriptions: { setup: Subscription };
 }
 
 const GlobalModel: GlobalModelType = {
   namespace: 'global',
-
   state: {
     collapsed: false,
     notices: [],
     historyItem: [],
-    snapshots:[]
+    snapshots: [],
+    tasks: [],
   },
 
   effects: {
-    * fetchNotices(_, {call, put, select}) {
+    *fetchNotices(_, { call, put, select }) {
       yield put({
         type: 'user/changeNotifyCount',
         payload: {
           totalCount: 0,
-          unreadCount:0,
+          unreadCount: 0,
         },
       });
     },
-    * clearNotices({payload}, {put, select}) {
+    *clearNotices({ payload }, { put, select }) {
       yield put({
         type: 'saveClearedNotices',
         payload,
@@ -84,10 +87,10 @@ const GlobalModel: GlobalModelType = {
         },
       });
     },
-    * changeNoticeReadState({payload}, {put, select}) {
+    *changeNoticeReadState({ payload }, { put, select }) {
       const notices: NoticeItem[] = yield select((state: ConnectState) =>
         state.global.notices.map(item => {
-          const notice = {...item};
+          const notice = { ...item };
           if (notice.id === payload) {
             notice.read = true;
           }
@@ -108,69 +111,91 @@ const GlobalModel: GlobalModelType = {
         },
       });
     },
-    *addSnapshots({payload: {snapshotList}}, {call, put, select}) {
-      yield call(addSnapshots, {snapshots:snapshotList});
-      message.success(`添加了 ${snapshotList[0].name} 等${snapshotList.length}个快照`)
+    *addSnapshots({ payload: { snapshotList } }, { call, put, select }) {
+      yield call(addSnapshots, { snapshots: snapshotList });
+      message.success(`添加了 ${snapshotList[0].name} 等${snapshotList.length}个快照`);
       yield put({
-        type:"refreshSnapshot"
-      })
+        type: 'refreshSnapshot',
+      });
     },
-    *refreshSnapshot(_,{call,put}){
-      let snapshots : Snapshot[] = yield call(getSnapshot,{});
-      if (snapshots === null){
-        snapshots = []
+    *refreshSnapshot(_, { call, put }) {
+      let snapshots: Snapshot[] = yield call(getSnapshot, {});
+      if (snapshots === null) {
+        snapshots = [];
       }
       yield put({
-        type:"setSnapshots",
-        payload:{
-          snapshots
-        }
-      })
+        type: 'setSnapshots',
+        payload: {
+          snapshots,
+        },
+      });
     },
-    *removeSnapshot({payload:{ids}},{call,put}){
-      yield call(removeSnapshotById,{ids});
+    *removeSnapshot({ payload: { ids } }, { call, put }) {
+      yield call(removeSnapshotById, { ids });
       yield put({
-        type:"refreshSnapshot"
-      })
-    }
+        type: 'refreshSnapshot',
+      });
+    },
   },
 
   reducers: {
-    changeLayoutCollapsed(state = {notices: [], collapsed: true}, {payload}): GlobalModelState {
+    changeLayoutCollapsed(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
       return {
         ...state,
         collapsed: payload,
       };
     },
-    addToHistory(state: GlobalModelState, {payload: {items}}): GlobalModelState {
+    addToHistory(state: GlobalModelState, { payload: { items } }): GlobalModelState {
       return {
         ...state,
         historyItem: [
           ...items,
-          ...differenceWith<RecentlyViewListItem, RecentlyViewListItem>(state.historyItem, items, (a: RecentlyViewListItem, b: RecentlyViewListItem) => a.link === b.link)
-        ]
-      }
+          ...differenceWith<RecentlyViewListItem, RecentlyViewListItem>(
+            state.historyItem,
+            items,
+            (a: RecentlyViewListItem, b: RecentlyViewListItem) => a.link === b.link,
+          ),
+        ],
+      };
     },
-    setSnapshots(state: GlobalModelState, {payload: {snapshots}}): GlobalModelState {
+    setSnapshots(state: GlobalModelState, { payload: { snapshots } }): GlobalModelState {
       return {
         ...state,
-        snapshots
-      }
-    }
-
+        snapshots,
+      };
+    },
+    setTasks(state: GlobalModelState, { payload: { tasks } }): GlobalModelState {
+      return {
+        ...state,
+        tasks,
+      };
+    },
   },
 
   subscriptions: {
-    setup({dispatch,history}): void {
-      // Subscribe history(url) change, trigger `load` action if pathname is `/`
-      history.listen(({pathname, search}): void => {
+    setup({ dispatch, history }): void {
+      history.listen(({ pathname, search }): void => {
         if (typeof window.ga !== 'undefined') {
           window.ga('send', 'pageview', pathname + search);
         }
         dispatch({
-          type:"refreshSnapshot"
-        })
+          type: 'refreshSnapshot',
+        });
       });
+      const token = localStorage.getItem(ApplicationConfig.storeKey.token);
+      const apiUrl = localStorage.getItem(ApplicationConfig.storeKey.apiurl);
+      if (token && apiUrl) {
+        const uri = new URL(apiUrl);
+        const ws = new WebSocket(`ws://${uri.host}/ws?a=${token}`);
+        ws.onmessage = message => {
+          dispatch({
+            type: 'setTasks',
+            payload: {
+              tasks: JSON.parse(message.data).data.reverse(),
+            },
+          });
+        };
+      }
     },
   },
 };
