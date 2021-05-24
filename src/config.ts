@@ -26,6 +26,7 @@ const ApplicationConfig = {
     userPassword: '/user/password',
     libraries: '/libraries',
     library: '/library/:id',
+    scanLibrary: '/library/:id/scan',
     libraryImport: '/library/import',
     scanTask: '/scan/tasks',
     bookDailyCount: '/dashboard/book/daily',
