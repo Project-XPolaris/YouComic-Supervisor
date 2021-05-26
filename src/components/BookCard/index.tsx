@@ -6,6 +6,7 @@ import { getBookTagInfo } from '@/utils/book';
 import CheckIcon from '@ant-design/icons/CheckOutlined';
 import FolderIcon from '@ant-design/icons/FolderFilled';
 import ImageLoader from '@/components/ImageLoader';
+import { EditOutlined } from '@ant-design/icons';
 
 interface BookCardPropsType {
   book: Book;
@@ -39,6 +40,10 @@ export default function BookCard({
         <FolderIcon />
         加入集合
       </Menu.Item>
+      <Menu.Item key="3" onClick={onMenuItemAddToCollection}>
+        <EditOutlined />
+        从文件名解析
+      </Menu.Item>
     </Menu>
   );
   const onBookCardClick = () => {
@@ -65,7 +70,7 @@ export default function BookCard({
             {book.name}
           </div>
           <div id="author" className={isSelected ? styles.authorSelected : styles.author}>
-            {author?.name || ""}
+            {author?.name || ''}
           </div>
         </div>
       </Card>

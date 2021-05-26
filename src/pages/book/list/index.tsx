@@ -19,6 +19,7 @@ import { Dispatch } from '@@/plugin-dva/connect';
 import { connect } from '@@/plugin-dva/exports';
 import { history } from '@@/core/history';
 import style from './style.less';
+import MatchTagDialog, { MatchTag } from '@/components/MatchTagDialog';
 
 interface BookListPagePropsType {
   dispatch: Dispatch;
@@ -28,7 +29,7 @@ interface BookListPagePropsType {
 
 function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
   const { page, pageSize, count, filter, searchTags, selectedBooks, showViewOption } = bookList;
-  const [collectionType, setCollectionType] = useState<'vertical' | 'horizon'>('vertical');
+  const [collectionType, setCollectionType] = useState<'vertical' | 'horizon'>('horizon');
   const { dialogs } = dialog;
   const onPageChange = (toPage: number, toPageSize: number = 20) => {
     updateQueryParamAndReplaceURL({ page: toPage, pageSize: toPageSize });
@@ -134,9 +135,37 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
     });
     onAddToSnapshotDialogCancel();
   };
-
+  const onMatchNameDialogOk = (title: string | undefined, tags: MatchTag[]) => {
+    dispatch({
+      type: 'bookList/closeMatchNameDialog',
+    });
+    if (!bookList.contextBook) {
+      return;
+    }
+    if (title) {
+      dispatch({
+        type: 'bookList/updateBookTitle',
+        payload: {
+          id: bookList.contextBook?.id,
+          title,
+        },
+      });
+    }
+  };
   return (
     <PageHeaderWrapper extra={<BookListHeaderAction />}>
+      {bookList.isMatchDialogOpen && (
+        <MatchTagDialog
+          visible
+          onMatchOk={onMatchNameDialogOk}
+          onCancel={() =>
+            dispatch({
+              type: 'bookList/closeMatchNameDialog',
+            })
+          }
+          text={bookList.contextBook?.dirName}
+        />
+      )}
       <div>
         <BackTop />
         <div className={style.filterWrap}>
@@ -172,6 +201,9 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
           onAddToCollectionAction={onAddBookToSideCollection}
           onBookClick={onBookClick}
           type={collectionType}
+          onParseFromName={book => {
+            dispatch({ type: 'bookList/openMatchNameDialog', payload: { book } });
+          }}
         />
         <div className={style.pageWrap}>
           <Pagination
