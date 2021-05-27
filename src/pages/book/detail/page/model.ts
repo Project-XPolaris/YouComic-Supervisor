@@ -75,7 +75,7 @@ const BookDetailPageModel: BookDetailPageModelType = {
         book: id,
         page: pagePage,
         pageSize: pagePageSize,
-        order: 'order',
+        order: 'page_order',
       });
       queryTagsResponse.result = queryTagsResponse.result.map((pageItem: Page) => ({
         ...pageItem,

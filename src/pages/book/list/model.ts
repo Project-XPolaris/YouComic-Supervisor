@@ -50,7 +50,7 @@ export interface BookListModelType {
     searchTags: Effect;
     getFilterTag: Effect;
     deleteSelectedBooks: Effect;
-    updateBookTitle: Effect;
+    updateBook: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -122,7 +122,7 @@ const BookListModel: BookListModelType = {
     },
   },
   effects: {
-    *queryBooks(_, { call, put, select }) {
+    * queryBooks(_, { call, put, select }) {
       const { page, pageSize, filter } = yield select((state: ConnectState) => state.bookList);
       let orderString = filter.order
         .map(
@@ -155,7 +155,7 @@ const BookListModel: BookListModelType = {
         },
       });
     },
-    *searchTags({ payload: { searchKey, type } }, { call, put, select }) {
+    * searchTags({ payload: { searchKey, type } }, { call, put, select }) {
       let bookListModelState: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
@@ -182,7 +182,7 @@ const BookListModel: BookListModelType = {
         });
       }
     },
-    *getFilterTag(_, { call, put, select }) {
+    * getFilterTag(_, { call, put, select }) {
       const { filter }: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
@@ -211,7 +211,7 @@ const BookListModel: BookListModelType = {
         },
       });
     },
-    *deleteSelectedBooks({ payload: { permanently } }, { call, put, select }) {
+    * deleteSelectedBooks({ payload: { permanently } }, { call, put, select }) {
       const { selectedBooks }: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
@@ -229,8 +229,9 @@ const BookListModel: BookListModelType = {
       });
       message.success(`已删除${selectedBooks.length}个项目`);
     },
-    *updateBookTitle({ payload: { id, title } }, { call, put }) {
-      yield call(updateBook, { id, update: { name: title } });
+    * updateBook({ payload }, { call, put }) {
+      const { id, title, tags }: { id: string, title: string, tags: { name: string, type: string }[] } = payload;
+      yield call(updateBook, { id, update: { name: title,updateTags:tags } });
       yield put({
         type: 'queryBooks',
       });

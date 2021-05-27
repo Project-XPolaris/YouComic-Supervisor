@@ -144,10 +144,11 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
     }
     if (title) {
       dispatch({
-        type: 'bookList/updateBookTitle',
+        type: 'bookList/updateBook',
         payload: {
           id: bookList.contextBook?.id,
           title,
+          tags
         },
       });
     }

@@ -3,20 +3,22 @@ import style from './style.less';
 import { Checkbox, Input, List, Modal, ModalProps, Typography } from 'antd';
 import { matchTagInfo } from '@/utils/match';
 import { useSet } from 'ahooks';
+
 export interface MatchTag {
   name: string;
-  value: string;
+  type: string;
 }
+
 export interface MatchTagDialogProps {
   onMatchOk: (title: string | undefined, tags: MatchTag[]) => void;
   text?: string;
 }
 
 const MatchTagDialog = ({
-  onMatchOk,
-  text = '',
-  ...props
-}: MatchTagDialogProps & ModalProps): ReactElement => {
+                          onMatchOk,
+                          text = '',
+                          ...props
+                        }: MatchTagDialogProps & ModalProps): ReactElement => {
   const [value, setValue] = useState(text);
   const [_, { add, has, remove }] = useSet(['Artist', 'Title', 'Series', 'Theme', 'Translator']);
   const result = matchTagInfo(value);
@@ -53,26 +55,26 @@ const MatchTagDialog = ({
     }
     if (result.artist && has('Artist')) {
       tags.push({
-        name: 'artist',
-        value: result.artist,
+        name: result.artist,
+        type: 'artist',
       });
     }
     if (result.series && has('Series')) {
       tags.push({
-        name: 'series',
-        value: result.series,
+        name: result.series,
+        type: 'series',
       });
     }
     if (result.theme && has('Theme')) {
       tags.push({
-        name: 'theme',
-        value: result.theme,
+        name: result.theme,
+        type:  'theme',
       });
     }
     if (result.translator && has('Translator')) {
       tags.push({
-        name: 'translator',
-        value: result.translator,
+        name: result.translator,
+        type: 'translator',
       });
     }
     onMatchOk(title, tags);
