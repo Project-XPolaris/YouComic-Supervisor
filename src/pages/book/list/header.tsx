@@ -1,115 +1,126 @@
 import React from 'react';
-import {connect, Dispatch} from 'dva';
-import {Button, Dropdown, Menu, message, Modal} from "antd";
-import MenuIcon from "@ant-design/icons/MenuOutlined"
-import SelectAllIcon from '@ant-design/icons/CheckOutlined'
-import UnSelectAllIcon from '@ant-design/icons/MinusOutlined'
-import RevertSelectIcon from '@ant-design/icons/ReloadOutlined'
-import AddToCollectionIcon from '@ant-design/icons/FolderFilled'
-import RemoveBookIcon from '@ant-design/icons/DeleteFilled'
-import RemoveBookPermanentlyIcon from '@ant-design/icons/FileExcelFilled'
-import {ConnectState} from "@/models/connect";
-import style from "@/pages/book/list/style.less";
-import {BookListModelStateType} from "@/pages/book/list/model";
+import { connect, Dispatch } from 'dva';
+import { Button, Dropdown, Menu, message, Modal } from 'antd';
+import MenuIcon from '@ant-design/icons/MenuOutlined';
+import SelectAllIcon from '@ant-design/icons/CheckOutlined';
+import UnSelectAllIcon from '@ant-design/icons/MinusOutlined';
+import RevertSelectIcon from '@ant-design/icons/ReloadOutlined';
+import AddToCollectionIcon from '@ant-design/icons/FolderFilled';
+import RemoveBookIcon from '@ant-design/icons/DeleteFilled';
+import RemoveBookPermanentlyIcon from '@ant-design/icons/FileExcelFilled';
+import { ConnectState } from '@/models/connect';
+import style from '@/pages/book/list/style.less';
+import { BookListModelStateType } from '@/pages/book/list/model';
 
-import {Book} from "@/services/book";
-import {FilterOutlined, HistoryOutlined, UnorderedListOutlined} from "@ant-design/icons";
+import { Book } from '@/services/book';
+import {
+  EditOutlined,
+  FilterOutlined,
+  HistoryOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
 
-const {confirm} = Modal
-export const BooksFilterDrawerKey = "bookList/filterDrawer";
-export const AddToSnapshotDialogKey = "bookList/addToSnapshot"
+const { confirm } = Modal;
+export const BooksFilterDrawerKey = 'bookList/filterDrawer';
+export const AddToSnapshotDialogKey = 'bookList/addToSnapshot';
 
 interface BookListHeaderActionPropsType {
-  dispatch:Dispatch
-  bookList:BookListModelStateType
+  dispatch: Dispatch;
+  bookList: BookListModelStateType;
 }
 
-function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType) {
-  const {selectedBooks,showViewOption} = bookList
+function BookListHeaderAction({ dispatch, bookList }: BookListHeaderActionPropsType) {
+  const { selectedBooks, showViewOption } = bookList;
   const onOpenFilterDrawer = () => {
     dispatch({
-      type: "dialog/setDialogActive",
+      type: 'dialog/setDialogActive',
       payload: {
         key: BooksFilterDrawerKey,
-        isActive: true
-      }
-    })
+        isActive: true,
+      },
+    });
   };
   const onAddToSnapshotButtonClick = () => {
     dispatch({
-      type: "dialog/setDialogActive",
+      type: 'dialog/setDialogActive',
       payload: {
         key: AddToSnapshotDialogKey,
-        isActive: true
-      }
-    })
+        isActive: true,
+      },
+    });
   };
   const onSelectAllBooks = () => {
     dispatch({
-      type: "bookList/setSelectedBookIds",
+      type: 'bookList/setSelectedBookIds',
       payload: {
-        books: bookList.books
-      }
-    })
+        books: bookList.books,
+      },
+    });
   };
   const onAddMultipleBookToCollection = () => {
     if (selectedBooks.length === 0) {
-      return
+      return;
     }
     dispatch({
-      type: "sideCollection/addBookToCollection",
+      type: 'sideCollection/addBookToCollection',
       payload: {
-        books: selectedBooks
-      }
+        books: selectedBooks,
+      },
     });
-    message.success(`添加${selectedBooks[0].name} 等${selectedBooks.length}添加至集合`)
+    message.success(`添加${selectedBooks[0].name} 等${selectedBooks.length}添加至集合`);
   };
   const onInverseSelectBooks = () => {
     dispatch({
-      type: "bookList/setSelectedBookIds",
+      type: 'bookList/setSelectedBookIds',
       payload: {
-        books: bookList.books?.filter((book: Book) => selectedBooks.find(selectedBook => selectedBook.id === book.id) === undefined)
-      }
-    })
+        books: bookList.books?.filter(
+          (book: Book) =>
+            selectedBooks.find(selectedBook => selectedBook.id === book.id) === undefined,
+        ),
+      },
+    });
   };
   const onUnSelectBooks = () => {
     dispatch({
-      type: "bookList/setSelectedBookIds",
+      type: 'bookList/setSelectedBookIds',
       payload: {
-        books: []
-      }
-    })
+        books: [],
+      },
+    });
   };
   const onDeleteBook = () => {
     confirm({
-      title:"删除确认",
-      content:`是否要删除所选的${selectedBooks.length}项`,
-      onOk:() => {
+      title: '删除确认',
+      content: `是否要删除所选的${selectedBooks.length}项`,
+      onOk: () => {
         dispatch({
-          type:"bookList/deleteSelectedBooks",
-          payload:{
-
-          }
-        })
-      }
-    })
-  }
+          type: 'bookList/deleteSelectedBooks',
+          payload: {},
+        });
+      },
+    });
+  };
   const onDeletePermanentlyBook = () => {
     confirm({
-      title:"删除确认",
-      content:`是否要永久删除所选的${selectedBooks.length}项，永久删除不可恢复`,
-      onOk:() => {
+      title: '删除确认',
+      content: `是否要永久删除所选的${selectedBooks.length}项，永久删除不可恢复`,
+      onOk: () => {
         dispatch({
-          type:"bookList/deleteSelectedBooks",
-          payload:{
-            permanently:"true"
-          }
-        })
-      }
-    })
-  }
+          type: 'bookList/deleteSelectedBooks',
+          payload: {
+            permanently: 'true',
+          },
+        });
+      },
+    });
+  };
+  const matchSelectBook = () => {
+    dispatch({
+      type: 'bookList/matchSelectBook',
+    });
+  };
   const menu = (
-    <Menu >
+    <Menu>
       <Menu.Item key="1" onClick={onSelectAllBooks}>
         <SelectAllIcon />
         全选
@@ -126,7 +137,7 @@ function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType
         <AddToCollectionIcon />
         添加至集合
       </Menu.Item>
-      <Menu.Divider/>
+      <Menu.Divider />
       <Menu.Item key="5" onClick={onDeleteBook}>
         <RemoveBookIcon />
         删除书籍
@@ -135,32 +146,52 @@ function BookListHeaderAction({dispatch,bookList}: BookListHeaderActionPropsType
         <RemoveBookPermanentlyIcon />
         永久删除书籍
       </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="7" onClick={matchSelectBook}>
+        <EditOutlined />
+        批量匹配标签
+      </Menu.Item>
     </Menu>
   );
   const onSwitchViewOption = () => {
     dispatch({
-      type:"bookList/setShowViewOption",
-      payload:{
-        isShow:!showViewOption
-      }
-    })
-  }
+      type: 'bookList/setShowViewOption',
+      payload: {
+        isShow: !showViewOption,
+      },
+    });
+  };
   return (
     <>
-      {
-        bookList.selectedBooks.length > 0 &&
+      {bookList.selectedBooks.length > 0 && (
         <Dropdown overlay={menu}>
           <Button type="primary">
-            {`已选${bookList.selectedBooks.length}项`} <MenuIcon/>
+            {`已选${bookList.selectedBooks.length}项`} <MenuIcon />
           </Button>
         </Dropdown>
-      }
+      )}
 
-      <Button type="primary" onClick={onOpenFilterDrawer} key={1} icon={<FilterOutlined />}>过滤器</Button>
-      <Button className={style.actionButton} onClick={onAddToSnapshotButtonClick} key={2} icon={<HistoryOutlined />}>添加至快照</Button>
-      <Button className={style.actionButton} onClick={onSwitchViewOption} key={3} icon={<UnorderedListOutlined />}>列表选项</Button>
+      <Button type="primary" onClick={onOpenFilterDrawer} key={1} icon={<FilterOutlined />}>
+        过滤器
+      </Button>
+      <Button
+        className={style.actionButton}
+        onClick={onAddToSnapshotButtonClick}
+        key={2}
+        icon={<HistoryOutlined />}
+      >
+        添加至快照
+      </Button>
+      <Button
+        className={style.actionButton}
+        onClick={onSwitchViewOption}
+        key={3}
+        icon={<UnorderedListOutlined />}
+      >
+        列表选项
+      </Button>
     </>
   );
 }
 
-export default connect(({bookList}:ConnectState) => ({bookList}))(BookListHeaderAction)
+export default connect(({ bookList }: ConnectState) => ({ bookList }))(BookListHeaderAction);

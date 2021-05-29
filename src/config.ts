@@ -4,6 +4,7 @@ const ApplicationConfig = {
     BookTagsURL: '/book/:id/tags',
     BookTagURL: '/book/:id/tag/:tag',
     Book: '/book/:id',
+    bookBatch: '/books/batch',
     TagBooksURL: '/tag/:id/books',
     PagesURL: '/pages',
     auth: '/user/auth',

@@ -61,3 +61,9 @@ export function DeleteBook({ id, permanently }: { id: number; permanently: strin
     },
   });
 }
+
+export const bookBatch = ({ data }: { data: any }) =>
+  apiRequest(ApplicationConfig.api.bookBatch, {
+    method: 'post',
+    data,
+  });

@@ -1,6 +1,6 @@
 import { Effect, Subscription } from 'dva';
 import { Reducer } from 'redux';
-import { Book, DeleteBook, queryBooks, updateBook } from '@/services/book';
+import { Book, bookBatch, DeleteBook, queryBooks, updateBook } from '@/services/book';
 import { ListQueryContainer } from '@/services/base';
 import { ConnectState } from '@/models/connect';
 import { getCoverThumbnailURL } from '@/utils/image';
@@ -9,6 +9,7 @@ import { queryTags, Tag } from '@/services/tag';
 import { getOrdersFromUrlQuery } from '@/utils/uri';
 import { differenceWith } from 'lodash';
 import { message } from 'antd';
+import { matchTagInfo } from '@/utils/match';
 
 export interface BookListModelStateType {
   books?: Book[];
@@ -51,6 +52,7 @@ export interface BookListModelType {
     getFilterTag: Effect;
     deleteSelectedBooks: Effect;
     updateBook: Effect;
+    matchSelectBook: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -122,7 +124,7 @@ const BookListModel: BookListModelType = {
     },
   },
   effects: {
-    * queryBooks(_, { call, put, select }) {
+    *queryBooks(_, { call, put, select }) {
       const { page, pageSize, filter } = yield select((state: ConnectState) => state.bookList);
       let orderString = filter.order
         .map(
@@ -155,7 +157,7 @@ const BookListModel: BookListModelType = {
         },
       });
     },
-    * searchTags({ payload: { searchKey, type } }, { call, put, select }) {
+    *searchTags({ payload: { searchKey, type } }, { call, put, select }) {
       let bookListModelState: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
@@ -182,7 +184,7 @@ const BookListModel: BookListModelType = {
         });
       }
     },
-    * getFilterTag(_, { call, put, select }) {
+    *getFilterTag(_, { call, put, select }) {
       const { filter }: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
@@ -211,7 +213,7 @@ const BookListModel: BookListModelType = {
         },
       });
     },
-    * deleteSelectedBooks({ payload: { permanently } }, { call, put, select }) {
+    *deleteSelectedBooks({ payload: { permanently } }, { call, put, select }) {
       const { selectedBooks }: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
@@ -229,12 +231,72 @@ const BookListModel: BookListModelType = {
       });
       message.success(`已删除${selectedBooks.length}个项目`);
     },
-    * updateBook({ payload }, { call, put }) {
-      const { id, title, tags }: { id: string, title: string, tags: { name: string, type: string }[] } = payload;
-      yield call(updateBook, { id, update: { name: title,updateTags:tags } });
+    *updateBook({ payload }, { call, put }) {
+      const {
+        id,
+        title,
+        tags,
+      }: { id: string; title: string; tags: { name: string; type: string }[] } = payload;
+      yield call(updateBook, { id, update: { name: title, updateTags: tags } });
       yield put({
         type: 'queryBooks',
       });
+    },
+    *matchSelectBook({}, { call, put, select }) {
+      const { selectedBooks }: BookListModelStateType = yield select(
+        (state: ConnectState) => state.bookList,
+      );
+      const update = [];
+      for (const selectedBook of selectedBooks) {
+        const updateBook: any = {
+          id: selectedBook.id,
+          updateTags: [],
+        };
+        const result = matchTagInfo(selectedBook.dirName);
+        if (!result) {
+          continue;
+        }
+        updateBook.name = result.title ?? selectedBook.name;
+        if (result.artist) {
+          updateBook.updateTags.push({
+            name: result.artist,
+            type: 'artist',
+          });
+        }
+        if (result.theme) {
+          updateBook.updateTags.push({
+            name: result.theme,
+            type: 'theme',
+          });
+        }
+        if (result.series) {
+          updateBook.updateTags.push({
+            name: result.series,
+            type: 'series',
+          });
+        }
+        if (result.translator) {
+          updateBook.updateTags.push({
+            name: result.translator,
+            type: 'translator',
+          });
+        }
+        update.push(updateBook);
+      }
+      const updateKey = 'matchSelectBook';
+      message.loading({ content: '匹配标签中...', key: updateKey });
+      yield call(bookBatch, { data: { update } });
+      yield put({
+        type: 'setSelectedBookIds',
+        payload: {
+          books: [],
+        },
+      });
+      yield put({
+        type: 'queryBooks',
+        payload: {},
+      });
+      message.success({ content: '匹配完成', key: updateKey });
     },
   },
   reducers: {
