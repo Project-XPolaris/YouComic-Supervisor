@@ -20,6 +20,7 @@ import { connect } from '@@/plugin-dva/exports';
 import { history } from '@@/core/history';
 import style from './style.less';
 import MatchTagDialog, { MatchTag } from '@/components/MatchTagDialog';
+import { RenameWithTagDialog } from '@/components/RenameWIthTagDialog';
 
 interface BookListPagePropsType {
   dispatch: Dispatch;
@@ -148,7 +149,7 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
         payload: {
           id: bookList.contextBook?.id,
           title,
-          tags
+          tags,
         },
       });
     }
@@ -168,6 +169,13 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
         />
       )}
       <div>
+        <RenameWithTagDialog
+          isOpen={bookList.isRenameDialogOpen}
+          onOk={(pattern, slots) =>
+            dispatch({ type: 'bookList/renameSelectBook', payload: { pattern, slots } })
+          }
+          onCancel={() => dispatch({ type: 'bookList/closeRenameDialog' })}
+        />
         <BackTop />
         <div className={style.filterWrap}>
           <SnapshotDialog

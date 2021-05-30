@@ -1,63 +1,60 @@
-import {Effect} from 'dva';
-import {Reducer} from 'redux';
-import {Book, updateBook} from "@/services/book";
-import {ConnectState} from "@/models/connect";
+import { Effect } from 'dva';
+import { Reducer } from 'redux';
+import { Book, updateBook } from '@/services/book';
+import { ConnectState } from '@/models/connect';
 
 export interface BookDetailInfoStateType {
-  activeEditMode: boolean
+  activeEditMode: boolean;
 }
 
 export interface BookDetailInfoType {
-  namespace: string,
+  namespace: string;
   reducers: {
-    setEditMode: Reducer
-    updateInfo: Reducer
-  }
-  state: BookDetailInfoStateType
+    setEditMode: Reducer;
+  };
+  state: BookDetailInfoStateType;
   effects: {
-    updateBook: Effect
-  }
-  subscriptions: {}
+    updateBook: Effect;
+  };
+  subscriptions: {};
 }
 
 const BookDetailInfo: BookDetailInfoType = {
   namespace: 'bookDetailInfo',
   state: {
-    activeEditMode: false
+    activeEditMode: false,
   },
   subscriptions: {},
   effects: {
-    * updateBook({payload: {name}}, {call, put, select}) {
-      const {book}: { book: Book } = yield select((state: ConnectState) => (state.bookDetail));
+    *updateBook({ payload: { name } }, { call, put, select }) {
+      const { book }: { book: Book } = yield select((state: ConnectState) => state.bookDetail);
       if (book === undefined) {
-        return
+        return;
       }
       yield call(updateBook, {
         id: book.id,
         update: {
-          name
-        }
+          name,
+        },
       });
       yield put({
-        type: "bookDetail/queryBook"
+        type: 'bookDetail/queryBook',
       });
       yield put({
-        type: "setEditMode",
+        type: 'setEditMode',
         payload: {
-          editMode: false
-        }
-      })
+          editMode: false,
+        },
+      });
     },
-
   },
   reducers: {
-    setEditMode(state, {payload}) {
+    setEditMode(state, { payload }) {
       return {
         ...state,
-        activeEditMode: payload.editMode
-      }
-    }
+        activeEditMode: payload.editMode,
+      };
+    },
   },
-
 };
 export default BookDetailInfo;

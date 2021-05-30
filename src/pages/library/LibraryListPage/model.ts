@@ -1,9 +1,14 @@
 import { Effect } from 'umi';
 
 import { ListQueryContainer } from '@/services/base';
-import { importDirectoryAsLibrary, Library, scanLibraryById } from '@/services/library';
+import {
+  importDirectoryAsLibrary,
+  Library,
+  matchLibraryById,
+  scanLibraryById,
+} from '@/services/library';
 import { Reducer } from '@@/plugin-dva/connect';
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import {
   LibraryListImportDirectoryDialogKey,
   LibraryListImportExternalLibraryDialogKey,
@@ -24,6 +29,7 @@ export interface LibraryListModelType {
     importExternalLibrary: Effect;
     importDirectory: Effect;
     scanLibrary: Effect;
+    matchLibrary: Effect;
   };
   reducers: {
     queryLibraryListSuccess: Reducer<LibraryListStateType>;
@@ -85,10 +91,11 @@ const Model: LibraryListModelType = {
     },
     *scanLibrary({ payload: { id } }, { call }) {
       yield call(scanLibraryById, { id });
-      notification.info({
-        message: '成功',
-        description: '扫描任务已添加',
-      });
+      message.success('扫描任务已添加');
+    },
+    *matchLibrary({ payload: { id } }, { call }) {
+      yield call(matchLibraryById, { id });
+      message.success('标签匹配任务已添加');
     },
   },
 

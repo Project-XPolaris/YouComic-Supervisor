@@ -199,7 +199,9 @@ apiRequest.interceptors.request.use(
 
 export default apiRequest;
 
-export const imageRequest = extend({});
+export const imageRequest = extend({
+  timeout: 1000 * 30,
+});
 
 imageRequest.use(async (ctx, next) => {
   const token = localStorage.getItem(ApplicationConfig.storeKey.token);

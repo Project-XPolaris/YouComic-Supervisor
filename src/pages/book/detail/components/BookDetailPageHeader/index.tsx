@@ -1,10 +1,11 @@
-import { Button, Descriptions, Tabs } from 'antd';
+import { Button, Descriptions, Dropdown, Menu, Tabs } from 'antd';
 import React from 'react';
 import { Book } from '@/services/book';
 import { getBookTagInfo } from '@/utils/book';
 import { history } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './style.less';
+import { MenuOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 
@@ -56,17 +57,41 @@ const BookDetailPageHeader = ({
         </Descriptions>
       </div>
     );
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          1st menu item
+        </a>
+      </Menu.Item>
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+          2nd menu item
+        </a>
+      </Menu.Item>
+      <Menu.Item>
+        <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+          3rd menu item
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <PageHeaderWrapper
       onBack={() => window.history.back()}
       title={book?.name}
-      footer={renderFooter()}
       content={renderContent()}
       extra={
         <>
           <Button onClick={onSwitchShowDescription}>
             {showDescription ? '隐藏' : '显示'}详细信息
           </Button>
+          <Dropdown overlay={menu}>
+            <Button type="primary" icon={<MenuOutlined />}>
+              菜单
+            </Button>
+          </Dropdown>
         </>
       }
     >

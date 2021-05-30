@@ -16,6 +16,7 @@ import { Book } from '@/services/book';
 import {
   EditOutlined,
   FilterOutlined,
+  FolderOpenFilled,
   HistoryOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
@@ -150,6 +151,10 @@ function BookListHeaderAction({ dispatch, bookList }: BookListHeaderActionPropsT
       <Menu.Item key="7" onClick={matchSelectBook}>
         <EditOutlined />
         批量匹配标签
+      </Menu.Item>
+      <Menu.Item key="8" onClick={() => dispatch({ type: 'bookList/openRenameDialog' })}>
+        <FolderOpenFilled />
+        批量重命名文件夹
       </Menu.Item>
     </Menu>
   );

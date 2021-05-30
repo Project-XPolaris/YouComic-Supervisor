@@ -67,3 +67,10 @@ export const bookBatch = ({ data }: { data: any }) =>
     method: 'post',
     data,
   });
+export const renameBoolDirectory = ({ id, name }: { id: number; name: string }) =>
+  apiRequest(ApplicationConfig.api.bookDirectory.replace(':id', String(id)), {
+    method: 'put',
+    data: {
+      name,
+    },
+  });

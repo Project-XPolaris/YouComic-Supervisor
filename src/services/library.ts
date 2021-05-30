@@ -28,3 +28,7 @@ export const importDirectoryAsLibrary = async ({ path }: { path: string }) => {
 export const scanLibraryById = async ({ id }: { id: number }) => {
   return apiRequest.put(ApplicationConfig.api.scanLibrary.replace(':id', String(id)), {});
 };
+
+export const matchLibraryById = async ({ id }: { id: number }) => {
+  return apiRequest.put(ApplicationConfig.api.matchLibrary.replace(':id', String(id)), {});
+};

@@ -107,6 +107,9 @@ function BookDetailInfo({ bookDetail, dispatch, bookDetailInfo }: BookDetailInfo
             <Descriptions.Item label="系列">{series?.name}</Descriptions.Item>
             <Descriptions.Item label="主题">{theme?.name}</Descriptions.Item>
             <Descriptions.Item label="翻译">{translator?.name}</Descriptions.Item>
+            <Descriptions.Item label="路径" span={3}>
+              {book?.dirName}
+            </Descriptions.Item>
             <Descriptions.Item label="创建时间">
               {moment(book?.created_at).format('YYYY-MM-DD hh:mm:ss')}
             </Descriptions.Item>

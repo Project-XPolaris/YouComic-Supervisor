@@ -8,7 +8,7 @@ import DeleteIcon from '@ant-design/icons/DeleteFilled';
 import BookIcon from '@ant-design/icons/BookFilled';
 import TagIcon from '@ant-design/icons/TagFilled';
 import UserIcon from '@ant-design/icons/UserOutlined';
-import {history} from "@@/core/umiExports";
+import { history } from '@@/core/umiExports';
 
 const { Text } = Typography;
 
@@ -37,7 +37,7 @@ const SnapshotList = ({ global, dispatch }: SnapshotListPropsType) => {
         </div>
       );
     }
-    return global.snapshots.map(snapshot => {
+    return global.snapshots.map((snapshot, idx) => {
       const onDelete = () => {
         dispatch({
           type: 'global/removeSnapshot',
@@ -47,10 +47,10 @@ const SnapshotList = ({ global, dispatch }: SnapshotListPropsType) => {
         });
       };
       const onLinkClick = () => {
-        history.push(snapshot.url)
-      }
+        history.push(snapshot.url);
+      };
       return (
-        <div className={styles.itemContainer}>
+        <div className={styles.itemContainer} key={idx}>
           <div className={styles.itemContent}>
             <a className={styles.text} onClick={onLinkClick}>
               <span className={styles.icon}>{iconMapping[snapshot.icon]}</span>

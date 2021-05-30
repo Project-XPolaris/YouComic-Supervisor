@@ -1,6 +1,13 @@
 import { Effect, Subscription } from 'dva';
 import { Reducer } from 'redux';
-import { Book, bookBatch, DeleteBook, queryBooks, updateBook } from '@/services/book';
+import {
+  Book,
+  bookBatch,
+  DeleteBook,
+  queryBooks,
+  renameBoolDirectory,
+  updateBook,
+} from '@/services/book';
 import { ListQueryContainer } from '@/services/base';
 import { ConnectState } from '@/models/connect';
 import { getCoverThumbnailURL } from '@/utils/image';
@@ -10,6 +17,7 @@ import { getOrdersFromUrlQuery } from '@/utils/uri';
 import { differenceWith } from 'lodash';
 import { message } from 'antd';
 import { matchTagInfo } from '@/utils/match';
+import { Slot } from '@/utils/tag';
 
 export interface BookListModelStateType {
   books?: Book[];
@@ -26,6 +34,7 @@ export interface BookListModelStateType {
   showViewOption: boolean;
   contextBook?: Book;
   isMatchDialogOpen: boolean;
+  isRenameDialogOpen: boolean;
 }
 
 export interface BookListModelType {
@@ -44,6 +53,8 @@ export interface BookListModelType {
     setContextBook: Reducer;
     openMatchNameDialog: Reducer;
     closeMatchNameDialog: Reducer;
+    openRenameDialog: Reducer;
+    closeRenameDialog: Reducer;
   };
   state: BookListModelStateType;
   effects: {
@@ -53,6 +64,7 @@ export interface BookListModelType {
     deleteSelectedBooks: Effect;
     updateBook: Effect;
     matchSelectBook: Effect;
+    renameSelectBook: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -76,6 +88,7 @@ const BookListModel: BookListModelType = {
     selectedBooks: [],
     showViewOption: false,
     isMatchDialogOpen: false,
+    isRenameDialogOpen: false,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -251,6 +264,7 @@ const BookListModel: BookListModelType = {
         const updateBook: any = {
           id: selectedBook.id,
           updateTags: [],
+          overwriteTag: true,
         };
         const result = matchTagInfo(selectedBook.dirName);
         if (!result) {
@@ -297,6 +311,52 @@ const BookListModel: BookListModelType = {
         payload: {},
       });
       message.success({ content: '匹配完成', key: updateKey });
+    },
+    *renameSelectBook({ payload }, { call, put, select }) {
+      const { pattern, slots }: { pattern: string; slots: Slot[] } = payload;
+      const { selectedBooks }: BookListModelStateType = yield select(
+        (state: ConnectState) => state.bookList,
+      );
+      const getRenderTag = (type: string, content: string) => {
+        const slot = Array.from(slots).find(it => it.type === type);
+        if (slot) {
+          return slot.renderPattern.replace('%content%', content);
+        }
+        return undefined;
+      };
+      for (const selectedBook of selectedBooks) {
+        let text = pattern;
+        const nameText = getRenderTag('title', selectedBook.name) ?? '';
+        text = text.replace('%title%', nameText);
+        const artistTag = selectedBook.tags.find(it => it.type === 'artist');
+        if (artistTag) {
+          const artistText = getRenderTag('artist', artistTag.name) ?? '';
+          text = text.replace('%artist%', artistText);
+        }
+        const themeTag = selectedBook.tags.find(it => it.type === 'theme');
+        if (themeTag) {
+          const themeText = getRenderTag('theme', themeTag.name) ?? '';
+          text = text.replace('%theme%', themeText);
+        }
+        const seriesTag = selectedBook.tags.find(it => it.type === 'series');
+        if (seriesTag) {
+          const seriesText = getRenderTag('series', seriesTag.name) ?? '';
+          text = text.replace('%series%', seriesText);
+        }
+        const translatorTag = selectedBook.tags.find(it => it.type === 'translator');
+        if (translatorTag) {
+          const translatorText = getRenderTag('translator', translatorTag.name) ?? '';
+          text = text.replace('%translator%', translatorText);
+        }
+        yield call(renameBoolDirectory, { id: selectedBook.id, name: text });
+      }
+      yield put({
+        type: 'closeRenameDialog',
+      });
+      message.success(`批量更改目录名称成功`);
+      yield put({
+        type: 'queryBooks',
+      });
     },
   },
   reducers: {
@@ -385,6 +445,18 @@ const BookListModel: BookListModelType = {
       return {
         ...state,
         isMatchDialogOpen: false,
+      };
+    },
+    openRenameDialog(state: BookListModelStateType, {}) {
+      return {
+        ...state,
+        isRenameDialogOpen: true,
+      };
+    },
+    closeRenameDialog(state: BookListModelStateType, {}) {
+      return {
+        ...state,
+        isRenameDialogOpen: false,
       };
     },
   },

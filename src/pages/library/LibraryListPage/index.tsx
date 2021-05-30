@@ -8,6 +8,7 @@ import {
   ExclamationCircleOutlined,
   ImportOutlined,
   ReloadOutlined,
+  TagOutlined,
 } from '@ant-design/icons/lib';
 import InputTextDialog from '@/components/InputTextDialog';
 import { connect } from '@@/plugin-dva/exports';
@@ -130,6 +131,26 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
       },
     });
   };
+  const onMatchLibrary = (id: string | undefined) => {
+    if (!id) {
+      return;
+    }
+    Modal.confirm({
+      title: '添加匹配任务确认',
+      icon: <ExclamationCircleOutlined />,
+      content: '将会匹配当前库中所有的标签',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        dispatch({
+          type: 'libraryList/matchLibrary',
+          payload: {
+            id,
+          },
+        });
+      },
+    });
+  };
   return (
     <PageHeaderWrapper subTitle="书库将书籍文件书籍集合管理" extra={extraAction}>
       <InputTextDialog
@@ -171,6 +192,7 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
                       onClick={() => onLibraryDelete(item.name, item.id)}
                     />,
                     <ReloadOutlined key="scan" onClick={() => onScanLibrary(item.id)} />,
+                    <TagOutlined key="match" onClick={() => onMatchLibrary(item.id)} />,
                   ]}
                 >
                   <Card.Meta avatar={<Avatar icon={<BookOutlined />} />} title={item.name} />
