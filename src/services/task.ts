@@ -1,4 +1,4 @@
-export type TaskType = 'ScanLibrary' | 'MatchLibrary';
+export type TaskType = 'ScanLibrary' | 'MatchLibrary' | 'RenameLibraryBookDirectory';
 export interface Task {
   id: string;
   status: string;

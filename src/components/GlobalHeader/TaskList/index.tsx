@@ -6,6 +6,7 @@ import { Dispatch } from 'umi';
 import { Task } from '@/services/task';
 import { ScanLibraryCard } from '@/components/GlobalHeader/TaskList/tasks/ScanLibraryCard';
 import { MatchLibraryCard } from '@/components/GlobalHeader/TaskList/tasks/MatchLibraryCard';
+import { RenameLibraryBookDirectoryCard } from '@/components/GlobalHeader/TaskList/tasks/RenameLibraryBookDirectoryCard';
 
 const TaskList = ({ dispatch, global }: { dispatch: Dispatch; global: GlobalModelState }) => {
   const itemRender = (task: Task) => {
@@ -14,6 +15,8 @@ const TaskList = ({ dispatch, global }: { dispatch: Dispatch; global: GlobalMode
         return <ScanLibraryCard task={task} className={style.item} />;
       case 'MatchLibrary':
         return <MatchLibraryCard task={task} className={style.item} />;
+      case 'RenameLibraryBookDirectory':
+        return <RenameLibraryBookDirectoryCard task={task} className={style.item} />;
     }
   };
   return (
