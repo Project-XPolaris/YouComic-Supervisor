@@ -30,6 +30,7 @@ const ApplicationConfig = {
     library: '/library/:id',
     scanLibrary: '/library/:id/scan',
     matchLibrary: '/library/:id/match',
+    renameLibraryBookDirectory: '/library/:id/books/rename',
     libraryImport: '/library/import',
     scanTask: '/scan/tasks',
     bookDailyCount: '/dashboard/book/daily',

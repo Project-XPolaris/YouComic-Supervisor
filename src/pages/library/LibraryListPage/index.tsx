@@ -15,6 +15,8 @@ import { connect } from '@@/plugin-dva/exports';
 import styles from './style.less';
 import { LibraryItemViewModel } from './data.d';
 import { LibraryListStateType } from './model';
+import {FolderOpenFilled} from "@ant-design/icons";
+import {RenameWithTagDialog} from "@/components/RenameWIthTagDialog";
 
 const { confirm } = Modal;
 
@@ -28,6 +30,7 @@ interface LibraryListPageProps {
 export const LibraryListImportExternalLibraryDialogKey = 'libraryList/import';
 export const LibraryListImportDirectoryDialogKey = 'libraryList/importDirectory';
 const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryListPageProps) => {
+  console.log(libraryList)
   useEffect(() => {
     dispatch({
       type: 'libraryList/queryLibrary',
@@ -167,6 +170,15 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
         inputLabel="路径"
         dialogTitle="导入文件夹"
       />
+      <RenameWithTagDialog
+        isOpen={libraryList.isRenameDialogOpen}
+        onOk={(pattern, slots) => {
+          if (libraryList.contextLibrary) {
+            dispatch({ type: 'libraryList/newRenameLibraryBookDirectory', payload: { pattern, slots, id:libraryList.contextLibrary.id } })
+          }
+        }}
+        onCancel={() => dispatch({ type: 'libraryList/closeRenameDialog' })}
+      />
       <div className={styles.cardList}>
         <List<Partial<LibraryItemViewModel>>
           rowKey="id"
@@ -193,6 +205,7 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
                     />,
                     <ReloadOutlined key="scan" onClick={() => onScanLibrary(item.id)} />,
                     <TagOutlined key="match" onClick={() => onMatchLibrary(item.id)} />,
+                    <FolderOpenFilled key="rename" onClick={() => dispatch({ type:"libraryList/openRenameDialog", payload:{ library:item } })} />,
                   ]}
                 >
                   <Card.Meta avatar={<Avatar icon={<BookOutlined />} />} title={item.name} />

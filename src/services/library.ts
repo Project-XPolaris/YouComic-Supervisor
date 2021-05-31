@@ -1,5 +1,6 @@
 import apiRequest from '@/utils/request';
 import ApplicationConfig from '@/config';
+import {Slot} from "@/utils/tag";
 
 export interface Library {
   id: number;
@@ -31,4 +32,12 @@ export const scanLibraryById = async ({ id }: { id: number }) => {
 
 export const matchLibraryById = async ({ id }: { id: number }) => {
   return apiRequest.put(ApplicationConfig.api.matchLibrary.replace(':id', String(id)), {});
+};
+
+export const renameLibraryBookDirectory = async ({ id, pattern,slots }: { id: number; pattern: string, slots:Slot }) => {
+  return apiRequest.put(ApplicationConfig.api.renameLibraryBookDirectory.replace(':id', String(id)), {
+    data:{
+      pattern, slots
+    }
+  });
 };

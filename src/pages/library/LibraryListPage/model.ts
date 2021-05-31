@@ -1,23 +1,27 @@
-import { Effect } from 'umi';
+import {Effect} from 'umi';
 
-import { ListQueryContainer } from '@/services/base';
+import {ListQueryContainer} from '@/services/base';
 import {
   importDirectoryAsLibrary,
   Library,
   matchLibraryById,
+  renameLibraryBookDirectory,
   scanLibraryById,
 } from '@/services/library';
-import { Reducer } from '@@/plugin-dva/connect';
-import { message, notification } from 'antd';
+import {BookListModelStateType, Reducer} from '@@/plugin-dva/connect';
+import {message, notification} from 'antd';
 import {
   LibraryListImportDirectoryDialogKey,
   LibraryListImportExternalLibraryDialogKey,
 } from '@/pages/library/LibraryListPage/index';
-import { queryBookLibrary, removeBookLibrary, importExternalBookLibrary } from './service';
-import { LibraryItemViewModel } from './data.d';
+import {importExternalBookLibrary, queryBookLibrary, removeBookLibrary} from './service';
+import {LibraryItemViewModel} from './data.d';
+import {Slot} from "@/utils/tag";
 
 export interface LibraryListStateType {
   libraryList: LibraryItemViewModel[];
+  isRenameDialogOpen: boolean;
+  contextLibrary?:Library
 }
 
 export interface LibraryListModelType {
@@ -30,9 +34,12 @@ export interface LibraryListModelType {
     importDirectory: Effect;
     scanLibrary: Effect;
     matchLibrary: Effect;
+    newRenameLibraryBookDirectory:Effect
   };
   reducers: {
-    queryLibraryListSuccess: Reducer<LibraryListStateType>;
+    queryLibraryListSuccess: Reducer;
+    openRenameDialog: Reducer;
+    closeRenameDialog: Reducer;
   };
 }
 
@@ -40,6 +47,8 @@ const Model: LibraryListModelType = {
   namespace: 'libraryList',
   state: {
     libraryList: [],
+    isRenameDialogOpen:false,
+
   },
 
   effects: {
@@ -68,6 +77,7 @@ const Model: LibraryListModelType = {
         message: '导入文件夹',
         description: '添加成功，正在扫描',
       });
+      yield put({ type: 'queryLibrary' });
       yield call(importDirectoryAsLibrary, { path });
     },
     *importExternalLibrary({ payload: { path } }, { call, put }) {
@@ -97,13 +107,33 @@ const Model: LibraryListModelType = {
       yield call(matchLibraryById, { id });
       message.success('标签匹配任务已添加');
     },
+    *newRenameLibraryBookDirectory({ payload }, { call, put }) {
+      const { id,pattern, slots }: { id:number,pattern: string; slots: Slot[] } = payload;
+      yield call(renameLibraryBookDirectory, { id, pattern, slots });
+      yield put({
+        type: 'closeRenameDialog',
+      });
+      message.success(`修改书库书籍目录名任务已创建`);
+    },
   },
-
   reducers: {
     queryLibraryListSuccess(state, { payload: { list } }) {
       return {
         ...state,
         libraryList: list,
+      };
+    },
+    openRenameDialog(state: BookListModelStateType, { payload:{ library } }) {
+      return {
+        ...state,
+        isRenameDialogOpen: true,
+        contextLibrary: library
+      };
+    },
+    closeRenameDialog(state: BookListModelStateType, {}) {
+      return {
+        ...state,
+        isRenameDialogOpen: false,
       };
     },
   },

@@ -317,38 +317,8 @@ const BookListModel: BookListModelType = {
       const { selectedBooks }: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
-      const getRenderTag = (type: string, content: string) => {
-        const slot = Array.from(slots).find(it => it.type === type);
-        if (slot) {
-          return slot.renderPattern.replace('%content%', content);
-        }
-        return undefined;
-      };
       for (const selectedBook of selectedBooks) {
-        let text = pattern;
-        const nameText = getRenderTag('title', selectedBook.name) ?? '';
-        text = text.replace('%title%', nameText);
-        const artistTag = selectedBook.tags.find(it => it.type === 'artist');
-        if (artistTag) {
-          const artistText = getRenderTag('artist', artistTag.name) ?? '';
-          text = text.replace('%artist%', artistText);
-        }
-        const themeTag = selectedBook.tags.find(it => it.type === 'theme');
-        if (themeTag) {
-          const themeText = getRenderTag('theme', themeTag.name) ?? '';
-          text = text.replace('%theme%', themeText);
-        }
-        const seriesTag = selectedBook.tags.find(it => it.type === 'series');
-        if (seriesTag) {
-          const seriesText = getRenderTag('series', seriesTag.name) ?? '';
-          text = text.replace('%series%', seriesText);
-        }
-        const translatorTag = selectedBook.tags.find(it => it.type === 'translator');
-        if (translatorTag) {
-          const translatorText = getRenderTag('translator', translatorTag.name) ?? '';
-          text = text.replace('%translator%', translatorText);
-        }
-        yield call(renameBoolDirectory, { id: selectedBook.id, name: text });
+        yield call(renameBoolDirectory, { id: selectedBook.id, pattern, slots });
       }
       yield put({
         type: 'closeRenameDialog',

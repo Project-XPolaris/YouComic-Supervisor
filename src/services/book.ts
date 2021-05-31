@@ -1,6 +1,7 @@
 import apiRequest from '@/utils/request';
 import ApplicationConfig from '@/config';
 import { Tag } from '@/services/tag';
+import {Slot} from "@/utils/tag";
 
 export interface Book {
   id: number;
@@ -67,10 +68,11 @@ export const bookBatch = ({ data }: { data: any }) =>
     method: 'post',
     data,
   });
-export const renameBoolDirectory = ({ id, name }: { id: number; name: string }) =>
+export const renameBoolDirectory = ({ id, pattern,slots }: { id: number; pattern: string, slots:Slot }) =>
   apiRequest(ApplicationConfig.api.bookDirectory.replace(':id', String(id)), {
     method: 'put',
     data: {
-      name,
+      pattern,
+      slots
     },
   });

@@ -26,13 +26,13 @@ export const RenameWithTagDialog = ({
   const onAddSlot = () => {
     slotController.add({
       type: slotType,
-      renderPattern: slotRender,
+      pattern: slotRender,
     });
   };
   const getRenderTag = (type: string, content: string = type) => {
     const slot = Array.from(slots).find(it => it.type === type);
     if (slot) {
-      return slot.renderPattern.replace('%content%', content);
+      return slot.pattern.replace('%content%', content);
     }
     return undefined;
   };
