@@ -1,6 +1,6 @@
 import apiRequest from '@/utils/request';
 import ApplicationConfig from '@/config';
-import { Tag } from '@/services/tag';
+import {Tag} from '@/services/tag';
 import {Slot} from "@/utils/tag";
 
 export interface Book {
@@ -25,18 +25,18 @@ export function queryBooks(query: GetBookQuery) {
   });
 }
 
-export function queryBookTags({ id }: { id: number }) {
+export function queryBookTags({id}: { id: number }) {
   return apiRequest.get(ApplicationConfig.api.BookTagsURL.replace(':id', String(id)));
 }
 
-export function updateBook({ id, update }: { id: number; update: { name?: string } }) {
+export function updateBook({id, update}: { id: number; update: { name?: string } }) {
   return apiRequest(ApplicationConfig.api.Book.replace(':id', String(id)), {
     method: 'patch',
     data: update,
   });
 }
 
-export function addTagToBook({ id, tags }: { id: number; tags: number[] }) {
+export function addTagToBook({id, tags}: { id: number; tags: number[] }) {
   return apiRequest(ApplicationConfig.api.BookTagsURL.replace(':id', String(id)), {
     method: 'put',
     data: {
@@ -45,7 +45,7 @@ export function addTagToBook({ id, tags }: { id: number; tags: number[] }) {
   });
 }
 
-export function removeTagFromBook({ id, tagId }: { id: number; tagId: number }) {
+export function removeTagFromBook({id, tagId}: { id: number; tagId: number }) {
   return apiRequest(
     ApplicationConfig.api.BookTagURL.replace(':id', String(id)).replace(':tag', String(tagId)),
     {
@@ -54,7 +54,7 @@ export function removeTagFromBook({ id, tagId }: { id: number; tagId: number }) 
   );
 }
 
-export function DeleteBook({ id, permanently }: { id: number; permanently: string }) {
+export function DeleteBook({id, permanently}: { id: number; permanently: string }) {
   return apiRequest(ApplicationConfig.api.Book.replace(':id', String(id)), {
     method: 'delete',
     params: {
@@ -63,16 +63,26 @@ export function DeleteBook({ id, permanently }: { id: number; permanently: strin
   });
 }
 
-export const bookBatch = ({ data }: { data: any }) =>
+export const bookBatch = ({data}: { data: any }) =>
   apiRequest(ApplicationConfig.api.bookBatch, {
     method: 'post',
     data,
   });
-export const renameBoolDirectory = ({ id, pattern,slots }: { id: number; pattern: string, slots:Slot }) =>
+export const renameBoolDirectory = ({id, pattern, slots}: { id: number; pattern: string, slots: Slot }) =>
   apiRequest(ApplicationConfig.api.bookDirectory.replace(':id', String(id)), {
-    method: 'put',
+      method: 'put',
+      data: {
+        pattern,
+        slots
+      },
+    }
+  );
+
+export const moveBooks = ({bookIds, to }: { bookIds: number[];to: number; }) =>
+  apiRequest(ApplicationConfig.api.moveBookTask, {
+    method: 'post',
     data: {
-      pattern,
-      slots
+      bookIds,
+      to
     },
   });

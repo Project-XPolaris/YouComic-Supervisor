@@ -62,16 +62,30 @@ export default function ActiveFilterSection({filter, orderItems,onFilterChange}:
         })
       };
       return (
-        <Tag color="geekblue" closable onClose={onTagClose} key="nameSearch">{`标签:${item.name}`}</Tag>
+        <Tag color="geekblue" closable onClose={onTagClose} key={item.id + "tag"}>{`标签:${item.name}`}</Tag>
       )
     })
   };
+  const renderLibraryFilter = () => {
+    return filter.library.map(it => {
+      const onTagClose = () => {
+        onFilterChange({
+          ...filter,
+          library:filter.library.filter(filterLibrary => filterLibrary.id !== it.id)
+        })
+      };
+      return (
+        <Tag color="geekblue" closable onClose={onTagClose} key={it.id + "library"}>{`书库:${it.name} (${it.id})`}</Tag>
+      )
+    })
+  }
   return (
     <SectionContainer title="已激活">
       {renderOrderTag()}
       {renderSearchTag()}
       {renderTimeRange()}
       {renderTagFilter()}
+      {renderLibraryFilter()}
     </SectionContainer>
   );
 }

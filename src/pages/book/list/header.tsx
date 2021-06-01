@@ -156,6 +156,10 @@ function BookListHeaderAction({ dispatch, bookList }: BookListHeaderActionPropsT
         <FolderOpenFilled />
         批量重命名文件夹
       </Menu.Item>
+      <Menu.Item key="8" onClick={() => dispatch({ type: 'bookList/openMoveBookDialog' })}>
+        <FolderOpenFilled />
+        移动至其他书库
+      </Menu.Item>
     </Menu>
   );
   const onSwitchViewOption = () => {

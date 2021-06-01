@@ -1,6 +1,7 @@
 import apiRequest from '@/utils/request';
 import ApplicationConfig from '@/config';
 import {Slot} from "@/utils/tag";
+import {ListQueryContainer} from "@/services/base";
 
 export interface Library {
   id: number;
@@ -10,7 +11,7 @@ export interface Library {
   path: string;
 }
 
-export const queryLibraryList = async (params: any) => {
+export const queryLibraryList = async (params: any):Promise<ListQueryContainer<Library>> => {
   return apiRequest.get(ApplicationConfig.api.libraries, { params });
 };
 

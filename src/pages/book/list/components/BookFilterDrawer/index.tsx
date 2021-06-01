@@ -3,9 +3,11 @@ import {Divider, Drawer} from "antd";
 import OrderFilterSection from "@/components/FilterSection/OrderFilterSection";
 import ActiveFilterSection from "@/pages/book/list/components/BookFilterDrawer/sections/ActiveFilterSection";
 import SearchNameFilterSection from "@/components/FilterSection/SearchNameFilterSection";
-import TimeRangeFilterSection from "@/pages/book/list/components/BookFilterDrawer/sections/TimeRangeFilterSection";
+import LibraryFilterSection from "@/pages/book/list/components/BookFilterDrawer/sections/LibraryFilterSection";
 import TagFilterSection from "@/pages/book/list/components/BookFilterDrawer/sections/TagFilterSection";
 import {Tag} from "@/services/tag";
+import {Library} from "@/services/library";
+import TimeRangeFilterSection from "@/pages/book/list/components/BookFilterDrawer/sections/TimeRangeFilterSection";
 
 
 interface BookFilterDrawerPropsType {
@@ -25,6 +27,8 @@ export interface BookFilter {
   endTime?: string
   tags: { id: number, name: string }[]
   tagIds:number[]
+  library:Library[]
+  libraryIds:number[]
 }
 
 const orderItems = [
@@ -78,6 +82,13 @@ export default function BookFilterDrawer({isOpen = false, onClose, onFilterChang
       tags: tags.map(item => ({id: item.value, name: item.label}))
     })
   };
+  const onAddLibrary = (library:Library) => {
+    const newLibraryList = [...filter.library.filter(it => it.id !== library.id),library]
+    onFilterChange({
+      ...filter,
+      library:newLibraryList
+    })
+  }
   return (
     <Drawer
       title="过滤器"
@@ -96,6 +107,8 @@ export default function BookFilterDrawer({isOpen = false, onClose, onFilterChang
       <TimeRangeFilterSection onAddRangeChange={onAddTimeRange}/>
       <Divider/>
       <TagFilterSection isFetching={isTagFetching} onSearch={onTagSearch} tags={searchTags} onAddTag={onAddTagsFilter}/>
+      <Divider/>
+      <LibraryFilterSection onAddLibrary={onAddLibrary}/>
     </Drawer>
   );
 }

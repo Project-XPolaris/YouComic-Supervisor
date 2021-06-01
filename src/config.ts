@@ -6,6 +6,7 @@ const ApplicationConfig = {
     Book: '/book/:id',
     bookDirectory: '/book/:id/dir/rename',
     bookBatch: '/books/batch',
+    moveBookTask: '/task/bookMove',
     TagBooksURL: '/tag/:id/books',
     PagesURL: '/pages',
     auth: '/user/auth',
@@ -36,6 +37,7 @@ const ApplicationConfig = {
     bookDailyCount: '/dashboard/book/daily',
     tagBooksCount: '/dashboard/tag/books',
     tagTypeCount: '/dashboard/tag/types',
+    readDir: '/explore/read',
   },
   storeKey: {
     token: 'youcomic-admin-token',

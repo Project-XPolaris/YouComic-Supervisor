@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import BooksCollection from '@/components/BookCollection';
-import { ConnectState } from '@/models/connect';
-import { BookListModelStateType } from '@/pages/book/list/model';
-import { BackTop, Pagination, Radio, Card } from 'antd';
-import { DialogStateType } from '@/models/dialog';
-import BookFilterDrawer, { BookFilter } from '@/pages/book/list/components/BookFilterDrawer';
-import { Book } from '@/services/book';
-import { encodeOrderToUrl, updateQueryParamAndReplaceURL } from '@/utils/uri';
-import { Snapshot } from '@/services/snapshot';
+import {ConnectState} from '@/models/connect';
+import {BookListModelStateType} from '@/pages/book/list/model';
+import {BackTop, Card, Pagination, Radio} from 'antd';
+import {DialogStateType} from '@/models/dialog';
+import BookFilterDrawer, {BookFilter} from '@/pages/book/list/components/BookFilterDrawer';
+import {Book} from '@/services/book';
+import {encodeOrderToUrl, updateQueryParamAndReplaceURL} from '@/utils/uri';
+import {Snapshot} from '@/services/snapshot';
 import SnapshotDialog from '@/components/SnapshotDialog';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { generateSnapshotId } from '@/utils/utils';
-import BookListHeaderAction, {
-  AddToSnapshotDialogKey,
-  BooksFilterDrawerKey,
-} from '@/pages/book/list/header';
-import { Dispatch } from '@@/plugin-dva/connect';
-import { connect } from '@@/plugin-dva/exports';
-import { history } from '@@/core/history';
+import {PageHeaderWrapper} from '@ant-design/pro-layout';
+import {generateSnapshotId} from '@/utils/utils';
+import BookListHeaderAction, {AddToSnapshotDialogKey, BooksFilterDrawerKey,} from '@/pages/book/list/header';
+import {Dispatch} from '@@/plugin-dva/connect';
+import {connect} from '@@/plugin-dva/exports';
+import {history} from '@@/core/history';
 import style from './style.less';
-import MatchTagDialog, { MatchTag } from '@/components/MatchTagDialog';
-import { RenameWithTagDialog } from '@/components/RenameWIthTagDialog';
+import MatchTagDialog, {MatchTag} from '@/components/MatchTagDialog';
+import {RenameWithTagDialog} from '@/components/RenameWIthTagDialog';
+import {LibraryPickUpDialog} from "@/components/LibraryPickUpDialog";
 
 interface BookListPagePropsType {
   dispatch: Dispatch;
@@ -46,19 +44,19 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
     });
   };
   const onSetFilter = (newFilter: BookFilter) => {
-    if (newFilter.tags.length !== 0) {
       dispatch({
         type: 'bookList/updateFilter',
         payload: {
           filter: {
             ...filter,
             tags: newFilter.tags,
+            library:newFilter.library
           },
         },
       });
-    }
     updateQueryParamAndReplaceURL({
       filterTags: newFilter.tags.map(tag => tag.id),
+      filterLibrary:newFilter.library.map(it => it.id),
       nameSearch: newFilter.nameSearch,
       startTime: newFilter.startTime,
       endTime: newFilter.endTime,
@@ -175,6 +173,11 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
             dispatch({ type: 'bookList/renameSelectBook', payload: { pattern, slots } })
           }
           onCancel={() => dispatch({ type: 'bookList/closeRenameDialog' })}
+        />
+        <LibraryPickUpDialog
+          onCancel={() => dispatch({ type: 'bookList/closeMoveBookDialog' })}
+          isOpen={bookList.isMoveBookDialogOpen}
+          onOk={(id) => dispatch({ type: 'bookList/moveSelectedBook', payload:{ id } })}
         />
         <BackTop />
         <div className={style.filterWrap}>

@@ -3,7 +3,7 @@ import { Reducer } from 'redux';
 import {
   Book,
   bookBatch,
-  DeleteBook,
+  DeleteBook, moveBooks,
   queryBooks,
   renameBoolDirectory,
   updateBook,
@@ -35,6 +35,7 @@ export interface BookListModelStateType {
   contextBook?: Book;
   isMatchDialogOpen: boolean;
   isRenameDialogOpen: boolean;
+  isMoveBookDialogOpen:boolean;
 }
 
 export interface BookListModelType {
@@ -55,6 +56,8 @@ export interface BookListModelType {
     closeMatchNameDialog: Reducer;
     openRenameDialog: Reducer;
     closeRenameDialog: Reducer;
+    openMoveBookDialog: Reducer;
+    closeMoveBookDialog: Reducer;
   };
   state: BookListModelStateType;
   effects: {
@@ -65,6 +68,7 @@ export interface BookListModelType {
     updateBook: Effect;
     matchSelectBook: Effect;
     renameSelectBook: Effect;
+    moveSelectedBook: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -82,6 +86,8 @@ const BookListModel: BookListModelType = {
       order: [],
       tags: [],
       tagIds: [],
+      libraryIds:[],
+      library:[]
     },
     searchTags: [],
     tagsFetchId: 0,
@@ -89,6 +95,7 @@ const BookListModel: BookListModelType = {
     showViewOption: false,
     isMatchDialogOpen: false,
     isRenameDialogOpen: false,
+    isMoveBookDialogOpen: false,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -102,6 +109,7 @@ const BookListModel: BookListModelType = {
             endTime,
             nameSearch,
             order = [],
+            filterLibrary = []
           } = location.query;
           dispatch({
             type: 'setPage',
@@ -117,6 +125,9 @@ const BookListModel: BookListModelType = {
                 tagIds: Array.isArray(filterTags)
                   ? filterTags.map((id: string) => Number(id))
                   : [Number(filterTags)],
+                libraryIds: Array.isArray(filterLibrary)
+                  ? filterLibrary.map((id: string) => Number(id))
+                  : [Number(filterLibrary)],
                 startTime,
                 endTime,
                 nameSearch,
@@ -157,6 +168,7 @@ const BookListModel: BookListModelType = {
         startTime: filter.startTime,
         endTime: filter.endTime,
         tag: filter.tagIds,
+        library: filter.libraryIds
       });
       queryBookResponse.result = queryBookResponse.result.map((book: Book) => ({
         ...book,
@@ -328,6 +340,18 @@ const BookListModel: BookListModelType = {
         type: 'queryBooks',
       });
     },
+    *moveSelectedBook({ payload }, { call,put, select }) {
+      console.log(payload)
+      const { id }:{ id:number } = payload
+      const { selectedBooks }: BookListModelStateType = yield select(
+        (state: ConnectState) => state.bookList,
+      );
+      yield call(moveBooks,{ to:id,bookIds:selectedBooks.map(it => it.id) })
+      yield put({
+        type: 'closeMoveBookDialog',
+      });
+      message.success(`移动书籍任务已添加`);
+    }
   },
   reducers: {
     onQueryBookSuccess(state, { payload }) {
@@ -427,6 +451,18 @@ const BookListModel: BookListModelType = {
       return {
         ...state,
         isRenameDialogOpen: false,
+      };
+    },
+    openMoveBookDialog(state: BookListModelStateType, {}) {
+      return {
+        ...state,
+        isMoveBookDialogOpen: true,
+      };
+    },
+    closeMoveBookDialog(state: BookListModelStateType, {}) {
+      return {
+        ...state,
+        isMoveBookDialogOpen: false,
       };
     },
   },
