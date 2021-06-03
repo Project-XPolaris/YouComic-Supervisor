@@ -3,7 +3,8 @@ import { Reducer } from 'redux';
 import {
   Book,
   bookBatch,
-  DeleteBook, moveBooks,
+  DeleteBook,
+  moveBooks,
   queryBooks,
   renameBoolDirectory,
   updateBook,
@@ -15,7 +16,7 @@ import { BookFilter } from '@/pages/book/list/components/BookFilterDrawer';
 import { queryTags, Tag } from '@/services/tag';
 import { getOrdersFromUrlQuery } from '@/utils/uri';
 import { differenceWith } from 'lodash';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import { matchTagInfo } from '@/utils/match';
 import { Slot } from '@/utils/tag';
 
@@ -35,7 +36,7 @@ export interface BookListModelStateType {
   contextBook?: Book;
   isMatchDialogOpen: boolean;
   isRenameDialogOpen: boolean;
-  isMoveBookDialogOpen:boolean;
+  isMoveBookDialogOpen: boolean;
 }
 
 export interface BookListModelType {
@@ -86,8 +87,8 @@ const BookListModel: BookListModelType = {
       order: [],
       tags: [],
       tagIds: [],
-      libraryIds:[],
-      library:[]
+      libraryIds: [],
+      library: [],
     },
     searchTags: [],
     tagsFetchId: 0,
@@ -109,7 +110,7 @@ const BookListModel: BookListModelType = {
             endTime,
             nameSearch,
             order = [],
-            filterLibrary = []
+            filterLibrary = [],
           } = location.query;
           dispatch({
             type: 'setPage',
@@ -168,7 +169,7 @@ const BookListModel: BookListModelType = {
         startTime: filter.startTime,
         endTime: filter.endTime,
         tag: filter.tagIds,
-        library: filter.libraryIds
+        library: filter.libraryIds,
       });
       queryBookResponse.result = queryBookResponse.result.map((book: Book) => ({
         ...book,
@@ -262,7 +263,7 @@ const BookListModel: BookListModelType = {
         title,
         tags,
       }: { id: string; title: string; tags: { name: string; type: string }[] } = payload;
-      yield call(updateBook, { id, update: { name: title, updateTags: tags } });
+      yield call(updateBook, { id, update: { name: title, updateTags: tags, overwriteTag: true } });
       yield put({
         type: 'queryBooks',
       });
@@ -272,6 +273,10 @@ const BookListModel: BookListModelType = {
         (state: ConnectState) => state.bookList,
       );
       const update = [];
+      notification.open({
+        type: 'info',
+        message: '匹配中',
+      });
       for (const selectedBook of selectedBooks) {
         const updateBook: any = {
           id: selectedBook.id,
@@ -340,18 +345,18 @@ const BookListModel: BookListModelType = {
         type: 'queryBooks',
       });
     },
-    *moveSelectedBook({ payload }, { call,put, select }) {
-      console.log(payload)
-      const { id }:{ id:number } = payload
+    *moveSelectedBook({ payload }, { call, put, select }) {
+      console.log(payload);
+      const { id }: { id: number } = payload;
       const { selectedBooks }: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
-      yield call(moveBooks,{ to:id,bookIds:selectedBooks.map(it => it.id) })
+      yield call(moveBooks, { to: id, bookIds: selectedBooks.map(it => it.id) });
       yield put({
         type: 'closeMoveBookDialog',
       });
       message.success(`移动书籍任务已添加`);
-    }
+    },
   },
   reducers: {
     onQueryBookSuccess(state, { payload }) {
