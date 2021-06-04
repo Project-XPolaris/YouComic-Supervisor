@@ -35,9 +35,22 @@ const TagsPanel = ({sideCollection,dispatch}: TagsPanelPropsType) =>{
       }
     }
   };
+  const onAddSelectTagBookToTag = (tag:Tag) => {
+    dispatch({
+      type:"sideCollection/addSelectTagToTag",
+      payload:{
+        toTagId:tag.id
+      }
+    })
+  }
   return (
     <div>
-      <TagCollection tags={tags} onTagClick={onTagCardClick} selectedTags={selectedTags}/>
+      <TagCollection
+        tags={tags}
+        onTagClick={onTagCardClick}
+        selectedTags={selectedTags}
+        onCopyToTag={onAddSelectTagBookToTag}
+      />
     </div>
   );
 };

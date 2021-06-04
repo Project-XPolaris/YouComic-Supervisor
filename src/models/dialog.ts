@@ -1,13 +1,23 @@
 import {Reducer} from 'redux';
 
+
 export interface DialogStateType {
   dialogs: { [key: string]: boolean | undefined }
+  progress: {
+    isOpen: boolean
+    hint?: string
+    progress?: number
+    closeable:boolean
+  }
 }
 
 export interface DialogType {
   namespace: string,
   reducers: {
-    setDialogActive: Reducer
+    setDialogActive: Reducer,
+    openProgressDialog: Reducer
+    closeProgressDialog: Reducer
+    updateProgressDialog: Reducer
   }
   state: DialogStateType
   effects: {}
@@ -18,7 +28,11 @@ const Dialog: DialogType = {
   namespace: 'dialog',
   state: {
     dialogs: {
-      "bookList/filterDrawer":false
+      "bookList/filterDrawer": false
+    },
+    progress: {
+      isOpen: false,
+      closeable:false
     }
   },
   subscriptions: {},
@@ -30,6 +44,31 @@ const Dialog: DialogType = {
       return {
         ...state,
         dialogs
+      }
+    },
+    openProgressDialog(state, {payload: {progress, hint,closeable = false}}) {
+      return {
+        ...state,
+        progress: {
+          isOpen: true,
+          progress, hint
+        }
+      }
+    },
+    closeProgressDialog(state, { }) {
+      return {
+        ...state,
+        progress: {
+          isOpen: false,
+        }
+      }
+    },
+    updateProgressDialog(state, { payload: {progress, hint,closeable = false} }) {
+      return {
+        ...state,
+        progress: {
+          progress,hint
+        }
       }
     }
   },

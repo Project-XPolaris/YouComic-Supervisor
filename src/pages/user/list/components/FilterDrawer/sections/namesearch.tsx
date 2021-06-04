@@ -3,10 +3,12 @@ import SearchNameFilterSection from '@/components/FilterSection/SearchNameFilter
 import { connect } from 'dva';
 import { ConnectState } from '@/models/connect';
 import { updateQueryParamAndReplaceURL } from '@/utils/uri';
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 interface UserListNameSearchSectionFilterPropsType {}
 
 function UserListNameSearchSectionFilter({}: UserListNameSearchSectionFilterPropsType) {
+  const intl = useIntl()
   const onSetSearchName = (nameSearch: string) => {
     updateQueryParamAndReplaceURL({
       nameSearch,
@@ -14,7 +16,7 @@ function UserListNameSearchSectionFilter({}: UserListNameSearchSectionFilterProp
   };
   return (
     <>
-      <SearchNameFilterSection onSetSearchName={onSetSearchName} />
+      <SearchNameFilterSection onSetSearchName={onSetSearchName} title={intl.formatMessage({id: 'global.filter.filter-name-search.title'})} />
     </>
   );
 }

@@ -36,6 +36,8 @@ const ApplicationConfig = {
     scanTask: '/scan/tasks',
     bookDailyCount: '/dashboard/book/daily',
     tagBooksCount: '/dashboard/tag/books',
+    tagBooksAddToTag: '/tags/addTag',
+    matchRawTag: '/tags/match',
     tagTypeCount: '/dashboard/tag/types',
     readDir: '/explore/read',
   },

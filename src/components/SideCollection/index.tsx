@@ -60,9 +60,6 @@ const SideCollection  = ({dispatch,dialog,sideCollection}: SideCollectionPropsTy
         <TabPane tab="标签" key="tags">
           <TagsPanel />
         </TabPane>
-        <TabPane tab="Tab 3" key="3">
-          Content of Tab Pane 3
-        </TabPane>
       </Tabs>
       <div className={styles.actionBar}>
         {renderActionBar()}

@@ -94,7 +94,7 @@ const TagListPage = ({ tagList, dialog, dispatch }: TagListPagePropsType) => {
       key: 'name',
       title: '名称',
       dataIndex: 'name',
-      render: (value: string, record: Tag) => <Link to={`/tag/${record.id}`}>{value}</Link>,
+      render: (value: string, record: Tag) => <Link to={`/books/list?filterTags=${record.id}`}>{value}</Link>,
     },
     {
       key: 'type',

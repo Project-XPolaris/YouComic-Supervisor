@@ -10,8 +10,15 @@ export interface Tag {
 }
 
 export interface TagCount {
-  name : string
-  total : number
+  name: string
+  total: number
+}
+
+export interface MatchTag {
+  id:string
+  name: string
+  type: string
+  source: 'raw' | 'pattern' | 'database'
 }
 
 export function queryTagBooks({page, pageSize, id}: { page?: number, pageSize?: number, id: number }) {
@@ -45,7 +52,7 @@ export function createTag(data: { name: string, type: string }) {
   )
 }
 
-export function tagBatch(data:any) {
+export function tagBatch(data: any) {
   return apiRequest(
     ApplicationConfig.api.tagBatch, {
       method: "post",
@@ -54,7 +61,7 @@ export function tagBatch(data:any) {
   )
 }
 
-export function addBooksToTag({tagId, bookIds}:{tagId:number,bookIds:number}) {
+export function addBooksToTag({tagId, bookIds}: { tagId: number, bookIds: number }) {
   return apiRequest(
     ApplicationConfig.api.TagBooksURL.replace(':id', String(tagId)),
     {
@@ -66,7 +73,7 @@ export function addBooksToTag({tagId, bookIds}:{tagId:number,bookIds:number}) {
   )
 }
 
-export function removeBooksFromTag({tagId, bookIds}:{tagId:number,bookIds:number}) {
+export function removeBooksFromTag({tagId, bookIds}: { tagId: number, bookIds: number }) {
   return apiRequest(
     ApplicationConfig.api.TagBooksURL.replace(':id', String(tagId)),
     {
@@ -78,12 +85,28 @@ export function removeBooksFromTag({tagId, bookIds}:{tagId:number,bookIds:number
   )
 }
 
-export async function getTagCount(queryParam:any) : Promise<ListQueryContainer<TagCount>>  {
+export async function getTagCount(queryParam: any): Promise<ListQueryContainer<TagCount>> {
   return apiRequest(
     ApplicationConfig.api.tagBooksCount,
     {
-      method:"get",
-      params:queryParam
+      method: "get",
+      params: queryParam
     }
   )
+}
+
+export const addTagBooksToTag = ({from, to}: { from: number, to: number }) => {
+  return apiRequest.post(ApplicationConfig.api.tagBooksAddToTag, {
+    data: {
+      from, to
+    }
+  })
+}
+
+export const matchTagFromRawString = ({text}: { text: string }):Promise<MatchTag[]> => {
+  return apiRequest.post(ApplicationConfig.api.matchRawTag, {
+    data: {
+      text
+    }
+  })
 }

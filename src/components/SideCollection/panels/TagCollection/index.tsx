@@ -9,15 +9,21 @@ interface TagCollectionPropsType {
   tags?: Tag[]
   selectedTags?:Tag[]
   onTagClick:(tag:Tag) => void
+  onCopyToTag?:(tag:Tag) => void;
 }
 
 
-export default function TagCollection({tags = [],selectedTags,onTagClick}: TagCollectionPropsType) {
+export default function TagCollection({onCopyToTag,tags = [],selectedTags,onTagClick}: TagCollectionPropsType) {
   const renderTagCards = () => {
     return tags?.map((tag: Tag) => {
       return (
         <Col key={tag.id} className={styles.itemCol}>
-        <TagCard tag={tag} isSelect={Boolean(selectedTags?.find((selectedTag:Tag) => selectedTag.id === tag.id))} onClick={onTagClick}/>
+        <TagCard
+          tag={tag}
+          isSelect={Boolean(selectedTags?.find((selectedTag:Tag) => selectedTag.id === tag.id))}
+          onClick={onTagClick}
+          onCopyToTag={onCopyToTag}
+        />
         </Col>
       )
     })

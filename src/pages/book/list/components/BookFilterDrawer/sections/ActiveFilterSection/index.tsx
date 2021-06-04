@@ -38,6 +38,20 @@ export default function ActiveFilterSection({filter, orderItems,onFilterChange}:
     }
     return undefined
   };
+  const renderPathSearchTag = () => {
+    if (filter.pathSearch !== undefined){
+      const onPathSearchNameClose = () => {
+        onFilterChange({
+          ...filter,
+          pathSearch:undefined
+        })
+      };
+      return (
+        <Tag color="geekblue" closable onClose={onPathSearchNameClose} key="nameSearch">{`路径搜索: ${filter.pathSearch}`}</Tag>
+      )
+    }
+    return undefined
+  };
   const renderTimeRange = () => {
     if(filter.endTime && filter.startTime){
       const onTimeRangeClose = () => {
@@ -86,6 +100,7 @@ export default function ActiveFilterSection({filter, orderItems,onFilterChange}:
       {renderTimeRange()}
       {renderTagFilter()}
       {renderLibraryFilter()}
+      {renderPathSearchTag()}
     </SectionContainer>
   );
 }

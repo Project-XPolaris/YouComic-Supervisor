@@ -8,6 +8,7 @@ import TagFilterSection from "@/pages/book/list/components/BookFilterDrawer/sect
 import {Tag} from "@/services/tag";
 import {Library} from "@/services/library";
 import TimeRangeFilterSection from "@/pages/book/list/components/BookFilterDrawer/sections/TimeRangeFilterSection";
+import {useIntl} from "@@/plugin-locale/localeExports";
 
 
 interface BookFilterDrawerPropsType {
@@ -29,6 +30,7 @@ export interface BookFilter {
   tagIds:number[]
   library:Library[]
   libraryIds:number[]
+  pathSearch?:string
 }
 
 const orderItems = [
@@ -50,6 +52,7 @@ const orderItems = [
   },
 ];
 export default function BookFilterDrawer({isOpen = false, onClose, onFilterChange, filter, isTagFetching, onTagSearch, searchTags}: BookFilterDrawerPropsType) {
+  const intl = useIntl()
   const onAddFilter = (orderKey: string, order: "asc" | "desc") => {
     const orderFilter = filter.order.filter(item => item.orderKey !== orderKey);
     onFilterChange({
@@ -67,6 +70,12 @@ export default function BookFilterDrawer({isOpen = false, onClose, onFilterChang
     onFilterChange({
       ...filter,
       nameSearch: searchText
+    })
+  };
+  const onAddPathSearch = (searchText: string) => {
+    onFilterChange({
+      ...filter,
+      pathSearch: searchText
     })
   };
   const onAddTimeRange = (startTime: string, endTime: string) => {
@@ -102,13 +111,15 @@ export default function BookFilterDrawer({isOpen = false, onClose, onFilterChang
       <Divider/>
       <OrderFilterSection orderItems={orderItems} onAddFilter={onAddFilter} defaultOrderKey="id"/>
       <Divider/>
-      <SearchNameFilterSection onSetSearchName={onAddNameSearch}/>
+      <SearchNameFilterSection onSetSearchName={onAddNameSearch} title={intl.formatMessage({id: 'global.filter.filter-name-search.title'})}/>
       <Divider/>
       <TimeRangeFilterSection onAddRangeChange={onAddTimeRange}/>
       <Divider/>
       <TagFilterSection isFetching={isTagFetching} onSearch={onTagSearch} tags={searchTags} onAddTag={onAddTagsFilter}/>
       <Divider/>
       <LibraryFilterSection onAddLibrary={onAddLibrary}/>
+      <Divider/>
+      <SearchNameFilterSection onSetSearchName={onAddPathSearch} title={"路径搜索"}/>
     </Drawer>
   );
 }

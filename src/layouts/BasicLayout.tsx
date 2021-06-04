@@ -18,6 +18,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import type { ConnectState } from '@/models/connect';
 import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.png';
+import Dialogs from "@/layouts/Dialogs";
 
 const noMatch = (
   <Result
@@ -148,6 +149,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         return menuData || [];
       }}
     >
+      <Dialogs />
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
         {children}
       </Authorized>

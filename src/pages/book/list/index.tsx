@@ -16,9 +16,10 @@ import {Dispatch} from '@@/plugin-dva/connect';
 import {connect} from '@@/plugin-dva/exports';
 import {history} from '@@/core/history';
 import style from './style.less';
-import MatchTagDialog, {MatchTag} from '@/components/MatchTagDialog';
+import MatchTagDialog from '@/components/MatchTagDialog';
 import {RenameWithTagDialog} from '@/components/RenameWIthTagDialog';
 import {LibraryPickUpDialog} from "@/components/LibraryPickUpDialog";
+import {MatchTag} from "@/services/tag";
 
 interface BookListPagePropsType {
   dispatch: Dispatch;
@@ -61,6 +62,7 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
       startTime: newFilter.startTime,
       endTime: newFilter.endTime,
       order: encodeOrderToUrl(newFilter.order),
+      pathSearch:newFilter.pathSearch
     });
   };
   const onTagSearch = (key: string, type?: string) => {

@@ -111,6 +111,7 @@ const BookListModel: BookListModelType = {
             nameSearch,
             order = [],
             filterLibrary = [],
+            pathSearch
           } = location.query;
           dispatch({
             type: 'setPage',
@@ -132,6 +133,7 @@ const BookListModel: BookListModelType = {
                 startTime,
                 endTime,
                 nameSearch,
+                pathSearch,
                 order: getOrdersFromUrlQuery(order, '-id'),
               },
             },
@@ -170,6 +172,7 @@ const BookListModel: BookListModelType = {
         endTime: filter.endTime,
         tag: filter.tagIds,
         library: filter.libraryIds,
+        pathSearch: filter.pathSearch
       });
       queryBookResponse.result = queryBookResponse.result.map((book: Book) => ({
         ...book,
