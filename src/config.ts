@@ -38,6 +38,7 @@ const ApplicationConfig = {
     tagBooksCount: '/dashboard/tag/books',
     tagBooksAddToTag: '/tags/addTag',
     matchRawTag: '/tags/match',
+    clearEmptyTag: '/tags/clean',
     tagTypeCount: '/dashboard/tag/types',
     readDir: '/explore/read',
   },

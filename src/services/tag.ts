@@ -18,7 +18,7 @@ export interface MatchTag {
   id:string
   name: string
   type: string
-  source: 'raw' | 'pattern' | 'database'
+  source: 'raw' | 'pattern' | 'database' | 'custom'
 }
 
 export function queryTagBooks({page, pageSize, id}: { page?: number, pageSize?: number, id: number }) {
@@ -109,4 +109,8 @@ export const matchTagFromRawString = ({text}: { text: string }):Promise<MatchTag
       text
     }
   })
+}
+
+export const cleanEmptyTag = ():Promise<any> => {
+  return apiRequest.post(ApplicationConfig.api.clearEmptyTag, {})
 }

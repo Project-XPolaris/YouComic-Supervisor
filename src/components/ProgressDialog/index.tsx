@@ -10,7 +10,7 @@ export const ProgressDialog =
      isOpen = false
    }: { onClose: () => void, closeable: boolean, progress?: number, hint?: string, isOpen?: boolean }) => {
     return (
-      <Modal visible={isOpen} footer={null} maskClosable={closeable} closable={closeable}>
+      <Modal visible={isOpen} footer={null} maskClosable={closeable} closable={closeable} onCancel={onClose}>
         <div>
           <Typography.Text strong>{hint}</Typography.Text>
         </div>

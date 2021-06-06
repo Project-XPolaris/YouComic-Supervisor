@@ -137,6 +137,22 @@ const TagListPage = ({ tagList, dialog, dispatch }: TagListPagePropsType) => {
             },
           });
         };
+        const onAddToTagClick = () => {
+          confirm({
+            title: '合并至此标签',
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk() {
+              dispatch({
+                type: 'tagList/addSelectTagToTag',
+                payload: {
+                  toTagId:record.id
+                },
+              });
+            },
+          });
+        };
         return (
           <div>
             <Button className={styles.actionButton} onClick={onUpdateClick} type="link">
@@ -146,6 +162,13 @@ const TagListPage = ({ tagList, dialog, dispatch }: TagListPagePropsType) => {
             <Button type="link" className={styles.actionButton} onClick={onDeleteTagClick}>
               删除
             </Button>
+            {
+              tagList.selectedTags.length > 0 &&
+              <Button type="link" className={styles.actionButton} onClick={onAddToTagClick}>
+                将所选合并至此标签
+              </Button>
+            }
+
           </div>
         );
       },

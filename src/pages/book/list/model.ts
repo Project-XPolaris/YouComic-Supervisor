@@ -270,6 +270,8 @@ const BookListModel: BookListModelType = {
       yield put({
         type: 'queryBooks',
       });
+      message.success(`修改信息成功`);
+
     },
     *matchSelectBook({}, { call, put, select }) {
       const { selectedBooks }: BookListModelStateType = yield select(

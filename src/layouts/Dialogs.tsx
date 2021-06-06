@@ -11,9 +11,7 @@ const Dialogs = ({ dialog,dispatch }:{ dialog:DialogStateType,dispatch:Dispatch 
         isOpen={dialog.progress.isOpen}
         hint={dialog.progress.hint}
         progress={dialog.progress.progress}
-        onClose={() => dispatch({
-          type:"dialog/closeProgressDialog"
-        })}
+        onClose={() => dispatch({ type:"dialog/closeProgressDialog" })}
         closeable={dialog.progress.closeable}
       />
     </>

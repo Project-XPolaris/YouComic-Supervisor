@@ -1,4 +1,4 @@
-import {Reducer} from 'redux';
+import { Reducer } from 'redux';
 
 
 export interface DialogStateType {
@@ -7,7 +7,7 @@ export interface DialogStateType {
     isOpen: boolean
     hint?: string
     progress?: number
-    closeable:boolean
+    closeable: boolean
   }
 }
 
@@ -28,49 +28,52 @@ const Dialog: DialogType = {
   namespace: 'dialog',
   state: {
     dialogs: {
-      "bookList/filterDrawer": false
+      'bookList/filterDrawer': false,
     },
     progress: {
       isOpen: false,
-      closeable:false
-    }
+      closeable: false,
+    },
   },
   subscriptions: {},
   effects: {},
   reducers: {
-    setDialogActive(state, {payload: {key, isActive}}) {
-      const {dialogs} = state;
+    setDialogActive(state, { payload: { key, isActive } }) {
+      const { dialogs } = state;
       dialogs[key] = isActive;
       return {
         ...state,
-        dialogs
-      }
+        dialogs,
+      };
     },
-    openProgressDialog(state, {payload: {progress, hint,closeable = false}}) {
+    openProgressDialog(state, { payload: { progress, hint, closeable = false } }) {
       return {
         ...state,
         progress: {
           isOpen: true,
-          progress, hint
-        }
-      }
+          progress, hint,
+          closeable,
+        },
+      };
     },
-    closeProgressDialog(state, { }) {
+    closeProgressDialog(state, {}) {
       return {
         ...state,
         progress: {
+          ...state.progress,
           isOpen: false,
-        }
-      }
+        },
+      };
     },
-    updateProgressDialog(state, { payload: {progress, hint,closeable = false} }) {
+    updateProgressDialog(state, { payload: { progress, hint, closeable } }) {
       return {
         ...state,
         progress: {
-          progress,hint
-        }
-      }
-    }
+          ...state.progress,
+          progress, hint, closeable,
+        },
+      };
+    },
   },
 
 };

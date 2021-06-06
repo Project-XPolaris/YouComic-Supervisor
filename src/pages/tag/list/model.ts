@@ -1,6 +1,6 @@
 import { Effect, Subscription } from 'dva';
 import { Reducer } from 'redux';
-import { createTag, queryTags, Tag, tagBatch } from '@/services/tag';
+import { addTagBooksToTag, cleanEmptyTag, createTag, queryTags, Tag, tagBatch } from '@/services/tag';
 import { ConnectState } from '@/models/connect';
 import { ListQueryContainer } from '@/services/base';
 import { getOrdersFromUrlQuery, getUrlParamToArray } from '@/utils/uri';
@@ -43,6 +43,8 @@ export interface TagListModelType {
     createTag: Effect;
     updateTag: Effect;
     deleteTags: Effect;
+    clearEmptyTag:Effect
+    addSelectTagToTag:Effect
   };
   subscriptions: {
     setup: Subscription;
@@ -165,6 +167,55 @@ const TagListModel: TagListModelType = {
         },
       });
     },
+    *clearEmptyTag(_,{call,put}) {
+      yield call(cleanEmptyTag)
+      yield put({
+        type: 'setSelectTags',
+        payload: {
+          tags: [],
+        },
+      });
+      yield put({
+        type: 'queryTags',
+      });
+      message.success("清理成功")
+    },
+    * addSelectTagToTag({payload: {toTagId}}, {call, put, select}) {
+      const { selectedTags }:{ selectedTags:Tag[] } = yield select((state:ConnectState) => state.tagList)
+      try {
+        yield put({
+          type:"dialog/openProgressDialog",
+          payload:{
+            progress:(1 / selectedTags.length * 100).toFixed(0),
+            hint:"转移中",
+            closeable:false
+          }
+        })
+        for (let tag of selectedTags.filter(selectedTag => selectedTag.id !== toTagId)) {
+          yield call(addTagBooksToTag,{ from:tag.id,to:toTagId })
+          yield put({
+            type:"dialog/updateProgressDialog",
+            payload:{
+              progress:(1 / selectedTags.length * 100).toFixed(0),
+              hint:"转移中",
+              closeable:false
+            }
+          })
+        }
+      }catch (e) {
+        console.log(e)
+      }finally {
+        yield put({
+          type:"dialog/updateProgressDialog",
+          payload:{
+            progress: 100,
+            hint:"完成",
+            closeable:true
+          }
+        })
+      }
+
+    }
   },
   reducers: {
     onQueryTagsSuccess(state, { payload }) {

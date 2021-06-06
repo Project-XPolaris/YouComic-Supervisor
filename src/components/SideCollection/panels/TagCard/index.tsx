@@ -33,7 +33,7 @@ export default function TagCard({onCopyToTag,tag, onClick, isSelect = false}: Ta
     <Dropdown overlay={menu} trigger={['contextMenu']}>
       <Card hoverable onClick={onCardClick}>
         <div className={styles.tagName} style={{color: isSelect ? "#1890ff" : undefined}}>{tag.name}</div>
-        <div className={styles.tagType}>{tag.type}</div>
+        <div className={styles.tagType}>{tag.type}({tag.id})</div>
       </Card>
     </Dropdown>
   );
