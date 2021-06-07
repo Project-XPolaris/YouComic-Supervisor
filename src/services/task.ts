@@ -1,4 +1,10 @@
-export type TaskType = 'ScanLibrary' | 'MatchLibrary' | 'RenameLibraryBookDirectory' | 'MoveBook';
+export type TaskType =
+  | 'ScanLibrary'
+  | 'MatchLibrary'
+  | 'RenameLibraryBookDirectory'
+  | 'MoveBook'
+  | 'RemoveEmptyTag';
+
 export interface Task {
   id: string;
   status: string;
@@ -22,3 +28,8 @@ export interface MatchLibraryTask {
   current: number;
 }
 
+export interface RemoveEmptyTagTask {
+  currentTagName: string;
+  total: number;
+  current: number;
+}

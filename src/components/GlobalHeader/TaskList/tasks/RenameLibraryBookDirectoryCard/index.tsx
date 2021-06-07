@@ -1,23 +1,25 @@
 import Title from 'antd/lib/typography/Title';
-import { Card, Progress } from 'antd';
+import { Progress } from 'antd';
 import React from 'react';
+import TaskLayout from '@/components/GlobalHeader/TaskList/tasks/TaskLayout';
 
-export const RenameLibraryBookDirectoryCard = ({ task, className }: { task: any; className?: string }) => {
+export const RenameLibraryBookDirectoryCard = ({
+  task,
+  className,
+}: {
+  task: any;
+  className?: string;
+}) => {
   let progress = 0;
   if (task.data.total > 0) {
-    progress = Math.ceil((task.data.current / task.data.total) * 100);
+    progress = Math.floor((task.data.current / task.data.total) * 100);
   }
   return (
-    <Card
-      title={`Rename task - ${task.data.name} (${task.status})`}
-      bordered={false}
-      style={{ width: 300 }}
-      className={className}
-    >
+    <TaskLayout title={`Rename task - ${task.data.name} (${task.status})`} className={className}>
       <Title level={5}>
         {task.data.current}/{task.data.total}
       </Title>
       <Progress percent={progress} />
-    </Card>
+    </TaskLayout>
   );
 };

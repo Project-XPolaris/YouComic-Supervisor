@@ -8,13 +8,19 @@ function createWindow() {
     height: 900,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
       webSecurity: false,
+      allowRunningInsecureContent: true,
+      nodeIntegrationInWorker: true,
+      nodeIntegrationInSubFrames: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      webviewTag: true,
     },
     backgroundColor: '#2e2c29',
     darkTheme: true,
     title: 'YouComic Supervisor',
     width: 1700,
-    frame: true,
   });
   if (process.env.NODE_ENV === 'development') {
     if (process.env.DEV_TOOLS) {

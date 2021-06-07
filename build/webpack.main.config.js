@@ -6,7 +6,7 @@ const baseConfig = require('./webpack.base.config')
 module.exports = merge.smart(baseConfig, {
 	target: 'electron-main',
 	entry: {
-		main: './electron/index.ts',
+		main: './main/index.ts',
 	},
 	module: {
 		rules: [

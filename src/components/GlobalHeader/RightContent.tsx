@@ -43,7 +43,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = prop
   };
   return (
     <div className={className} style={{ width: '100%' }}>
-      <div className={style.dragZone} />
+      <div className={style.dragZone}></div>
       <SideCollection />
       <Dropdown overlay={renderContent()} trigger={['click']}>
         <a className={styles.action}>
