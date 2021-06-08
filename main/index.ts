@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -7,7 +7,6 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     height: 900,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       webSecurity: false,
       allowRunningInsecureContent: true,
@@ -17,6 +16,7 @@ function createWindow() {
       enableRemoteModule: true,
       webviewTag: true,
     },
+    frame:false,
     backgroundColor: '#2e2c29',
     darkTheme: true,
     title: 'YouComic Supervisor',
@@ -65,3 +65,23 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on("exit", () => {
+  app.exit()
+})
+ipcMain.on("min", () => {
+  const currentWindow = BrowserWindow.getFocusedWindow()
+  if (currentWindow) {
+    currentWindow.minimize()
+  }
+})
+
+ipcMain.on("max", () => {
+  const currentWindow = BrowserWindow.getFocusedWindow()
+  if (currentWindow) {
+    if (currentWindow.isMaximized()) {
+      currentWindow.unmaximize()
+      return
+    }
+    currentWindow.maximize()
+  }
+})

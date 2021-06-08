@@ -40,6 +40,10 @@
     "jest"
   ],
   "awesomeTypescriptLoaderOptions": {
-    "errorsAsWarnings": true
+    "errorsAsWarnings": true,
+    "useWebpackText": true,
+    "useTranspileModule": true,
+    "doTypeCheck": true,
+    "forkChecker": true
   }
 }

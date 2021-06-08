@@ -30,7 +30,6 @@ interface LibraryListPageProps {
 export const LibraryListImportExternalLibraryDialogKey = 'libraryList/import';
 export const LibraryListImportDirectoryDialogKey = 'libraryList/importDirectory';
 const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryListPageProps) => {
-  console.log(libraryList)
   useEffect(() => {
     dispatch({
       type: 'libraryList/queryLibrary',

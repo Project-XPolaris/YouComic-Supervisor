@@ -19,7 +19,8 @@ import type { ConnectState } from '@/models/connect';
 import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.png';
 import Dialogs from "@/layouts/Dialogs";
-
+import style from './basestyle.less'
+import {isRenderer} from "@/utils/electron";
 const noMatch = (
   <Result
     status={403}
@@ -105,6 +106,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 
   return (
     <ProLayout
+      className={style.root}
       logo={logo}
       formatMessage={formatMessage}
       {...props}
@@ -136,22 +138,26 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           <span>{route.breadcrumbName}</span>
         );
       }}
-      footerRender={() => {
-        if (settings.footerRender || settings.footerRender === undefined) {
-          return defaultFooterDom;
-        }
-        return null;
-      }}
+      // footerRender={() => {
+      //   if (settings.footerRender || settings.footerRender === undefined) {
+      //     return defaultFooterDom;
+      //   }
+      //   return null;
+      // }}
       menuDataRender={menuDataRender}
       rightContentRender={() => <RightContent />}
       postMenuData={(menuData) => {
         menuDataRef.current = menuData || [];
         return menuData || [];
       }}
+      contentStyle={{ overflowY:'auto',overflowX:"hidden",padding:16,paddingTop:16,margin:0,height:'100vh' }}
+
     >
       <Dialogs />
       <Authorized authority={authorized!.authority} noMatch={noMatch}>
-        {children}
+        <div className={style.content}>
+          {children}
+        </div>
       </Authorized>
     </ProLayout>
   );
