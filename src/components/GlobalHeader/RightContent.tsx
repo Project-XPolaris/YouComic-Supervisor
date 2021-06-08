@@ -1,4 +1,4 @@
-import {Badge, Button, Divider, Dropdown, Tooltip} from 'antd';
+import { Badge, Button, Divider, Dropdown, Tooltip } from 'antd';
 import React from 'react';
 import { connect, Dispatch } from 'dva';
 import { ConnectProps, ConnectState, GlobalModelState } from '@/models/connect';
@@ -10,9 +10,9 @@ import ClockIcon from '@ant-design/icons/ClockCircleFilled';
 import SideCollection, { sideCollectionKey } from '@/components/SideCollection';
 import SnapshotList from '@/components/SnapshotList';
 import style from './style.less';
-import {BorderOutlined, CloseOutlined, ContainerOutlined, MinusOutlined} from '@ant-design/icons';
+import { ArrowLeftOutlined, BorderOutlined, CloseOutlined, ContainerOutlined, MinusOutlined } from '@ant-design/icons';
 import TaskList from '@/components/GlobalHeader/TaskList';
-import {exitWindow, isRenderer, maxWindow, minWindow} from "@/utils/electron";
+import { backWindow, exitWindow, isRenderer, maxWindow, minWindow } from '@/utils/electron';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -72,6 +72,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = prop
       {
         isRenderer() && <>
           <Divider type={"vertical"}/>
+          <Button icon={<ArrowLeftOutlined />} type={"link"} className={styles.windowAction} onClick={backWindow}/>
           <Button icon={<MinusOutlined />} type={"link"} className={styles.windowAction} onClick={minWindow}/>
           <Button icon={<BorderOutlined />} type={"link"} className={styles.windowAction} onClick={maxWindow}/>
           <Button icon={<CloseOutlined />} type={"link"} className={styles.windowAction} onClick={exitWindow}/>

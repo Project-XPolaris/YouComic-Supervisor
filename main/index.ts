@@ -16,6 +16,7 @@ function createWindow() {
       enableRemoteModule: true,
       webviewTag: true,
     },
+    icon:path.join(__dirname,'icon.png'),
     frame:false,
     backgroundColor: '#2e2c29',
     darkTheme: true,
@@ -83,5 +84,11 @@ ipcMain.on("max", () => {
       return
     }
     currentWindow.maximize()
+  }
+})
+ipcMain.on("back", () => {
+  const currentWindow = BrowserWindow.getFocusedWindow()
+  if (currentWindow) {
+   currentWindow.webContents.goBack()
   }
 })

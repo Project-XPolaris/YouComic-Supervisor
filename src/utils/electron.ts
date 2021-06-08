@@ -31,3 +31,9 @@ export const exitWindow = () => {
   }
   ipcRenderer.send("exit")
 }
+export const backWindow = () => {
+  if (!ipcRenderer){
+    return
+  }
+  ipcRenderer.send("back")
+}
