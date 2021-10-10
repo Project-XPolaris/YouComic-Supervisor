@@ -15,8 +15,8 @@ import { connect } from '@@/plugin-dva/exports';
 import styles from './style.less';
 import { LibraryItemViewModel } from './data.d';
 import { LibraryListStateType } from './model';
-import {FolderOpenFilled} from "@ant-design/icons";
-import {RenameWithTagDialog} from "@/components/RenameWIthTagDialog";
+import { FolderOpenFilled, FormOutlined } from '@ant-design/icons';
+import { RenameWithTagDialog } from '@/components/RenameWIthTagDialog';
 
 const { confirm } = Modal;
 
@@ -153,6 +153,26 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
       },
     });
   };
+  const onWriteToMeta = (id: string | undefined) => {
+    if (!id) {
+      return;
+    }
+    Modal.confirm({
+      title: '创建写入元数据任务',
+      icon: <ExclamationCircleOutlined />,
+      content: '将会把标题、原始信息等写入，请确认',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        dispatch({
+          type: 'libraryList/newWriteBookMetaTask',
+          payload: {
+            id,
+          },
+        });
+      },
+    });
+  };
   return (
     <PageHeaderWrapper subTitle="书库将书籍文件书籍集合管理" extra={extraAction}>
       <InputTextDialog
@@ -173,7 +193,10 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
         isOpen={libraryList.isRenameDialogOpen}
         onOk={(pattern, slots) => {
           if (libraryList.contextLibrary) {
-            dispatch({ type: 'libraryList/newRenameLibraryBookDirectory', payload: { pattern, slots, id:libraryList.contextLibrary.id } })
+            dispatch({
+              type: 'libraryList/newRenameLibraryBookDirectory',
+              payload: { pattern, slots, id: libraryList.contextLibrary.id },
+            });
           }
         }}
         onCancel={() => dispatch({ type: 'libraryList/closeRenameDialog' })}
@@ -204,7 +227,16 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
                     />,
                     <ReloadOutlined key="scan" onClick={() => onScanLibrary(item.id)} />,
                     <TagOutlined key="match" onClick={() => onMatchLibrary(item.id)} />,
-                    <FolderOpenFilled key="rename" onClick={() => dispatch({ type:"libraryList/openRenameDialog", payload:{ library:item } })} />,
+                    <FolderOpenFilled
+                      key="rename"
+                      onClick={() =>
+                        dispatch({
+                          type: 'libraryList/openRenameDialog',
+                          payload: { library: item },
+                        })
+                      }
+                    />,
+                    <FormOutlined key="write" onClick={() => onWriteToMeta(item.id)} />,
                   ]}
                 >
                   <Card.Meta avatar={<Avatar icon={<BookOutlined />} />} title={item.name} />

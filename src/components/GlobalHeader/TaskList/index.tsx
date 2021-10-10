@@ -10,10 +10,11 @@ import { RenameLibraryBookDirectoryCard } from '@/components/GlobalHeader/TaskLi
 import { MoveBookCard } from '@/components/GlobalHeader/TaskList/tasks/MoveBookCard';
 import { Empty } from 'antd';
 import { RemoveEmptyTagTaskCard } from '@/components/GlobalHeader/TaskList/tasks/CleanEmptyTagTaskCard';
+import { WriteBookMetaTaskCard } from '@/components/GlobalHeader/TaskList/tasks/WriteBookMetaTaskCard';
 
 const TaskList = ({ dispatch, global }: { dispatch: Dispatch; global: GlobalModelState }) => {
   const itemRender = (task: Task) => {
-    console.log(task)
+    console.log(task);
     switch (task.type) {
       case 'ScanLibrary':
         return <ScanLibraryCard task={task} className={style.item} />;
@@ -25,6 +26,8 @@ const TaskList = ({ dispatch, global }: { dispatch: Dispatch; global: GlobalMode
         return <MoveBookCard task={task} className={style.item} />;
       case 'RemoveEmptyTag':
         return <RemoveEmptyTagTaskCard task={task} className={style.item} />;
+      case 'WriteBookMeta':
+        return <WriteBookMetaTaskCard task={task} className={style.item} />;
     }
   };
   const renderContent = () => {

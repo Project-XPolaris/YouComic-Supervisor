@@ -1,6 +1,18 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import style from './style.less';
-import { Button, Checkbox, Input, List, Modal, ModalProps, Select, Space, Tabs, Tag, Typography } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Input,
+  List,
+  Modal,
+  ModalProps,
+  Select,
+  Space,
+  Tabs,
+  Tag,
+  Typography,
+} from 'antd';
 import { useDebounce } from 'ahooks';
 import { MatchTag, matchTagFromRawString } from '@/services/tag';
 import AddIcon from '@ant-design/icons/PlusOutlined';
@@ -20,19 +32,16 @@ const tagColorMapping = {
   theme: 'blue',
   translator: 'purple',
 };
-const MatchTagDialog = (
-  {
-    onMatchOk,
-    text = '',
-    ...props
-  }: MatchTagDialogProps & ModalProps): ReactElement => {
+const MatchTagDialog = ({
+  onMatchOk,
+  text = '',
+  ...props
+}: MatchTagDialogProps & ModalProps): ReactElement => {
   const [value, setValue] = useState(text);
   const [matchTags, setMatchTags] = useState<MatchTag[]>([]);
   const [selectIds, setSelectIds] = useState<string[]>([]);
   const [selectText, setSelectText] = useState<string>();
-  const matchText = useDebounce(
-    value,
-  );
+  const matchText = useDebounce(value);
   const pickUpWithType = (type: string, tags: MatchTag[]): MatchTag | undefined => {
     let tag = tags.find(it => it.type === type && it.source === 'pattern');
     if (tag) {
@@ -58,12 +67,15 @@ const MatchTagDialog = (
     refreshPickUp(result);
   };
   const onAddCustom = () => {
-    setMatchTags([...matchTags, {
-      id: generateId(7),
-      name: '',
-      type: '',
-      source: 'custom',
-    }]);
+    setMatchTags([
+      ...matchTags,
+      {
+        id: generateId(7),
+        name: '',
+        type: '',
+        source: 'custom',
+      },
+    ]);
   };
   useEffect(() => {
     refreshMatchResult(matchText);
@@ -91,21 +103,28 @@ const MatchTagDialog = (
   const renderDesc = (tag: MatchTag) => {
     if (tag.source === 'raw' || tag.source === 'custom') {
       const onSelectChange = (type: string) => {
-        setMatchTags(matchTags.map(it => {
-          if (it.id === tag.id) {
+        setMatchTags(
+          matchTags.map(it => {
+            if (it.id === tag.id) {
+              return {
+                ...it,
+                type,
+              };
+            }
             return {
               ...it,
-              type,
             };
-          }
-          return {
-            ...it,
-          };
-        }));
+          }),
+        );
       };
       return (
         <div>
-          <Select size='small' className={style.selectType} onChange={onSelectChange} value={tag.type}>
+          <Select
+            size="small"
+            className={style.selectType}
+            onChange={onSelectChange}
+            value={tag.type}
+          >
             <Select.Option value={'artist'}>artist</Select.Option>
             <Select.Option value={'series'}>series</Select.Option>
             <Select.Option value={'theme'}>theme</Select.Option>
@@ -114,14 +133,11 @@ const MatchTagDialog = (
           </Select>
           | raw
         </div>
-
       );
     }
     return (
       <div>
-        <Typography.Text strong>
-          {tag.type}
-        </Typography.Text> | {tag.source}
+        <Typography.Text strong>{tag.type}</Typography.Text> | {tag.source}
       </div>
     );
   };
@@ -152,23 +168,25 @@ const MatchTagDialog = (
     );
   };
   const onChangeTagName = (id: string, name: string) => {
-    setMatchTags(matchTags.map(it => {
-      if (it.id === id) {
+    setMatchTags(
+      matchTags.map(it => {
+        if (it.id === id) {
+          return {
+            ...it,
+            name,
+          };
+        }
         return {
           ...it,
-          name,
         };
-      }
-      return {
-        ...it,
-      };
-    }));
+      }),
+    );
   };
   const onQuickAdd = (type: string) => {
     if (!selectText) {
       return;
     }
-    const id = generateId(7)
+    const id = generateId(7);
     setMatchTags([
       ...matchTags,
       {
@@ -178,14 +196,14 @@ const MatchTagDialog = (
         source: 'custom',
       },
     ]);
-    setSelectIds([...selectIds,id])
+    setSelectIds([...selectIds, id]);
   };
   return (
     <Modal title={'匹配标签'} {...props} className={style.root} onOk={onModalOk} width={720}>
       <Input
         value={value}
         onChange={e => setValue(e.target.value)}
-        onSelect={(e) => {
+        onSelect={e => {
           const start = e.currentTarget.selectionStart;
           const end = e.currentTarget.selectionEnd;
           if (start && end) {
@@ -199,26 +217,37 @@ const MatchTagDialog = (
       </div>
       <div className={style.quickAction}>
         {selectText}
-        {selectText &&
-        <div className={style.actions}>
-          <Space>
-            <Button size='small' onClick={() => onQuickAdd('name')}>as Name</Button>
-            <Button size='small' onClick={() => onQuickAdd('artist')}>as Artist</Button>
-            <Button size='small' onClick={() => onQuickAdd('theme')}>as Theme</Button>
-            <Button size='small' onClick={() => onQuickAdd('series')}>as Series</Button>
-            <Button size='small' onClick={() => onQuickAdd('translator')}>as Translator</Button>
-          </Space>
-        </div>
-        }
+        {selectText && (
+          <div className={style.actions}>
+            <Space>
+              <Button size="small" onClick={() => onQuickAdd('name')}>
+                as Name
+              </Button>
+              <Button size="small" onClick={() => onQuickAdd('artist')}>
+                as Artist
+              </Button>
+              <Button size="small" onClick={() => onQuickAdd('theme')}>
+                as Theme
+              </Button>
+              <Button size="small" onClick={() => onQuickAdd('series')}>
+                as Series
+              </Button>
+              <Button size="small" onClick={() => onQuickAdd('translator')}>
+                as Translator
+              </Button>
+            </Space>
+          </div>
+        )}
       </div>
       <div className={style.root}>
-
         <div className={style.left}>
-          <Tabs defaultActiveKey='1'>
-            <TabPane tab='匹配' key='1'>
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="匹配" key="1">
               <List
                 className={style.list}
-                dataSource={matchTags.filter(it => it.source === 'pattern' || it.source === 'database')}
+                dataSource={matchTags.filter(
+                  it => it.source === 'pattern' || it.source === 'database',
+                )}
                 renderItem={item => (
                   <List.Item>
                     <Checkbox
@@ -234,7 +263,7 @@ const MatchTagDialog = (
                 )}
               />
             </TabPane>
-            <TabPane tab='潜在' key='2'>
+            <TabPane tab="潜在" key="2">
               <List
                 className={style.list}
                 dataSource={matchTags.filter(it => it.source === 'raw')}
@@ -253,7 +282,7 @@ const MatchTagDialog = (
                 )}
               />
             </TabPane>
-            <TabPane tab='自定义' key='3'>
+            <TabPane tab="自定义" key="3">
               <List
                 className={style.list}
                 dataSource={matchTags.filter(it => it.source === 'custom')}
@@ -271,17 +300,37 @@ const MatchTagDialog = (
                       title={
                         <Input
                           placeholder={'输入标签'}
-                          onChange={(e) => onChangeTagName(item.id, e.target.value)}
+                          onChange={e => onChangeTagName(item.id, e.target.value)}
                           value={item.name}
                         />
                       }
-                      description={renderDesc(item)} />
+                      description={renderDesc(item)}
+                    />
                   </List.Item>
                 )}
               />
               <Button icon={<AddIcon />} onClick={onAddCustom}>
                 添加
               </Button>
+            </TabPane>
+            <TabPane tab="文本替换" key="4">
+              <List
+                className={style.list}
+                dataSource={matchTags.filter(it => it.source === 'raw')}
+                renderItem={item => (
+                  <List.Item>
+                    <Checkbox
+                      disabled={getCheckboxDisable(item)}
+                      className={style.checkbox}
+                      checked={Boolean(selectIds.find(it => it === item.id))}
+                      onChange={e => {
+                        onCheckChange(item.id, e.target.checked);
+                      }}
+                    />
+                    <List.Item.Meta title={item.name} description={renderDesc(item)} />
+                  </List.Item>
+                )}
+              />
             </TabPane>
           </Tabs>
         </div>
@@ -294,17 +343,12 @@ const MatchTagDialog = (
             <Typography.Text strong>使用的标签</Typography.Text>
           </div>
           <div>
-            {
-              getSelectTag().map(it => {
-                return renderSelectedTag(it);
-              })
-            }
+            {getSelectTag().map(it => {
+              return renderSelectedTag(it);
+            })}
           </div>
         </div>
-
       </div>
-
-
     </Modal>
   );
 };
