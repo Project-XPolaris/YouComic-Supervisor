@@ -14,7 +14,6 @@ import { WriteBookMetaTaskCard } from '@/components/GlobalHeader/TaskList/tasks/
 
 const TaskList = ({ dispatch, global }: { dispatch: Dispatch; global: GlobalModelState }) => {
   const itemRender = (task: Task) => {
-    console.log(task);
     switch (task.type) {
       case 'ScanLibrary':
         return <ScanLibraryCard task={task} className={style.item} />;

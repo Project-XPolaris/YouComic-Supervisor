@@ -7,6 +7,7 @@ import { addSnapshots, getSnapshot, removeSnapshotById, Snapshot } from '@/servi
 import { message } from 'antd';
 import ApplicationConfig from '@/config';
 import { Task } from '@/services/task';
+import { ThumbnailGeneratorStatus } from '@/services/status';
 
 export interface RecentlyViewListItem {
   id: string;
@@ -28,6 +29,7 @@ export interface GlobalModelState {
   historyItem: RecentlyViewListItem[];
   snapshots: Snapshot[];
   tasks: Task[];
+  thumbnailGeneratorStatus?: ThumbnailGeneratorStatus;
 }
 
 export interface GlobalModelType {
@@ -46,6 +48,7 @@ export interface GlobalModelType {
     addToHistory: Reducer;
     setSnapshots: Reducer;
     setTasks: Reducer;
+    setThumbnailGeneratorStatus: Reducer;
   };
   subscriptions: { setup: Subscription };
 }
@@ -170,6 +173,15 @@ const GlobalModel: GlobalModelType = {
         tasks,
       };
     },
+    setThumbnailGeneratorStatus(
+      state: GlobalModelState,
+      { payload: { status } },
+    ): GlobalModelState {
+      return {
+        ...state,
+        thumbnailGeneratorStatus: status,
+      };
+    },
   },
 
   subscriptions: {
@@ -188,12 +200,23 @@ const GlobalModel: GlobalModelType = {
         const uri = new URL(apiUrl);
         const ws = new WebSocket(`ws://${uri.host}/ws?a=${token}`);
         ws.onmessage = message => {
-          dispatch({
-            type: 'setTasks',
-            payload: {
-              tasks: JSON.parse(message.data).data.reverse(),
-            },
-          });
+          const rawData = JSON.parse(message.data);
+          if (rawData.event === 'TaskBeat') {
+            dispatch({
+              type: 'setTasks',
+              payload: {
+                tasks: rawData.data.reverse(),
+              },
+            });
+          }
+          if (rawData.event === 'GeneratorStatusBeat') {
+            dispatch({
+              type: 'setThumbnailGeneratorStatus',
+              payload: {
+                status: rawData.data,
+              },
+            });
+          }
         };
       }
     },

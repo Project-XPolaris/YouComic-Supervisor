@@ -10,9 +10,17 @@ import ClockIcon from '@ant-design/icons/ClockCircleFilled';
 import SideCollection, { sideCollectionKey } from '@/components/SideCollection';
 import SnapshotList from '@/components/SnapshotList';
 import style from './style.less';
-import { ArrowLeftOutlined, BorderOutlined, CloseOutlined, ContainerOutlined, MinusOutlined } from '@ant-design/icons';
+import {
+  ArrowLeftOutlined,
+  BorderOutlined,
+  CloseOutlined,
+  ContainerOutlined,
+  HourglassOutlined,
+  MinusOutlined,
+} from '@ant-design/icons';
 import TaskList from '@/components/GlobalHeader/TaskList';
 import { backWindow, exitWindow, isRenderer, maxWindow, minWindow } from '@/utils/electron';
+import ThumbnailGeneratorStatusView from '@/components/GlobalHeader/ThumbnailGeneratorStatusView';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -44,11 +52,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = prop
   };
   return (
     <div className={className} style={{ width: '100%' }}>
-      <div className={style.dragZone}>
-        {
-          isRenderer()?"Electron" : "Web"
-        }
-      </div>
+      <div className={style.dragZone}>{isRenderer() ? 'Electron' : 'Web'}</div>
       <SideCollection />
       <Dropdown overlay={renderContent()} trigger={['click']}>
         <a className={styles.action}>
@@ -57,6 +61,14 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = prop
           </Badge>
         </a>
       </Dropdown>
+      {props.global.thumbnailGeneratorStatus && (
+        <Dropdown overlay={<ThumbnailGeneratorStatusView />} trigger={['click']}>
+          <a className={styles.action}>
+            <HourglassOutlined />
+          </a>
+        </Dropdown>
+      )}
+
       <Dropdown overlay={<SnapshotList />}>
         <a className={styles.action}>
           <ClockIcon />
@@ -69,15 +81,35 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps & ConnectProps> = prop
       </Tooltip>
       <Avatar />
       <SelectLang className={styles.action} />
-      {
-        isRenderer() && <>
-          <Divider type={"vertical"}/>
-          <Button icon={<ArrowLeftOutlined />} type={"link"} className={styles.windowAction} onClick={backWindow}/>
-          <Button icon={<MinusOutlined />} type={"link"} className={styles.windowAction} onClick={minWindow}/>
-          <Button icon={<BorderOutlined />} type={"link"} className={styles.windowAction} onClick={maxWindow}/>
-          <Button icon={<CloseOutlined />} type={"link"} className={styles.windowAction} onClick={exitWindow}/>
+      {isRenderer() && (
+        <>
+          <Divider type={'vertical'} />
+          <Button
+            icon={<ArrowLeftOutlined />}
+            type={'link'}
+            className={styles.windowAction}
+            onClick={backWindow}
+          />
+          <Button
+            icon={<MinusOutlined />}
+            type={'link'}
+            className={styles.windowAction}
+            onClick={minWindow}
+          />
+          <Button
+            icon={<BorderOutlined />}
+            type={'link'}
+            className={styles.windowAction}
+            onClick={maxWindow}
+          />
+          <Button
+            icon={<CloseOutlined />}
+            type={'link'}
+            className={styles.windowAction}
+            onClick={exitWindow}
+          />
         </>
-      }
+      )}
     </div>
   );
 };
