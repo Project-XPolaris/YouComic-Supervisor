@@ -4,7 +4,10 @@ export type TaskType =
   | 'RenameLibraryBookDirectory'
   | 'MoveBook'
   | 'RemoveEmptyTag'
-  | 'WriteBookMeta';
+  | 'WriteBookMeta'
+  | 'RemoveLibrary'
+  | 'GenerateThumbnail'
+  ;
 
 export interface Task {
   id: string;

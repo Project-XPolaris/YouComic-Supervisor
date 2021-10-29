@@ -4,7 +4,7 @@ import { ListQueryContainer } from '@/services/base';
 import {
   createWriteBookMetaTask,
   importDirectoryAsLibrary,
-  Library,
+  Library, libraryGenerateThumbnailsById,
   matchLibraryById,
   renameLibraryBookDirectory,
   scanLibraryById,
@@ -37,6 +37,7 @@ export interface LibraryListModelType {
     matchLibrary: Effect;
     newRenameLibraryBookDirectory: Effect;
     newWriteBookMetaTask: Effect;
+    newGenerateThumbnailsTask:Effect;
   };
   reducers: {
     queryLibraryListSuccess: Reducer;
@@ -107,6 +108,10 @@ const Model: LibraryListModelType = {
     *matchLibrary({ payload: { id } }, { call }) {
       yield call(matchLibraryById, { id });
       message.success('标签匹配任务已添加');
+    },
+    *newGenerateThumbnailsTask({ payload: { id } }, { call }) {
+      yield call(libraryGenerateThumbnailsById, { id });
+      message.success('生成缩略图任务已添加');
     },
     *newRenameLibraryBookDirectory({ payload }, { call, put }) {
       const { id, pattern, slots }: { id: number; pattern: string; slots: Slot[] } = payload;

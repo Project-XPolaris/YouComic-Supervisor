@@ -11,6 +11,8 @@ import { MoveBookCard } from '@/components/GlobalHeader/TaskList/tasks/MoveBookC
 import { Empty } from 'antd';
 import { RemoveEmptyTagTaskCard } from '@/components/GlobalHeader/TaskList/tasks/CleanEmptyTagTaskCard';
 import { WriteBookMetaTaskCard } from '@/components/GlobalHeader/TaskList/tasks/WriteBookMetaTaskCard';
+import {RemoveLibraryTaskCard} from "@/components/GlobalHeader/TaskList/tasks/RemoveLibraryTaskCard";
+import {GenerateThumbnailsTaskCard} from "@/components/GlobalHeader/TaskList/tasks/GenerateThumbnailsTask";
 
 const TaskList = ({ dispatch, global }: { dispatch: Dispatch; global: GlobalModelState }) => {
   const itemRender = (task: Task) => {
@@ -27,6 +29,10 @@ const TaskList = ({ dispatch, global }: { dispatch: Dispatch; global: GlobalMode
         return <RemoveEmptyTagTaskCard task={task} className={style.item} />;
       case 'WriteBookMeta':
         return <WriteBookMetaTaskCard task={task} className={style.item} />;
+      case 'RemoveLibrary':
+        return <RemoveLibraryTaskCard task={task} className={style.item}/>
+      case 'GenerateThumbnail':
+        return <GenerateThumbnailsTaskCard task={task} className={style.item}/>
     }
   };
   const renderContent = () => {

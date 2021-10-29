@@ -31,6 +31,7 @@ const ApplicationConfig = {
     library: '/library/:id',
     scanLibrary: '/library/:id/scan',
     matchLibrary: '/library/:id/match',
+    generateThumbnailsLibrary: '/library/:id/thumbnails',
     renameLibraryBookDirectory: '/library/:id/books/rename',
     createWriteBookMetaTask: '/library/:id/task/writemeta',
     libraryImport: '/library/import',

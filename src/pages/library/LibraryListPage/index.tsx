@@ -15,7 +15,7 @@ import { connect } from '@@/plugin-dva/exports';
 import styles from './style.less';
 import { LibraryItemViewModel } from './data.d';
 import { LibraryListStateType } from './model';
-import { FolderOpenFilled, FormOutlined } from '@ant-design/icons';
+import {BlockOutlined, FolderOpenFilled, FormOutlined} from '@ant-design/icons';
 import { RenameWithTagDialog } from '@/components/RenameWIthTagDialog';
 
 const { confirm } = Modal;
@@ -173,6 +173,26 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
       },
     });
   };
+  const onGenerateThumbnails = (id: string | undefined) => {
+    if (!id) {
+      return;
+    }
+    Modal.confirm({
+      title: '添加缩略图生成任务确认',
+      icon: <ExclamationCircleOutlined />,
+      content: '将会添加生成缩略图任务',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        dispatch({
+          type: 'libraryList/newGenerateThumbnailsTask',
+          payload: {
+            id,
+          },
+        });
+      },
+    });
+  };
   return (
     <PageHeaderWrapper subTitle="书库将书籍文件书籍集合管理" extra={extraAction}>
       <InputTextDialog
@@ -237,6 +257,7 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
                       }
                     />,
                     <FormOutlined key="write" onClick={() => onWriteToMeta(item.id)} />,
+                    <BlockOutlined key="generate" onClick={() => onGenerateThumbnails(item.id)} />,
                   ]}
                 >
                   <Card.Meta avatar={<Avatar icon={<BookOutlined />} />} title={item.name} />

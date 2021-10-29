@@ -34,7 +34,9 @@ export const scanLibraryById = async ({ id }: { id: number }) => {
 export const matchLibraryById = async ({ id }: { id: number }) => {
   return apiRequest.put(ApplicationConfig.api.matchLibrary.replace(':id', String(id)), {});
 };
-
+export const libraryGenerateThumbnailsById = async ({ id }: { id: number }) => {
+  return apiRequest.put(ApplicationConfig.api.generateThumbnailsLibrary.replace(':id', String(id)), {});
+};
 export const renameLibraryBookDirectory = async ({
   id,
   pattern,

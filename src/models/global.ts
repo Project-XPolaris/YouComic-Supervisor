@@ -8,6 +8,7 @@ import { message } from 'antd';
 import ApplicationConfig from '@/config';
 import { Task } from '@/services/task';
 import { ThumbnailGeneratorStatus } from '@/services/status';
+import {WebsocketMessage} from "@/services/event";
 
 export interface RecentlyViewListItem {
   id: string;
@@ -200,7 +201,7 @@ const GlobalModel: GlobalModelType = {
         const uri = new URL(apiUrl);
         const ws = new WebSocket(`ws://${uri.host}/ws?a=${token}`);
         ws.onmessage = message => {
-          const rawData = JSON.parse(message.data);
+          const rawData:WebsocketMessage = JSON.parse(message.data);
           if (rawData.event === 'TaskBeat') {
             dispatch({
               type: 'setTasks',
@@ -209,13 +210,19 @@ const GlobalModel: GlobalModelType = {
               },
             });
           }
-          if (rawData.event === 'GeneratorStatusBeat') {
+          // if (rawData.event === 'GeneratorStatusBeat') {
+          //   dispatch({
+          //     type: 'setThumbnailGeneratorStatus',
+          //     payload: {
+          //       status: rawData.data,
+          //     },
+          //   });
+          // }
+          if (rawData.event === 'EventRemoveLibraryTaskDone') {
             dispatch({
-              type: 'setThumbnailGeneratorStatus',
-              payload: {
-                status: rawData.data,
-              },
-            });
+              type:"libraryList/queryLibrary",
+              payload:{}
+            })
           }
         };
       }
