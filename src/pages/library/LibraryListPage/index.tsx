@@ -1,9 +1,8 @@
-import { Avatar, Button, Card, List, Modal } from 'antd';
+import { Button, Modal, Table, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DialogStateType } from '@@/plugin-dva/connect';
 import {
-  BookOutlined,
   DeleteOutlined,
   ExclamationCircleOutlined,
   ImportOutlined,
@@ -13,10 +12,10 @@ import {
 import InputTextDialog from '@/components/InputTextDialog';
 import { connect } from '@@/plugin-dva/exports';
 import styles from './style.less';
-import { LibraryItemViewModel } from './data.d';
 import { LibraryListStateType } from './model';
-import {BlockOutlined, FolderOpenFilled, FormOutlined} from '@ant-design/icons';
+import { BlockOutlined, FolderOpenFilled, FormOutlined } from '@ant-design/icons';
 import { RenameWithTagDialog } from '@/components/RenameWIthTagDialog';
+import { Library } from '@/services/library';
 
 const { confirm } = Modal;
 
@@ -193,6 +192,95 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
       },
     });
   };
+  const columns = [
+    {
+      title: 'Id',
+      dataIndex: 'id',
+      key: 'id',
+      width: 120,
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      width: 160,
+    },
+    {
+      title: 'Path',
+      dataIndex: 'path',
+      key: 'path',
+      width: 480,
+    },
+    {
+      title: 'action',
+      align: 'right',
+      render: (_, record: Library) => {
+        return (
+          <div>
+            <Tooltip title="扫描">
+              <Button
+                className={styles.actionIcon}
+                icon={<ReloadOutlined key="scan" />}
+                onClick={() => onScanLibrary(record.id.toString())}
+                type={'primary'}
+                shape={'circle'}
+              />
+            </Tooltip>
+            <Tooltip title="批量匹配标签">
+              <Button
+                className={styles.actionIcon}
+                icon={<TagOutlined key="scan" />}
+                onClick={() => onMatchLibrary(record.id.toString())}
+                type={'primary'}
+                shape={'circle'}
+              />
+            </Tooltip>
+            <Tooltip title="批量更改文件夹名称">
+              <Button
+                className={styles.actionIcon}
+                icon={<FolderOpenFilled key="scan" />}
+                onClick={() =>
+                  dispatch({
+                    type: 'libraryList/openRenameDialog',
+                    payload: { library: record },
+                  })
+                }
+                type={'primary'}
+                shape={'circle'}
+              />
+            </Tooltip>
+            <Tooltip title="写入元信息">
+              <Button
+                className={styles.actionIcon}
+                icon={<FormOutlined key="scan" />}
+                onClick={() => onWriteToMeta(record.id.toString())}
+                type={'primary'}
+                shape={'circle'}
+              />
+            </Tooltip>
+            <Tooltip title="生成缩略图">
+              <Button
+                className={styles.actionIcon}
+                icon={<BlockOutlined key="scan" />}
+                onClick={() => onGenerateThumbnails(record.id.toString())}
+                type={'primary'}
+                shape={'circle'}
+              />
+            </Tooltip>
+            <Tooltip title="删除">
+              <Button
+                className={styles.actionIcon}
+                icon={<DeleteOutlined key="scan" />}
+                onClick={() => onLibraryDelete(record.name, record.id.toString())}
+                type={'primary'}
+                shape={'circle'}
+              />
+            </Tooltip>
+          </div>
+        );
+      },
+    },
+  ];
   return (
     <PageHeaderWrapper subTitle="书库将书籍文件书籍集合管理" extra={extraAction}>
       <InputTextDialog
@@ -221,52 +309,8 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
         }}
         onCancel={() => dispatch({ type: 'libraryList/closeRenameDialog' })}
       />
-      <div className={styles.cardList}>
-        <List<Partial<LibraryItemViewModel>>
-          rowKey="id"
-          loading={loading}
-          grid={{
-            gutter: 16,
-            xs: 1,
-            sm: 2,
-            md: 3,
-            lg: 3,
-            xl: 4,
-            xxl: 4,
-          }}
-          dataSource={[...libraryList.libraryList]}
-          renderItem={item => {
-            return (
-              <List.Item key={item.id}>
-                <Card
-                  className={styles.card}
-                  actions={[
-                    <DeleteOutlined
-                      key="delete"
-                      onClick={() => onLibraryDelete(item.name, item.id)}
-                    />,
-                    <ReloadOutlined key="scan" onClick={() => onScanLibrary(item.id)} />,
-                    <TagOutlined key="match" onClick={() => onMatchLibrary(item.id)} />,
-                    <FolderOpenFilled
-                      key="rename"
-                      onClick={() =>
-                        dispatch({
-                          type: 'libraryList/openRenameDialog',
-                          payload: { library: item },
-                        })
-                      }
-                    />,
-                    <FormOutlined key="write" onClick={() => onWriteToMeta(item.id)} />,
-                    <BlockOutlined key="generate" onClick={() => onGenerateThumbnails(item.id)} />,
-                  ]}
-                >
-                  <Card.Meta avatar={<Avatar icon={<BookOutlined />} />} title={item.name} />
-                  <p>{item.path}</p>
-                </Card>
-              </List.Item>
-            );
-          }}
-        />
+      <div className={styles.tableContainer}>
+        <Table columns={columns} dataSource={libraryList.libraryList} />
       </div>
     </PageHeaderWrapper>
   );

@@ -1,21 +1,9 @@
 @import '~antd/es/style/themes/default.less';
 @import './utils/utils.less';
 
-
-
-
-
-
-
-
-
-
-
 .pageHeaderContent {
   position: relative;
 }
-
-
 
 @media screen and (max-width: @screen-lg) {
   .contentLink {
@@ -24,6 +12,7 @@
     }
   }
 }
+
 @media screen and (max-width: @screen-md) {
   .extraImg {
     display: none;
@@ -34,22 +23,31 @@
   .pageHeaderContent {
     padding-bottom: 30px;
   }
+
   .contentLink {
     position: absolute;
     bottom: -4px;
     left: 0;
     width: 1000px;
+
     a {
       margin-right: 16px;
     }
+
     img {
       margin-right: 4px;
     }
   }
 }
 
-.cardNameField{
+.cardNameField {
   margin-bottom: 16px;
-  font-size: 16px;
   font-weight: bold;
+  font-size: 16px;
+}
+.tableContainer {
+  padding-bottom: 48px;
+}
+.actionIcon {
+  margin-right: 16px;
 }
