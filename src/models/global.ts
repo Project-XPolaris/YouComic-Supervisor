@@ -199,7 +199,15 @@ const GlobalModel: GlobalModelType = {
       const apiUrl = localStorage.getItem(ApplicationConfig.storeKey.apiurl);
       if (token && apiUrl) {
         const uri = new URL(apiUrl);
-        const ws = new WebSocket(`ws://${uri.host}/ws?a=${token}`);
+        uri.protocol = 'ws';
+        let baseUrl = uri.toString();
+        if (baseUrl.endsWith('/')) {
+          baseUrl += `ws?a=${token}`;
+        } else {
+          baseUrl += `/ws?a=${token}`;
+        }
+
+        const ws = new WebSocket(baseUrl);
         ws.onmessage = message => {
           const rawData: WebsocketMessage = JSON.parse(message.data);
           if (rawData.event === 'TaskBeat') {
