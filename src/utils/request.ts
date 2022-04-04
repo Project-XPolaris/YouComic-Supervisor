@@ -75,55 +75,55 @@ interface PathNamePostProcess<T> {
   regex: string;
   onProcess: (context: Context, response: T) => void;
 }
-
 const bookListPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
-  regex: '/books',
+  regex: 'books',
   onProcess: (context, response) => {
-    const host = `http://${URI(context.req.url).host()}`;
+    const prefixUrl = localStorage.getItem(ApplicationConfig.storeKey.apiurl);
+    console.log(prefixUrl);
     response.result = response.result.map((book: Book) => {
       return {
         ...book,
-        cover: host + book.cover,
+        cover: prefixUrl + book.cover,
       };
     });
   },
 };
 const tagBooksPostProcess: PathNamePostProcess<ListQueryContainer<Book>> = {
-  regex: '/tag/:tagId(\\d+)/books',
+  regex: 'tag/:tagId(\\d+)/books',
   onProcess: (context, response) => {
     if (context.req.options.method !== 'get') {
       return;
     }
-    const host = `http://${URI(context.req.url).host()}`;
+    const prefixUrl = localStorage.getItem(ApplicationConfig.storeKey.apiurl);
     response.result = response.result.map((book: Book) => {
       return {
         ...book,
-        cover: host + book.cover,
+        cover: prefixUrl + book.cover,
       };
     });
   },
 };
 //
 const pageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
-  regex: '/pages',
+  regex: 'pages',
   onProcess: (context, response) => {
-    const host = `http://${URI(context.req.url).host()}`;
+    const prefixUrl = localStorage.getItem(ApplicationConfig.storeKey.apiurl);
     response.result = response.result.map((page: Page) => {
       return {
         ...page,
-        path: host + page.path,
+        path: prefixUrl + page.path,
       };
     });
   },
 };
 const bookPageListPostProcess: PathNamePostProcess<ListQueryContainer<Page>> = {
-  regex: '/book/:bookId(\\d+)/pages',
+  regex: 'book/:bookId(\\d+)/pages',
   onProcess: (context, response) => {
-    const host = `http://${URI(context.req.url).host()}`;
+    const prefixUrl = localStorage.getItem(ApplicationConfig.storeKey.apiurl);
     response.result = response.result.map((page: Page) => {
       return {
         ...page,
-        path: host + page.path,
+        path: prefixUrl + page.path,
       };
     });
   },
@@ -135,7 +135,16 @@ apiRequest.use(async (ctx, next) => {
   [bookListPostProcess, pageListPostProcess, tagBooksPostProcess, bookPageListPostProcess].forEach(
     process => {
       const pathname = URI(ctx.req.url).pathname();
-      const regexp = pathToRegexp(process.regex);
+      let basePath = '';
+      const baseUrl = localStorage.getItem(ApplicationConfig.storeKey.apiurl);
+      if (baseUrl) {
+        basePath = URI(baseUrl).pathname();
+      }
+      if (!basePath.endsWith('/')) {
+        basePath += '/';
+      }
+      const matchRegex = basePath + process.regex;
+      const regexp = pathToRegexp(matchRegex);
       const match = regexp.exec(pathname);
       if (match) {
         process.onProcess(ctx, ctx.res);
