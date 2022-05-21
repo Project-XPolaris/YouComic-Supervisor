@@ -43,22 +43,22 @@ const Model: LoginModelType = {
       }
 
       // login success
-      if (!('sign' in response)) {
+      if (!('token' in response)) {
         return;
       }
 
       yield put({
         type: 'setUserAuthority',
         payload: {
-          sign: response.sign,
-          id: response.id,
+          sign: response.token,
+          id: response.uid,
         },
       });
 
       // query user's groups
       const userGroups:
         | ListQueryContainer<UserGroup>
-        | ApiErrorResponse = yield call(getUserUserGroups, { id: response.id });
+        | ApiErrorResponse = yield call(getUserUserGroups, { id: response.uid });
       // query user's group failed
       if ('success' in userGroups && !userGroups.success) {
         return;
