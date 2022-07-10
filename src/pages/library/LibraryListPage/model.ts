@@ -109,8 +109,8 @@ const Model: LibraryListModelType = {
       yield call(matchLibraryById, { id });
       message.success('标签匹配任务已添加');
     },
-    *newGenerateThumbnailsTask({ payload: { id } }, { call }) {
-      yield call(libraryGenerateThumbnailsById, { id });
+    *newGenerateThumbnailsTask({ payload: { id,force } }, { call }) {
+      yield call(libraryGenerateThumbnailsById, { id,force });
       message.success('生成缩略图任务已添加');
     },
     *newRenameLibraryBookDirectory({ payload }, { call, put }) {

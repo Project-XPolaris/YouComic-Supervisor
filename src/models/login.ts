@@ -37,6 +37,7 @@ const Model: LoginModelType = {
     *login({ payload }, { call, put }) {
       localStorage.setItem(ApplicationConfig.storeKey.apiurl, payload.address);
       const response: UserAuth | ApiErrorResponse = yield call(getAuth, payload);
+      console.log(response)
       // login error
       if ('success' in response && !response.success) {
         return;

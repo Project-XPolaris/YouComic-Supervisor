@@ -187,6 +187,28 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
           type: 'libraryList/newGenerateThumbnailsTask',
           payload: {
             id,
+            force:false
+          },
+        });
+      },
+    });
+  };
+  const onForceGenerateThumbnails = (id: string | undefined) => {
+    if (!id) {
+      return;
+    }
+    Modal.confirm({
+      title: '添加强制缩略图生成任务确认',
+      icon: <ExclamationCircleOutlined />,
+      content: '将会添加强制生成缩略图任务',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        dispatch({
+          type: 'libraryList/newGenerateThumbnailsTask',
+          payload: {
+            id,
+            force:true
           },
         });
       },
@@ -263,6 +285,15 @@ const LibraryListPage = ({ libraryList, loading, dispatch, dialog }: LibraryList
                 className={styles.actionIcon}
                 icon={<BlockOutlined key="scan" />}
                 onClick={() => onGenerateThumbnails(record.id.toString())}
+                type={'primary'}
+                shape={'circle'}
+              />
+            </Tooltip>
+            <Tooltip title="强制生成缩略图">
+              <Button
+                className={styles.actionIcon}
+                icon={<BlockOutlined key="scan" />}
+                onClick={() => onForceGenerateThumbnails(record.id.toString())}
                 type={'primary'}
                 shape={'circle'}
               />

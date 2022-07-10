@@ -20,7 +20,6 @@ import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.png';
 import Dialogs from "@/layouts/Dialogs";
 import style from './basestyle.less'
-import {isRenderer} from "@/utils/electron";
 const noMatch = (
   <Result
     status={403}
