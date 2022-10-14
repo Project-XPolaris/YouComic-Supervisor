@@ -14,6 +14,7 @@ import { BookListModelStateType } from '@/pages/book/list/model';
 
 import { Book } from '@/services/book';
 import {
+  AppstoreOutlined,
   EditOutlined,
   FilterOutlined,
   FolderOpenFilled,
@@ -198,6 +199,14 @@ function BookListHeaderAction({ dispatch, bookList }: BookListHeaderActionPropsT
         icon={<UnorderedListOutlined />}
       >
         列表选项
+      </Button>
+      <Button
+        className={style.actionButton}
+        onClick={() => dispatch({ type: 'bookList/openBatchMatchDialog' })}
+        key={4}
+        icon={<AppstoreOutlined />}
+      >
+        批量编辑
       </Button>
     </>
   );

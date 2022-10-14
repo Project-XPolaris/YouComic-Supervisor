@@ -20,6 +20,7 @@ import MatchTagDialog from '@/components/MatchTagDialog';
 import {RenameWithTagDialog} from '@/components/RenameWIthTagDialog';
 import {LibraryPickUpDialog} from "@/components/LibraryPickUpDialog";
 import {MatchTag} from "@/services/tag";
+import BatchMatchTagDrawer, {UpdateValue} from "@/pages/book/list/components/BatchMatchTagDrawer";
 
 interface BookListPagePropsType {
   dispatch: Dispatch;
@@ -28,7 +29,7 @@ interface BookListPagePropsType {
 }
 
 function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
-  const { page, pageSize, count, filter, searchTags, selectedBooks, showViewOption } = bookList;
+  const { page, pageSize, count, filter, searchTags, selectedBooks, showViewOption,isBatchMatchDialogOpen } = bookList;
   const [collectionType, setCollectionType] = useState<'vertical' | 'horizon'>('horizon');
   const { dialogs } = dialog;
   const onPageChange = (toPage: number, toPageSize: number = 20) => {
@@ -154,6 +155,15 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
       });
     }
   };
+  const onBatchMatchOkHandler = (books:UpdateValue[]) => {
+    console.log(books)
+    dispatch({
+      type: 'bookList/updateBookList',
+      payload: {
+        books
+      },
+    });
+  }
   return (
     <PageHeaderWrapper extra={<BookListHeaderAction />}>
       {bookList.isMatchDialogOpen && (
@@ -196,6 +206,12 @@ function BookListPage({ dispatch, bookList, dialog }: BookListPagePropsType) {
           onFilterChange={onSetFilter}
           searchTags={searchTags}
           onTagSearch={onTagSearch}
+        />
+        <BatchMatchTagDrawer
+          onClose={() => dispatch({ type: 'bookList/closeBatchMatchDialog' })}
+          isOpen={isBatchMatchDialogOpen}
+          books={bookList.books ?? []}
+          onOk={onBatchMatchOkHandler}
         />
         {showViewOption && (
           <div>

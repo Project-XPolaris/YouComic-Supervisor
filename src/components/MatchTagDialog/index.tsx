@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import style from './style.less';
 import {
   Button,
-  Checkbox,
+  Checkbox, Divider,
   Input,
   List,
   Modal,
@@ -17,6 +17,7 @@ import { useDebounce } from 'ahooks';
 import { MatchTag, matchTagFromRawString } from '@/services/tag';
 import AddIcon from '@ant-design/icons/PlusOutlined';
 import { generateId } from '@/utils/id';
+import {PlusOutlined} from "@ant-design/icons/lib";
 
 const { TabPane } = Tabs;
 
@@ -41,7 +42,17 @@ const MatchTagDialog = ({
   const [matchTags, setMatchTags] = useState<MatchTag[]>([]);
   const [selectIds, setSelectIds] = useState<string[]>([]);
   const [selectText, setSelectText] = useState<string>();
+  const [addRegexValue, setAddRegexValue] = useState<string>();
+  const getSavePattern = ():[] => {
+    const rawJson = localStorage.getItem("save_pattern")
+    if (!rawJson) {
+      return []
+    }
+    return JSON.parse(rawJson)
+  }
+  const [regexPatterns,setRegexPatterns] = useState<[]>(getSavePattern())
   const matchText = useDebounce(value);
+
   const pickUpWithType = (type: string, tags: MatchTag[]): MatchTag | undefined => {
     let tag = tags.find(it => it.type === type && it.source === 'pattern');
     if (tag) {
@@ -198,6 +209,35 @@ const MatchTagDialog = ({
     ]);
     setSelectIds([...selectIds, id]);
   };
+  const onAddRegex  = () => {
+    console.log(addRegexValue)
+    localStorage.setItem("save_pattern",JSON.stringify([
+      addRegexValue,
+      ...regexPatterns
+    ]))
+    setRegexPatterns(getSavePattern())
+  }
+  const onRegexChange = (regex: string) => {
+    setMatchTags([])
+    const regexp = new RegExp(regex)
+    const result = regexp.exec(value)
+    const matchTags:Array<MatchTag> = []
+    const selectTags:Array<string> = [...selectIds]
+    if (result?.groups) {
+      Object.getOwnPropertyNames(result.groups).forEach(it => {
+        const id = generateId(7)
+        matchTags.push({
+          id,
+          name: result.groups[it],
+          type: it,
+          source: 'custom',
+        },)
+        selectTags.push(id)
+      })
+    }
+    setMatchTags(matchTags)
+    setSelectIds(selectTags)
+  }
   return (
     <Modal title={'匹配标签'} {...props} className={style.root} onOk={onModalOk} width={720}>
       <Input
@@ -211,6 +251,34 @@ const MatchTagDialog = ({
           }
         }}
       />
+      <Select
+        style={{width:"100%",marginTop:8,position:'sticky'}}
+        defaultActiveFirstOption={true} onSelect={onRegexChange}
+        dropdownRender={menu => (
+          <>
+            {menu}
+            <Divider style={{ margin: '8px 0' }} />
+            <Space style={{ padding: '0 8px 4px' }}>
+              <Input
+                placeholder="Please enter item"
+                onChange={(e) => setAddRegexValue(e.currentTarget.value)}
+              />
+              <Button type="text" icon={<PlusOutlined />} onClick={onAddRegex}>
+                Add item
+              </Button>
+            </Space>
+          </>
+        )}
+      >
+        <Select.Option value={'no'}>Not use</Select.Option>
+        {
+          regexPatterns.map((it,idx) => {
+            return (
+              <Select.Option value={it} key={idx}>{it}</Select.Option>
+            )
+          })
+        }
+      </Select>
 
       <div className={style.label}>
         <Typography.Text strong>快速添加</Typography.Text>

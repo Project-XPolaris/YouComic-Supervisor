@@ -1,5 +1,5 @@
-import { Effect, Subscription } from 'dva';
-import { Reducer } from 'redux';
+import {Effect, Subscription} from 'dva';
+import {Reducer} from 'redux';
 import {
   Book,
   bookBatch,
@@ -9,16 +9,16 @@ import {
   renameBoolDirectory,
   updateBook,
 } from '@/services/book';
-import { ListQueryContainer } from '@/services/base';
-import { ConnectState } from '@/models/connect';
-import { getCoverThumbnailURL } from '@/utils/image';
-import { BookFilter } from '@/pages/book/list/components/BookFilterDrawer';
-import { queryTags, Tag } from '@/services/tag';
-import { getOrdersFromUrlQuery } from '@/utils/uri';
-import { differenceWith } from 'lodash';
-import { message, notification } from 'antd';
-import { matchTagInfo } from '@/utils/match';
-import { Slot } from '@/utils/tag';
+import {ListQueryContainer} from '@/services/base';
+import {ConnectState} from '@/models/connect';
+import {getCoverThumbnailURL} from '@/utils/image';
+import {BookFilter} from '@/pages/book/list/components/BookFilterDrawer';
+import {queryTags, Tag} from '@/services/tag';
+import {getOrdersFromUrlQuery} from '@/utils/uri';
+import {differenceWith} from 'lodash';
+import {message, notification} from 'antd';
+import {matchTagInfo} from '@/utils/match';
+import {Slot} from '@/utils/tag';
 
 export interface BookListModelStateType {
   books?: Book[];
@@ -37,6 +37,7 @@ export interface BookListModelStateType {
   isMatchDialogOpen: boolean;
   isRenameDialogOpen: boolean;
   isMoveBookDialogOpen: boolean;
+  isBatchMatchDialogOpen: boolean;
 }
 
 export interface BookListModelType {
@@ -59,6 +60,8 @@ export interface BookListModelType {
     closeRenameDialog: Reducer;
     openMoveBookDialog: Reducer;
     closeMoveBookDialog: Reducer;
+    closeBatchMatchDialog: Reducer;
+    openBatchMatchDialog: Reducer;
   };
   state: BookListModelStateType;
   effects: {
@@ -70,6 +73,7 @@ export interface BookListModelType {
     matchSelectBook: Effect;
     renameSelectBook: Effect;
     moveSelectedBook: Effect;
+    updateBookList:Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -97,9 +101,10 @@ const BookListModel: BookListModelType = {
     isMatchDialogOpen: false,
     isRenameDialogOpen: false,
     isMoveBookDialogOpen: false,
+    isBatchMatchDialogOpen: false
   },
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup({dispatch, history}) {
       history.listen((location: any) => {
         if (location.pathname === '/books/list') {
           const {
@@ -151,8 +156,8 @@ const BookListModel: BookListModelType = {
     },
   },
   effects: {
-    *queryBooks(_, { call, put, select }) {
-      const { page, pageSize, filter } = yield select((state: ConnectState) => state.bookList);
+    * queryBooks(_, {call, put, select}) {
+      const {page, pageSize, filter} = yield select((state: ConnectState) => state.bookList);
       let orderString = filter.order
         .map(
           (item: any) => `
@@ -186,7 +191,7 @@ const BookListModel: BookListModelType = {
         },
       });
     },
-    *searchTags({ payload: { searchKey, type } }, { call, put, select }) {
+    * searchTags({payload: {searchKey, type}}, {call, put, select}) {
       let bookListModelState: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
@@ -213,11 +218,11 @@ const BookListModel: BookListModelType = {
         });
       }
     },
-    *getFilterTag(_, { call, put, select }) {
-      const { filter }: BookListModelStateType = yield select(
+    * getFilterTag(_, {call, put, select}) {
+      const {filter}: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
-      const { tags, tagIds } = filter;
+      const {tags, tagIds} = filter;
       const tagIdsToQuery = differenceWith<number, { id: number; name: string }>(
         tagIds,
         tags,
@@ -236,18 +241,18 @@ const BookListModel: BookListModelType = {
             ...filter,
             tags: [
               ...tags,
-              ...queryTagsResponse.result.map((tag: Tag) => ({ id: tag.id, name: tag.name })),
+              ...queryTagsResponse.result.map((tag: Tag) => ({id: tag.id, name: tag.name})),
             ],
           },
         },
       });
     },
-    *deleteSelectedBooks({ payload: { permanently } }, { call, put, select }) {
-      const { selectedBooks }: BookListModelStateType = yield select(
+    * deleteSelectedBooks({payload: {permanently}}, {call, put, select}) {
+      const {selectedBooks}: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
       for (const selectedBook of selectedBooks) {
-        yield call(DeleteBook, { id: selectedBook.id, permanently });
+        yield call(DeleteBook, {id: selectedBook.id, permanently});
       }
       yield put({
         type: 'queryBooks',
@@ -260,21 +265,35 @@ const BookListModel: BookListModelType = {
       });
       message.success(`已删除${selectedBooks.length}个项目`);
     },
-    *updateBook({ payload }, { call, put }) {
+    * updateBook({payload}, {call, put}) {
       const {
         id,
         title,
         tags,
       }: { id: string; title: string; tags: { name: string; type: string }[] } = payload;
-      yield call(updateBook, { id, update: { name: title, updateTags: tags, overwriteTag: true } });
+      yield call(updateBook, {id, update: {name: title, updateTags: tags, overwriteTag: true}});
       yield put({
         type: 'queryBooks',
       });
       message.success(`修改信息成功`);
 
     },
-    *matchSelectBook({}, { call, put, select }) {
-      const { selectedBooks }: BookListModelStateType = yield select(
+    * updateBookList({payload}, {call, put}) {
+      const {
+        books
+      }: { books: Array<{ id: string; title: string; tags: { name: string; type: string }}> } = payload;
+      for (let book of books) {
+        yield call(updateBook, {id:book.id, update: {name: book.title, updateTags: book.tags, overwriteTag: true}});
+      }
+
+      yield put({
+        type: 'queryBooks',
+      });
+      message.success(`修改信息成功`);
+
+    },
+    * matchSelectBook({}, {call, put, select}) {
+      const {selectedBooks}: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
       const update = [];
@@ -320,8 +339,8 @@ const BookListModel: BookListModelType = {
         update.push(updateBook);
       }
       const updateKey = 'matchSelectBook';
-      message.loading({ content: '匹配标签中...', key: updateKey });
-      yield call(bookBatch, { data: { update } });
+      message.loading({content: '匹配标签中...', key: updateKey});
+      yield call(bookBatch, {data: {update}});
       yield put({
         type: 'setSelectedBookIds',
         payload: {
@@ -332,15 +351,15 @@ const BookListModel: BookListModelType = {
         type: 'queryBooks',
         payload: {},
       });
-      message.success({ content: '匹配完成', key: updateKey });
+      message.success({content: '匹配完成', key: updateKey});
     },
-    *renameSelectBook({ payload }, { call, put, select }) {
-      const { pattern, slots }: { pattern: string; slots: Slot[] } = payload;
-      const { selectedBooks }: BookListModelStateType = yield select(
+    * renameSelectBook({payload}, {call, put, select}) {
+      const {pattern, slots}: { pattern: string; slots: Slot[] } = payload;
+      const {selectedBooks}: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
       for (const selectedBook of selectedBooks) {
-        yield call(renameBoolDirectory, { id: selectedBook.id, pattern, slots });
+        yield call(renameBoolDirectory, {id: selectedBook.id, pattern, slots});
       }
       yield put({
         type: 'closeRenameDialog',
@@ -350,13 +369,13 @@ const BookListModel: BookListModelType = {
         type: 'queryBooks',
       });
     },
-    *moveSelectedBook({ payload }, { call, put, select }) {
+    * moveSelectedBook({payload}, {call, put, select}) {
       console.log(payload);
-      const { id }: { id: number } = payload;
-      const { selectedBooks }: BookListModelStateType = yield select(
+      const {id}: { id: number } = payload;
+      const {selectedBooks}: BookListModelStateType = yield select(
         (state: ConnectState) => state.bookList,
       );
-      yield call(moveBooks, { to: id, bookIds: selectedBooks.map(it => it.id) });
+      yield call(moveBooks, {to: id, bookIds: selectedBooks.map(it => it.id)});
       yield put({
         type: 'closeMoveBookDialog',
       });
@@ -364,27 +383,27 @@ const BookListModel: BookListModelType = {
     },
   },
   reducers: {
-    onQueryBookSuccess(state, { payload }) {
+    onQueryBookSuccess(state, {payload}) {
       return {
         ...state,
         ...payload,
       };
     },
-    setPage(state, { payload }) {
+    setPage(state, {payload}) {
       return {
         ...state,
         page: payload.page,
         pageSize: payload.pageSize,
       };
     },
-    setTimeRange(state, { payload }) {
+    setTimeRange(state, {payload}) {
       return {
         ...state,
         startTime: payload.startTime,
         endTime: payload.endTime,
       };
     },
-    setOrder(state, { payload }) {
+    setOrder(state, {payload}) {
       const order = Object.keys(payload.order)
         .map((key: string) => `${payload.order[key] === 'asc' ? '' : '-'}${key}`)
         .join(',');
@@ -393,31 +412,31 @@ const BookListModel: BookListModelType = {
         order,
       };
     },
-    setFilter(state, { payload: { filter } }) {
+    setFilter(state, {payload: {filter}}) {
       return {
         ...state,
         filter,
       };
     },
-    setTagsFetchId(state, { payload: { id } }) {
+    setTagsFetchId(state, {payload: {id}}) {
       return {
         ...state,
         tagsFetchId: id,
       };
     },
-    onSearchTagsSuccess(state, { payload: { tags } }) {
+    onSearchTagsSuccess(state, {payload: {tags}}) {
       return {
         ...state,
         searchTags: tags,
       };
     },
-    setSelectedBookIds(state, { payload: { books } }) {
+    setSelectedBookIds(state, {payload: {books}}) {
       return {
         ...state,
         selectedBooks: books,
       };
     },
-    updateFilter(state: BookListModelStateType, { payload: { filter } }): BookListModelStateType {
+    updateFilter(state: BookListModelStateType, {payload: {filter}}): BookListModelStateType {
       return {
         ...state,
         filter: {
@@ -426,19 +445,19 @@ const BookListModel: BookListModelType = {
         },
       };
     },
-    setShowViewOption(state: BookListModelStateType, { payload: { isShow } }) {
+    setShowViewOption(state: BookListModelStateType, {payload: {isShow}}) {
       return {
         ...state,
         showViewOption: isShow,
       };
     },
-    setContextBook(state: BookListModelStateType, { payload: { book } }) {
+    setContextBook(state: BookListModelStateType, {payload: {book}}) {
       return {
         ...state,
         contextBook: book,
       };
     },
-    openMatchNameDialog(state: BookListModelStateType, { payload: { book } }) {
+    openMatchNameDialog(state: BookListModelStateType, {payload: {book}}) {
       return {
         ...state,
         contextBook: book,
@@ -457,10 +476,23 @@ const BookListModel: BookListModelType = {
         isRenameDialogOpen: true,
       };
     },
+
     closeRenameDialog(state: BookListModelStateType, {}) {
       return {
         ...state,
         isRenameDialogOpen: false,
+      };
+    },
+    openBatchMatchDialog(state: BookListModelStateType, {}) {
+      return {
+        ...state,
+        isBatchMatchDialogOpen: true,
+      };
+    },
+    closeBatchMatchDialog(state: BookListModelStateType, {}) {
+      return {
+        ...state,
+        isBatchMatchDialogOpen: false,
       };
     },
     openMoveBookDialog(state: BookListModelStateType, {}) {
