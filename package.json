@@ -133,7 +133,7 @@
     "prettier": "^1.19.1",
     "pro-download": "1.0.1",
     "stylelint": "^13.0.0",
-    "webpack": "4.28.0",
+    "webpack": "5.94.0",
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.1"
   },
